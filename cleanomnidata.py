@@ -56,5 +56,7 @@ def main():
                         str(dens[linenum-3])[:7] + ' ' +
                         str(temp[linenum-3])[:7] + '\n')
         linenum += 1
+    ifile.close()
+    ofile.close()
 
 main()
