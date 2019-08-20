@@ -2,8 +2,26 @@
 """
 Interpolate washed out data from OMNI
 """
-import sys
+from datetime import datetime as d
 import numpy as np
+
+def convert(infile, outfile):
+    """
+    Start the process of conversion.
+    """
+    # Write out the header
+    outfile.write("OMNI file downloaded from https://omniweb.gsfc.nasa.gov/\n")
+    outfile.write("yr mn dy hr min sec msec bx by bz vx vy vz dens temp\n")
+    outfile.write("#START\n")
+    # Begin conversion line by line
+    for line in infile:
+        date = d.strptime(line[:14], "%Y %j %H %M")
+        correctline = date.strftime("%Y %m %d %H %M %S") + ' 000' + line[14:]
+        outfile.write(correctline)
+        #print(correctline)
+    # Close files
+    outfile.close()
+    infile.close()
 
 def clean(data):
     """
