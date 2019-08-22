@@ -48,6 +48,13 @@ def clean(data):
             length = nextlocation-prevlocation
             replacedata = np.linspace(prevdata, nextdata, length+1)
             data[prevlocation:nextlocation+1] = replacedata
+        if loc == np.size(data)-1 and baddata is True:
+            nextlocation = loc
+            nextdata = prevdata
+            baddata = False
+            length = nextlocation-prevlocation
+            replacedata = np.linspace(prevdata, nextdata, length+1)
+            data[prevlocation:nextlocation+1] = replacedata
     return data
 
 def read_data(filename):
