@@ -1,3 +1,5 @@
- omni2swmf.py
+# omni2swmf.py
 
- Work in progress.
+Collection of functions to generate and manage files for Interplanetary Magnetic Field input files for the Space Weather Modeling Framework (SWMF)
+
+This is a work in progress. Use at your own risk.
