@@ -4,6 +4,81 @@ Interpolate washed out data from OMNI
 """
 from datetime import datetime as d
 import numpy as np
+import pandas as pd
+
+
+def combine_data(mfi_fname, swe_fname, plas_fname):
+    """
+    combine_data(mfi_fname, swe_fname, plas_fname)
+    Combines the three csv files from
+    cdaweb.sci.gsfc.nasa.gov into a pandas DataFrame.
+    Recommended to be used with:
+        mfi_fname: AC_H0_MFI_***.csv
+        swe_fname: AC_H0_SWE_***.csv
+        plas_fname: WI_PM_3DP_***.csv
+        return pandas.DataFrame
+    Make sure to download the csv files with
+    the header seperated into a json file for safety.
+    """
+    try:
+        bfile = open(mfi_fname, 'r')
+    except OSError:
+        print("Could not open the MFI data file.")
+    try:
+        swfile = open(swe_fname, 'r')
+    except OSError:
+        print("Could not open the SWE data file.")
+    try:
+        pfile = open(plas_fname, 'r')
+    except OSError:
+        print("Could not open the MFI data file.")
+    # Read the csv files and set the indexes to dates
+    ndata = pd.read_csv(pfile)
+    ndata = ndata.set_index(pd.to_datetime(ndata[ndata.columns[0]]))
+    ndata.index.names = ['date']
+    ndata = ndata.drop(ndata.columns[0], 1)
+    ndata = ndata.rename(columns={ndata.columns[0]: "density"})
+    bdata = pd.read_csv(bfile)
+    bdata = bdata.set_index(pd.to_datetime(bdata[bdata.columns[0]]))
+    bdata.index.names = ['date']
+    bdata = bdata.drop(bdata.columns[0], 1)
+    bdata = bdata.rename(columns={bdata.columns[0]: "bx",
+                                  bdata.columns[1]: "by",
+                                  bdata.columns[2]: "bz"})
+    swdata = pd.read_csv(swfile)
+    swdata = swdata.set_index(pd.to_datetime(swdata[swdata.columns[0]]))
+    swdata.index.names = ['date']
+    swdata = swdata.drop(swdata.columns[0], 1)
+    swdata = swdata.rename(columns={swdata.columns[0]: "temperature",
+                                    swdata.columns[1]: "vx",
+                                    swdata.columns[2]: "vy",
+                                    swdata.columns[3]: "vz"})
+    # Clean erroneous data found in SWEPAM data from ACE
+    for column in swdata.columns:
+        swdata = swdata[swdata[column].abs() < 1.e20]
+    # Merge the data
+    data = pd.merge(ndata, bdata, how='outer',
+                    left_index=True, right_index=True)
+    data = pd.merge(data, swdata, how='outer',
+                    left_index=True, right_index=True)
+    # Interpolate and fill
+    data = data.interpolate().ffill().bfill()
+    # Close and return pandas DataFrame
+    bfile.close()
+    swfile.close()
+    pfile.close()
+    return data
+
+
+def write_data(data, outfilename):
+    try:
+        outfile = open(outfilename, 'w')
+    except OSError:
+        print("Could not open output file to write.")
+    outfile.write("CSV files downloaded from https://cdaweb.gsfc.nasa.gov/\n")
+    outfile.write("yr mn dy hr min sec msec bx by bz vx vy vz dens temp\n")
+    outfile.write("#START\n")
+
 
 def convert(infile, outfile):
     """
@@ -18,10 +93,10 @@ def convert(infile, outfile):
         date = d.strptime(line[:14], "%Y %j %H %M")
         correctline = date.strftime("%Y %m %d %H %M %S") + ' 000' + line[14:]
         outfile.write(correctline)
-        #print(correctline)
     # Close files
     outfile.close()
     infile.close()
+
 
 def clean(data):
     """
@@ -56,6 +131,7 @@ def clean(data):
             replacedata = np.linspace(prevdata, nextdata, length+1)
             data[prevlocation:nextlocation+1] = replacedata
     return data
+
 
 def read_data(filename):
     """

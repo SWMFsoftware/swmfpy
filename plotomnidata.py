@@ -70,4 +70,4 @@ def plotnt():
     plt.tight_layout()
     plt.show()
 
-plotv()
+plotnt()
