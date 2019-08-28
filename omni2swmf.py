@@ -70,7 +70,11 @@ def combine_data(mfi_fname, swe_fname, plas_fname):
     return data
 
 
-def write_data(data, outfilename):
+def write_data(data, outfilename='IMF.dat'):
+    """
+    write_data writes the pandas data into an output file
+    that SWMF can read as input IMF (IMF.dat).
+    """
     try:
         outfile = open(outfilename, 'w')
     except OSError:
@@ -78,6 +82,18 @@ def write_data(data, outfilename):
     outfile.write("CSV files downloaded from https://cdaweb.gsfc.nasa.gov/\n")
     outfile.write("yr mn dy hr min sec msec bx by bz vx vy vz dens temp\n")
     outfile.write("#START\n")
+    for index, rows in data.iterrows():
+        outfile.write(index.strftime("%Y %m %d %H %M %S %f") + ' ')
+        outfile.write(str(rows['bx']) + ' ')
+        outfile.write(str(rows['by']) + ' ')
+        outfile.write(str(rows['bz']) + ' ')
+        outfile.write(str(rows['vx']) + ' ')
+        outfile.write(str(rows['vy']) + ' ')
+        outfile.write(str(rows['vz']) + ' ')
+        outfile.write(str(rows['density']) + ' ')
+        outfile.write(str(rows['temperature']) + ' ')
+        outfile.write('\n')
+    outfile.close()
 
 
 def convert(infile, outfile):
