@@ -7,16 +7,18 @@ import numpy as np
 import pandas as pd
 
 
-def combine_data(mfi_fname, swe_fname, plas_fname):
+def combine_data(mfi_fname, swe_fname, plas_fname, coarse_filtering=False):
     """
-    combine_data(mfi_fname, swe_fname, plas_fname)
+    combine_data(mfi_fname, swe_fname, plas_fname, coarse_filtering=false)
     Combines the three csv files from
     cdaweb.sci.gsfc.nasa.gov into a pandas DataFrame.
     Recommended to be used with:
         mfi_fname: AC_H0_MFI_***.csv
         swe_fname: AC_H0_SWE_***.csv
         plas_fname: WI_PM_3DP_***.csv
-        return pandas.DataFrame
+        coarse_filtering: Remove points where the value
+                          is >3sigma from mean.
+        return: pandas.DataFrame
     Make sure to download the csv files with
     the header seperated into a json file for safety.
     """
@@ -55,7 +57,7 @@ def combine_data(mfi_fname, swe_fname, plas_fname):
                                     swdata.columns[3]: "vz"})
     # Clean erroneous data found in SWEPAM data from ACE
     for column in swdata.columns:
-        swdata = swdata[swdata[column].abs() < 1.e20]
+        swdata[column] = swdata[swdata[column].abs() < 1.e20][column]
     # Merge the data
     data = pd.merge(ndata, bdata, how='outer',
                     left_index=True, right_index=True)
@@ -63,6 +65,13 @@ def combine_data(mfi_fname, swe_fname, plas_fname):
                     left_index=True, right_index=True)
     # Interpolate and fill
     data = data.interpolate().ffill().bfill()
+    # Coarse filtering
+    if coarse_filtering:
+        for column in data.columns:
+            mean = data[column].mean()
+            sigma = data[column].std()
+            data[column] = data[data[column].abs() < mean+3*sigma][column]
+        data = data.interpolate().ffill().bfill()
     # Close and return pandas DataFrame
     bfile.close()
     swfile.close()
@@ -72,7 +81,7 @@ def combine_data(mfi_fname, swe_fname, plas_fname):
 
 def write_data(data, outfilename='IMF.dat'):
     """
-    write_data writes the pandas data into an output file
+    write_data writes the pandas.DataFrame into an input file
     that SWMF can read as input IMF (IMF.dat).
     """
     try:
@@ -83,7 +92,8 @@ def write_data(data, outfilename='IMF.dat'):
     outfile.write("yr mn dy hr min sec msec bx by bz vx vy vz dens temp\n")
     outfile.write("#START\n")
     for index, rows in data.iterrows():
-        outfile.write(index.strftime("%Y %m %d %H %M %S %f") + ' ')
+        outfile.write(index.strftime("%Y %m %d %H %M %S") + ' ')
+        outfile.write(index.strftime("%f")[:3] + ' ')
         outfile.write(str(rows['bx']) + ' ')
         outfile.write(str(rows['by']) + ' ')
         outfile.write(str(rows['bz']) + ' ')
@@ -96,9 +106,10 @@ def write_data(data, outfilename='IMF.dat'):
     outfile.close()
 
 
-def convert(infile, outfile):
+def convert(infile, outfile='IMF.dat'):
     """
-    Start the process of conversion.
+    Start the process of conversion of OMNI file to
+    SWMF IMF input file.
     """
     # Write out the header
     outfile.write("OMNI file downloaded from https://omniweb.gsfc.nasa.gov/\n")
@@ -114,6 +125,7 @@ def convert(infile, outfile):
     infile.close()
 
 
+# REWRITE IN PANDAS
 def clean(data):
     """
     Cleans the data for bad discontinuities.
@@ -154,6 +166,8 @@ def read_data(filename):
     Read the OMNI web data that was previously converted from omniweb2swmf.py
     filename:
         String of file name to input
+    return:
+        numpy array of data
     """
     data = np.genfromtxt(filename, dtype='float',
                          usecols=(7, 8, 9, 10, 11, 12, 13, 14),
