@@ -11,7 +11,7 @@ import numpy as np
 import pandas as pd
 
 
-def omni_to_df(filename, filtering=False, **kwargs):
+def read_omni_csv(filename, filtering=False, **kwargs):
     """Take an OMNI csv file from cdaweb.sci.gsfc.nasa.gov
     and turn it into a pandas.DataFrame.
 
@@ -40,7 +40,7 @@ def omni_to_df(filename, filtering=False, **kwargs):
     data.set_index(pd.to_datetime(data[data.columns[0]]), inplace=True)
     data.drop(columns=data.columns[0], inplace=True)
     data.index.name = "Time [UT]"
-    data.rename(inplace = True, 
+    data.rename(inplace=True,
                 columns={'BX__GSE_nT': 'Bx [nT]',
                          'BY__GSE_nT': 'By [nT]',
                          'BZ__GSE_nT': 'Bz [nT]',
@@ -65,12 +65,96 @@ def omni_to_df(filename, filtering=False, **kwargs):
         coarse_filtering(data, kwargs.get('coarseness', 3))
     return data.interpolate().bfill().ffill()
 
+
 def coarse_filtering(data, coarseness=3):
     """Applies coarse filtering to a pandas.DataFrame"""
     for column in data.columns:
         mean = data[column].abs().mean()
         sigma = data[column].std()
         data[column] = data[data[column].abs() < mean+coarseness*sigma][column]
+
+
+def write_sw_input(data, outfilename="IMF.dat", enable_rb=True, **kwargs):
+    """Writes the pandas.DataFrame into an input file
+    that SWMF can read as input IMF (IMF.dat).
+
+    Parameters:
+        data: pandas.DataFrame object with solar wind data
+        outfilename: The output file name for ballistic solar wind data. \
+                (default: "IMF.dat")
+        enable_rb: Enables solar wind input for the radiation belt model. \
+                (default: True)
+
+    Other paramaters:
+        gse: (default=True)
+            Use GSE coordinate system for the file instead of GSM default.
+    """
+    # Generate BATS-R-US solar wind input file
+    with open(outfilename, 'w') as outfile:
+        outfile.write("CSV files downloaded from https://cdaweb.gsfc.nasa.gov/\n")
+        if kwargs.get('gse', True):
+            outfile.write("#COOR\nGSE\n")
+        outfile.write("yr mn dy hr min sec msec bx by bz vx vy vz dens temp\n")
+        outfile.write("#START\n")
+        for index, rows in data.iterrows():
+            outfile.write(index.strftime("%Y %m %d %H %M %S") + ' ')
+            outfile.write(index.strftime("%f")[:3] + ' ')
+            outfile.write(str(rows['Bx [nT]']) + ' ')
+            outfile.write(str(rows['By [nT]']) + ' ')
+            outfile.write(str(rows['Bz [nT]']) + ' ')
+            outfile.write(str(rows['Vx [km/s]']) + ' ')
+            outfile.write(str(rows['Vy [km/s]']) + ' ')
+            outfile.write(str(rows['Vz [km/s]']) + ' ')
+            outfile.write(str(rows['Rho [n/cc]']) + ' ')
+            outfile.write(str(rows['T [K]']) + ' ')
+            outfile.write('\n')
+    # Generate RBE model solar wind input file
+    if enable_rb:
+        with open("RB.SWIMF", 'w') as rbfile:
+            # Choose first element as t=0 header (unsure if this is safe)
+            rbfile.write(data.index[0].strftime("%Y, %j, %H ")
+                         + "! iyear, iday, ihour corresponding to t=0\n")
+            swlag_time = None
+            if swlag_time in kwargs:
+                rbfile.write(str(kwargs["swlag_time"]) + "  "
+                             + "! swlag time in seconds "
+                             + "for sw travel to subsolar\n")
+            # Unsure what 11902 means but following example file
+            rbfile.write("11902 data                   "
+                         + "P+ NP NONLIN    P+ V (MOM)\n")
+            # Quantity header
+            rbfile.write("dd mm yyyy hh mm ss.ms           "
+                         + "#/cc          km/s\n")
+            for index, rows in data.iterrows():
+                rbfile.write(index.strftime("%d %m %Y %H %M %S.%f")
+                             + "     "
+                             + str(rows['Rho [n/cc]'])[:8]
+                             + "     "
+                             # Speed magnitude
+                             + str(np.sqrt(rows['Vx [km/s]']**2
+                                           +rows['Vy [km/s]']**2
+                                           +rows['Vz [km/s]']**2))[:8]
+                             + '\n')
+
+
+def convert(infile, outfile="IMF.dat"):
+    """Start the process of conversion of OMNI file to
+    SWMF IMF input file.
+    """
+    # Write out the header
+    outfile.write("OMNI file downloaded from \
+                   https://omniweb.gsfc.nasa.gov/\n")
+    outfile.write("yr mn dy hr min sec msec bx by bz vx vy vz dens temp\n")
+    outfile.write("#START\n")
+    # Begin conversion line by line
+    for line in infile:
+        date = d.strptime(line[:14], "%Y %j %H %M")
+        correctline = date.strftime("%Y %m %d %H %M %S")\
+            + ' 000' + line[14:]
+        outfile.write(correctline)
+    # Close files
+    outfile.close()
+    infile.close()
 
 
 def read_gm_log(filename, colnames=None, index_by_time=True):
@@ -107,7 +191,7 @@ def read_gm_log(filename, colnames=None, index_by_time=True):
                                        'm': data['mn'],
                                        's': data['sc']}),
                        inplace=True)
-        data.index.names = ['time']
+        data.index.names = ['Time [UT]']
     return data
 
 
@@ -123,6 +207,7 @@ def trace_fieldline(x, y, u, v, startind=0, **kwags):
     Returns:
         xline, yline, uline, vline: The arrays of the traced line
     """
+    # TODO: Finish this.
     # First index the variables
     xline = [x[startind]]
     yline = [y[startind]]
