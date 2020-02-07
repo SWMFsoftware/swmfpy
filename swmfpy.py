@@ -7,8 +7,41 @@ __version__ = "0.0.1"
 __maintainer__ = "Qusai Al Shidi"
 __email__ = "qusai@umich.edu"
 
+import datetime as dt
 import numpy as np
 import pandas as pd
+
+
+def read_wdc_ae(wdc_filename):
+    """Read an AE WDC text file into a dictionary of arrays.
+
+    Parameters:
+        wdc_filename: string. Filename of wdc data from
+        http://wdc.kugi.kyoto-u.ac.jp/
+    Returns:
+        dict: {"time": array of datetime objects corresponding to time
+                       in UT.
+               "al","ae"...: Indices.
+              }
+    """
+    data = {"AL": {"Time": [], "Index": []},
+            "AE": {"Time": [], "Index": []},
+            "AO": {"Time": [], "Index": []},
+            "AU": {"Time": [], "Index": []}}
+    with open(wdc_filename) as wdc_file:
+        for line in wdc_file:
+            ind_data = line.split()
+            for minute in range(60):
+                str_min = str(minute)
+                if minute < 10:
+                    str_min = "0" + str_min
+                time = dt.datetime.strptime(ind_data[1][:-5]
+                                            + ind_data[1][7:-2]
+                                            + str_min,
+                                            "%y%m%d%H%M")
+                data[ind_data[1][-2:]]["Time"] += [time]
+                data[ind_data[1][-2:]]["Index"] += [int(ind_data[3+minute])]
+    return data
 
 
 def read_omni_csv(filename, filtering=False, **kwargs):
@@ -29,26 +62,20 @@ def read_omni_csv(filename, filtering=False, **kwargs):
     This only tested with OMNI data specifically.
 
     Other Parameters:
-        coarseness: default=3, Number of standard deviations above which to remove
-                    if filtering=True.
-        clean: default=True, Clean the omni data of bad data points (recommended to keep this True)
+        coarseness: default=3, Number of standard deviations above which to
+                    remove if filtering=True.
+        clean: default=True, Clean the omni data of bad data points
 
     """
     # Read the csv files and set the index to dates
+    colnames = ['Time', 'Bx [nT]', 'By [nT]', 'Bz [nT]',
+                'Vx [km/s]', 'Vy [km/s]', 'Vz [km/s]',
+                'Rho [n/cc]', 'T [K]']
     with open(filename, 'r') as datafile:
-        data = pd.read_csv(datafile)
+        data = pd.read_csv(datafile, names=colnames, skiprows=1)
     data.set_index(pd.to_datetime(data[data.columns[0]]), inplace=True)
     data.drop(columns=data.columns[0], inplace=True)
     data.index.name = "Time [UT]"
-    data.rename(inplace=True,
-                columns={'BX__GSE_nT': 'Bx [nT]',
-                         'BY__GSE_nT': 'By [nT]',
-                         'BZ__GSE_nT': 'Bz [nT]',
-                         'VX_VELOCITY__GSE_km/s': 'Vx [km/s]',
-                         'VY_VELOCITY__GSE_km/s': 'Vy [km/s]',
-                         'VZ_VELOCITY__GSE_km/s': 'Vz [km/s]',
-                         'PROTON_DENSITY_n/cc': 'Rho [n/cc]',
-                         'TEMPERATURE_K': 'T [K]'})
 
     # clean bad data
     if kwargs.get('clean', True):
@@ -86,27 +113,28 @@ def write_sw_input(data, outfilename="IMF.dat", enable_rb=True, **kwargs):
                 (default: True)
 
     Other paramaters:
-        gse: (default=True)
+        gse: (default=False)
             Use GSE coordinate system for the file instead of GSM default.
     """
     # Generate BATS-R-US solar wind input file
     with open(outfilename, 'w') as outfile:
-        outfile.write("CSV files downloaded from https://cdaweb.gsfc.nasa.gov/\n")
-        if kwargs.get('gse', True):
+        outfile.write("CSV files downloaded from ")
+        outfile.write("https://cdaweb.gsfc.nasa.gov/\n")
+        if kwargs.get('gse', False):
             outfile.write("#COOR\nGSE\n")
         outfile.write("yr mn dy hr min sec msec bx by bz vx vy vz dens temp\n")
         outfile.write("#START\n")
         for index, rows in data.iterrows():
             outfile.write(index.strftime("%Y %m %d %H %M %S") + ' ')
             outfile.write(index.strftime("%f")[:3] + ' ')
-            outfile.write(str(rows['Bx [nT]']) + ' ')
-            outfile.write(str(rows['By [nT]']) + ' ')
-            outfile.write(str(rows['Bz [nT]']) + ' ')
-            outfile.write(str(rows['Vx [km/s]']) + ' ')
-            outfile.write(str(rows['Vy [km/s]']) + ' ')
-            outfile.write(str(rows['Vz [km/s]']) + ' ')
-            outfile.write(str(rows['Rho [n/cc]']) + ' ')
-            outfile.write(str(rows['T [K]']) + ' ')
+            outfile.write(str(rows['Bx [nT]'])[:7] + ' ')
+            outfile.write(str(rows['By [nT]'])[:7] + ' ')
+            outfile.write(str(rows['Bz [nT]'])[:7] + ' ')
+            outfile.write(str(rows['Vx [km/s]'])[:7] + ' ')
+            outfile.write(str(rows['Vy [km/s]'])[:7] + ' ')
+            outfile.write(str(rows['Vz [km/s]'])[:7] + ' ')
+            outfile.write(str(rows['Rho [n/cc]'])[:7] + ' ')
+            outfile.write(str(rows['T [K]'])[:7] + ' ')
             outfile.write('\n')
     # Generate RBE model solar wind input file
     if enable_rb:
@@ -132,8 +160,8 @@ def write_sw_input(data, outfilename="IMF.dat", enable_rb=True, **kwargs):
                              + "     "
                              # Speed magnitude
                              + str(np.sqrt(rows['Vx [km/s]']**2
-                                           +rows['Vy [km/s]']**2
-                                           +rows['Vz [km/s]']**2))[:8]
+                                           + rows['Vy [km/s]']**2
+                                           + rows['Vz [km/s]']**2))[:8]
                              + '\n')
 
 
@@ -148,7 +176,7 @@ def convert(infile, outfile="IMF.dat"):
     outfile.write("#START\n")
     # Begin conversion line by line
     for line in infile:
-        date = d.strptime(line[:14], "%Y %j %H %M")
+        date = dt.datetime.strptime(line[:14], "%Y %j %H %M")
         correctline = date.strftime("%Y %m %d %H %M %S")\
             + ' 000' + line[14:]
         outfile.write(correctline)
@@ -195,86 +223,36 @@ def read_gm_log(filename, colnames=None, index_by_time=True):
     return data
 
 
-def trace_fieldline(x, y, u, v, startind=0, **kwags):
-    """Returns the traced field line.
+def replace_paramin_option(param_file, find, replace, **kwargs):
+    """Replace options in a PARAM.in file.
 
     Parameters:
-        x: horizontal distances from origin.
-        y: vertical distances from origin.
-        u: horizontal vector magnitudes.
-        v: vertical vector magnitudes.
+        param_file: String of PARAM.in file name.
+        find: Dictionary of strings with format
+              find["#COMMAND"][option, option_name]
+              This is case sensitive.
+        replace: Same as find but to replace. The options with.
 
-    Returns:
-        xline, yline, uline, vline: The arrays of the traced line
+    Optional Parameters:
+        output_file: (default "PARAM.in") The output file to write to.
     """
-    # TODO: Finish this.
-    # First index the variables
-    xline = [x[startind]]
-    yline = [y[startind]]
-    uline = [u[startind]]
-    vline = [v[startind]]
-    possiblex = [0, 1]
-    while possiblex:
-        if np.abs(uline[-1]) > np.abs(vline[-1]): # stepping horizontally
-            if uline[-1] > 0:
-                # step forward
-                possiblex = x[np.where(x > xline[-1])]
-                possibley = y[np.where(x > xline[-1])]
-                possibleu = u[np.where(x > xline[-1])]
-                possiblev = v[np.where(x > xline[-1])]
-                ydistance = np.abs(possibley - yline[-1])
-                possiblex = possiblex[np.where(ydistance == np.min(ydistance))]
-                possibley = possibley[np.where(ydistance == np.min(ydistance))]
-                possibleu = possibleu[np.where(ydistance == np.min(ydistance))]
-                possiblev = possiblev[np.where(ydistance == np.min(ydistance))]
-                xline.append(possiblex)
-                yline.append(possibley)
-                uline.append(possibleu)
-                vline.append(possiblev)
-            else:
-                # step backward
-                possiblex = x[np.where(x < xline[-1])]
-                possibley = y[np.where(x < xline[-1])]
-                possibleu = u[np.where(x < xline[-1])]
-                possiblev = v[np.where(x < xline[-1])]
-                ydistance = np.abs(possibley - yline[-1])
-                possiblex = possiblex[np.where(ydistance == np.min(ydistance))]
-                possibley = possibley[np.where(ydistance == np.min(ydistance))]
-                possibleu = possibleu[np.where(ydistance == np.min(ydistance))]
-                possiblev = possiblev[np.where(ydistance == np.min(ydistance))]
-                xline.append(possiblex)
-                yline.append(possibley)
-                uline.append(possibleu)
-                vline.append(possiblev)
-        else: # stepping vertically
-            if vline[-1] > 0:
-                # step forward
-                possiblex = x[np.where(y > yline[-1])]
-                possibley = y[np.where(y > yline[-1])]
-                possibleu = u[np.where(y > yline[-1])]
-                possiblev = v[np.where(y > yline[-1])]
-                xdistance = np.abs(possiblex - xline[-1])
-                possiblex = possiblex[np.where(xdistance == np.min(xdistance))]
-                possibley = possibley[np.where(xdistance == np.min(xdistance))]
-                possibleu = possibleu[np.where(xdistance == np.min(xdistance))]
-                possiblev = possiblev[np.where(xdistance == np.min(xdistance))]
-                xline.append(possiblex)
-                yline.append(possibley)
-                uline.append(possibleu)
-                vline.append(possiblev)
-            else:
-                # step backward
-                possiblex = x[np.where(y < yline[-1])]
-                possibley = y[np.where(y < yline[-1])]
-                possibleu = u[np.where(y < yline[-1])]
-                possiblev = v[np.where(y < yline[-1])]
-                xdistance = np.abs(possiblex - xline[-1])
-                possiblex = possiblex[np.where(xdistance == np.min(xdistance))]
-                possibley = possibley[np.where(xdistance == np.min(xdistance))]
-                possibleu = possibleu[np.where(xdistance == np.min(xdistance))]
-                possiblev = possiblev[np.where(xdistance == np.min(xdistance))]
-                xline.append(possiblex)
-                yline.append(possibley)
-                uline.append(possibleu)
-                vline.append(possiblev)
-    return (xline, yline, uline, vline)
+    with open(param_file, 'rt') as paramin:
+        command = None  # Top level #COMMAND
+        # Compile lines in a list before editing/writing it
+        lines = list(paramin)
+        for line_num, line in enumerate(lines):
+            words = line.split()
+            if words and words[0] in find.keys():
+                command = words[0]
+            elif command in find.keys():
+                if words == find[command]:
+                    newline = ""
+                    for word in replace[command]:
+                        newline += word + "\t\t\t"
+                    print("Replacing:", words, "with:", replace)
+                    lines[line_num] = newline + '\n'
+    # Write the PARAM.in file
+    with open(kwargs.get("output_file", param_file), 'w') as outfile:
+        for line in lines:
+            outfile.write(line)
+    return lines
