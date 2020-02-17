@@ -15,9 +15,9 @@ import pandas as pd
 def read_wdc_ae(wdc_filename):
     """Read an AE WDC text file into a dictionary of arrays.
 
-    Parameters:
-        wdc_filename: string. Filename of wdc data from
-        http://wdc.kugi.kyoto-u.ac.jp/
+    Args:
+        wdc_filename (str): Filename of wdc data from
+                            http://wdc.kugi.kyoto-u.ac.jp/
     Returns:
         dict: {"time": array of datetime objects corresponding to time
                        in UT.
@@ -48,7 +48,7 @@ def read_omni_csv(filename, filtering=False, **kwargs):
     """Take an OMNI csv file from cdaweb.sci.gsfc.nasa.gov
     and turn it into a pandas.DataFrame.
 
-    Parameters:
+    Args:
         fnames: dict with filenames from omni .lst files. The keys must be:
             density, temperature, magnetic_field, velocity
         filtering: default=False Remove points where the value
@@ -61,7 +61,7 @@ def read_omni_csv(filename, filtering=False, **kwargs):
 
     This only tested with OMNI data specifically.
 
-    Other Parameters:
+    Other Args:
         coarseness: default=3, Number of standard deviations above which to
                     remove if filtering=True.
         clean: default=True, Clean the omni data of bad data points
@@ -105,7 +105,7 @@ def write_sw_input(data, outfilename="IMF.dat", enable_rb=True, **kwargs):
     """Writes the pandas.DataFrame into an input file
     that SWMF can read as input IMF (IMF.dat).
 
-    Parameters:
+    Args:
         data: pandas.DataFrame object with solar wind data
         outfilename: The output file name for ballistic solar wind data. \
                 (default: "IMF.dat")
@@ -189,12 +189,12 @@ def read_gm_log(filename, colnames=None, index_by_time=True):
     """Make a pandas.DataFrame out of the Dst indeces outputted
     from the GM model log.
 
-    Parameters:
-        filename: The filename as a string.
-        colnames: Supply the name of the columns whitespace seperated
-        index_by_time: Change the index to a time index
+    Args:
+        filename (str): The filename as a string.
+        colnames (list(str)): Supply the name of the columns
+        index_by_time (bool): Change the index to a time index
     Returns:
-        pandas.DataFrame: Of the log file
+        pandas.DataFrame of the log file
 
     Examples:
         # To plot AL and Dst get the log files
@@ -223,15 +223,18 @@ def read_gm_log(filename, colnames=None, index_by_time=True):
     return data
 
 
-def replace_paramin_option(param_file, replace, output_file="PARAM.in"):
-    """Replace options in a PARAM.in file.
+def replace_paramin_values(param_file, replace, output_file="PARAM.in"):
+    """Replace values for the parameters in a PARAM.in file.
 
-    Parameters:
-        param_file: String of PARAM.in file name.
-        replace: Dictionary of strings with format
-              replace["#COMMAND"]["parameter"] = "value"
-              This is case sensitive.
-        output_file: (default "PARAM.in") The output file to write to.
+    Note, if you have repeat commands this will replace all the repeats.
+
+    Args:
+        param_file (str): String of PARAM.in file name.
+        replace (dict): Dictionary of strings with format
+                        replace["#COMMAND"]["parameter"] = "value"
+                        This is case sensitive.
+        output_file (str): (default "PARAM.in") The output file to write to.
+                           A value of None will not output a file.
     Returns:
         A list of lines of the PARAM.in file that would be outputted.
 
@@ -241,8 +244,6 @@ def replace_paramin_option(param_file, replace, output_file="PARAM.in"):
         change["#DOAMR"]["DnAmr"] = 200
         # This will overwrite PARAM.in
         replace_paramin_option("PARAM.in.template", change)
-
-    Note, if you have repeat commands this will replace all the repeats.
     """
     # TODO This will replace all for repeat commands.
     with open(param_file, 'rt') as paramin:
@@ -257,11 +258,13 @@ def replace_paramin_option(param_file, replace, output_file="PARAM.in"):
             elif command in replace.keys():
                 for param, value in replace[command].items():
                     newline = value
-                    if param == words[1]:
+                    if param in words:
                         newline += "\t\t\t" + param
                         print("Replacing:", line, "with:", newline)
                         lines[line_num] = newline + '\n'
     # Write the PARAM.in file
+    if output_file is None:
+        return lines  # Break if None output_file (not default behaviour)
     with open(output_file, 'w') as outfile:
         for line in lines:
             outfile.write(line)

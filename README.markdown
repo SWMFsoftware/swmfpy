@@ -1,7 +1,7 @@
 swmfpy
 ======
 
-A collection of tools to make it easier to work with python and SWMF together.
+A collection of tools to make it easier to work with Python and Space Weather Modeling Framework (SWMF) together.
 
 This is a work in progress.
 
@@ -23,5 +23,7 @@ import swmfpy
 Documentation is included.
 
 ```python
-help(swmfpy.read_gm_log)
+import swmfpy
+dir(swmfpy)  # To see list of functions
+help(swmfpy.read_gm_log)  # To see the function documentation
 ```
