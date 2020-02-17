@@ -223,36 +223,46 @@ def read_gm_log(filename, colnames=None, index_by_time=True):
     return data
 
 
-def replace_paramin_option(param_file, find, replace, **kwargs):
+def replace_paramin_option(param_file, replace, output_file="PARAM.in"):
     """Replace options in a PARAM.in file.
 
     Parameters:
         param_file: String of PARAM.in file name.
-        find: Dictionary of strings with format
-              find["#COMMAND"][option, option_name]
+        replace: Dictionary of strings with format
+              replace["#COMMAND"]["parameter"] = "value"
               This is case sensitive.
-        replace: Same as find but to replace. The options with.
-
-    Optional Parameters:
         output_file: (default "PARAM.in") The output file to write to.
+    Returns:
+        A list of lines of the PARAM.in file that would be outputted.
+
+    Example:
+        change["#SOLARWINDFILE"]["UseSolarWindFile"] = "T"
+        change["#SOLARWINDFILE"]["NameSolarWindFile"] = "new_imf.dat"
+        change["#DOAMR"]["DnAmr"] = 200
+        # This will overwrite PARAM.in
+        replace_paramin_option("PARAM.in.template", change)
+
+    Note, if you have repeat commands this will replace all the repeats.
     """
+    # TODO This will replace all for repeat commands.
     with open(param_file, 'rt') as paramin:
         command = None  # Top level #COMMAND
         # Compile lines in a list before editing/writing it
         lines = list(paramin)
         for line_num, line in enumerate(lines):
             words = line.split()
-            if words and words[0] in find.keys():
-                command = words[0]
-            elif command in find.keys():
-                if words == find[command]:
-                    newline = ""
-                    for word in replace[command]:
-                        newline += word + "\t\t\t"
-                    print("Replacing:", words, "with:", replace)
-                    lines[line_num] = newline + '\n'
+            if words and words[0] in replace.keys():
+                command = words[0]  # Current command
+            # Start replace once we're in a specified command
+            elif command in replace.keys():
+                for param, value in replace[command].items():
+                    newline = value
+                    if param == words[1]:
+                        newline += "\t\t\t" + param
+                        print("Replacing:", line, "with:", newline)
+                        lines[line_num] = newline + '\n'
     # Write the PARAM.in file
-    with open(kwargs.get("output_file", param_file), 'w') as outfile:
+    with open(output_file, 'w') as outfile:
         for line in lines:
             outfile.write(line)
     return lines

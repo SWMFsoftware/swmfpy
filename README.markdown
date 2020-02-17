@@ -1,5 +1,5 @@
-# omni2swmf.py
+# swmfpy
 
-Collection of functions to generate and manage files for Interplanetary Magnetic Field input files for the Space Weather Modeling Framework (SWMF)
+A collection of tools to make it easier to work with python and SWMF together.
 
-This is a work in progress. Use at your own risk.
+This is a work in progress.
