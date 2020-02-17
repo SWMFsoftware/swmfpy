@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""swmfpy is a tool to read and visualize SWMF data
+"""swmfpy contains tools for the Space Weather Modeling Framework
 """
 __author__ = "Qusai Al Shidi"
 __license__ = "MIT"
