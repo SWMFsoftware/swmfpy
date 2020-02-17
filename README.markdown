@@ -10,7 +10,7 @@ Usage
 
 Clone into the directory you want to use it.
 
-```shell
+```bash
 git clone https://gitlab.umich.edu/qusai/swmfpy.git
 ```
 
