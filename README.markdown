@@ -11,7 +11,7 @@ Usage
 Clone into the directory you want to use it.
 
 ```bash
-git clone https://gitlab.umich.edu/qusai/swmfpy.git
+git clone https://gitlab.umich.edu/qusai/swmfpy.git /path/to/my/dir
 ```
 
 Then import it into your python project.
