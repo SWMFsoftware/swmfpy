@@ -7,6 +7,7 @@ __version__ = "0.0.1"
 __maintainer__ = "Qusai Al Shidi"
 __email__ = "qusai@umich.edu"
 
+import logging
 import datetime as dt
 import numpy as np
 import pandas as pd
@@ -223,30 +224,33 @@ def read_gm_log(filename, colnames=None, index_by_time=True):
     return data
 
 
-def replace_paramin_values(param_file, replace, output_file="PARAM.in"):
+def paramin_replace(input_file, replace, output_file="PARAM.in"):
     """Replace values for the parameters in a PARAM.in file.
 
     Note, if you have repeat commands this will replace all the repeats.
 
     Args:
-        param_file (str): String of PARAM.in file name.
-        replace (dict): Dictionary of strings with format
-                        replace["#COMMAND"]["parameter"] = "value"
+        input_file (str): String of PARAM.in file name.
+        replace (dict): Dictionary of strs with format
+                        replace = {"#COMMAND": ["value", "comments", ...]}
                         This is case sensitive.
         output_file (str): (default "PARAM.in") The output file to write to.
                            A value of None will not output a file.
     Returns:
         A list of lines of the PARAM.in file that would be outputted.
 
-    Example:
-        change["#SOLARWINDFILE"]["UseSolarWindFile"] = "T"
-        change["#SOLARWINDFILE"]["NameSolarWindFile"] = "new_imf.dat"
-        change["#DOAMR"]["DnAmr"] = 200
+    Examples:
+        ```
+        change["#SOLARWINDFILE"] = [["T", "UseSolarWindFile"],
+                                    ["new_imf.dat", "NameSolarWindFile"]]
         # This will overwrite PARAM.in
-        replace_paramin_option("PARAM.in.template", change)
+        swmfpy.paramin_replace("PARAM.in.template", change)
+        ```
     """
     # TODO This will replace all for repeat commands.
-    with open(param_file, 'rt') as paramin:
+    logger = logging.getLogger()  # For debugging
+    # Read and replace paramin file by making a temp list
+    with open(input_file, 'rt') as paramin:
         command = None  # Top level #COMMAND
         # Compile lines in a list before editing/writing it
         lines = list(paramin)
@@ -254,14 +258,14 @@ def replace_paramin_values(param_file, replace, output_file="PARAM.in"):
             words = line.split()
             if words and words[0] in replace.keys():
                 command = words[0]  # Current command
-            # Start replace once we're in a specified command
-            elif command in replace.keys():
-                for param, value in replace[command].items():
-                    newline = value
-                    if param in words:
-                        newline += "\t\t\t" + param
-                        print("Replacing:", line, "with:", newline)
-                        lines[line_num] = newline + '\n'
+                for param, value in enumerate(replace[command]):
+                    newline = ""
+                    for text in value:
+                        newline += text + "\t\t\t"
+                    logger.info("Replacing:\n" + line
+                                + "with:\n" + newline)
+                    # Lines will be replaced in order
+                    lines[line_num+param+1] = newline + '\n'
     # Write the PARAM.in file
     if output_file is None:
         return lines  # Break if None output_file (not default behaviour)
