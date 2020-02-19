@@ -7,10 +7,14 @@ __version__ = "0.0.1"
 __maintainer__ = "Qusai Al Shidi"
 __email__ = "qusai@umich.edu"
 
-import logging
 import datetime as dt
 import numpy as np
 import pandas as pd
+
+
+# Executable code
+if __name__ == "__main__":
+    pass
 
 
 def read_wdc_ae(wdc_filename):
@@ -166,26 +170,6 @@ def write_sw_input(data, outfilename="IMF.dat", enable_rb=True, **kwargs):
                              + '\n')
 
 
-def convert(infile, outfile="IMF.dat"):
-    """Start the process of conversion of OMNI file to
-    SWMF IMF input file.
-    """
-    # Write out the header
-    outfile.write("OMNI file downloaded from \
-                   https://omniweb.gsfc.nasa.gov/\n")
-    outfile.write("yr mn dy hr min sec msec bx by bz vx vy vz dens temp\n")
-    outfile.write("#START\n")
-    # Begin conversion line by line
-    for line in infile:
-        date = dt.datetime.strptime(line[:14], "%Y %j %H %M")
-        correctline = date.strftime("%Y %m %d %H %M %S")\
-            + ' 000' + line[14:]
-        outfile.write(correctline)
-    # Close files
-    outfile.close()
-    infile.close()
-
-
 def read_gm_log(filename, colnames=None, index_by_time=True):
     """Make a pandas.DataFrame out of the Dst indeces outputted
     from the GM model log.
@@ -222,54 +206,3 @@ def read_gm_log(filename, colnames=None, index_by_time=True):
                        inplace=True)
         data.index.names = ['Time [UT]']
     return data
-
-
-def paramin_replace(input_file, replace, output_file="PARAM.in"):
-    """Replace values for the parameters in a PARAM.in file.
-
-    Note, if you have repeat commands this will replace all the repeats.
-
-    Args:
-        input_file (str): String of PARAM.in file name.
-        replace (dict): Dictionary of strs with format
-                        replace = {"#COMMAND": ["value", "comments", ...]}
-                        This is case sensitive.
-        output_file (str): (default "PARAM.in") The output file to write to.
-                           A value of None will not output a file.
-    Returns:
-        A list of lines of the PARAM.in file that would be outputted.
-
-    Examples:
-        ```
-        change["#SOLARWINDFILE"] = [["T", "UseSolarWindFile"],
-                                    ["new_imf.dat", "NameSolarWindFile"]]
-        # This will overwrite PARAM.in
-        swmfpy.paramin_replace("PARAM.in.template", change)
-        ```
-    """
-    # TODO This will replace all for repeat commands.
-    logger = logging.getLogger()  # For debugging
-    # Read and replace paramin file by making a temp list
-    with open(input_file, 'rt') as paramin:
-        command = None  # Top level #COMMAND
-        # Compile lines in a list before editing/writing it
-        lines = list(paramin)
-        for line_num, line in enumerate(lines):
-            words = line.split()
-            if words and words[0] in replace.keys():
-                command = words[0]  # Current command
-                for param, value in enumerate(replace[command]):
-                    newline = ""
-                    for text in value:
-                        newline += text + "\t\t\t"
-                    logger.info("Replacing:\n" + line
-                                + "with:\n" + newline)
-                    # Lines will be replaced in order
-                    lines[line_num+param+1] = newline + '\n'
-    # Write the PARAM.in file
-    if output_file is None:
-        return lines  # Break if None output_file (not default behaviour)
-    with open(output_file, 'w') as outfile:
-        for line in lines:
-            outfile.write(line)
-    return lines
