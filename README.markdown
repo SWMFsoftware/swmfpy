@@ -24,6 +24,6 @@ Documentation is included.
 
 ```python
 import swmfpy
-dir(swmfpy)  # To see list of functions
-help(swmfpy.read_gm_log)  # To see the function documentation
+help(swmfpy)  # To see list of functions
+help(swmfpy.io.read_gm_log)  # To see the function documentation
 ```
