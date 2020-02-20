@@ -27,5 +27,3 @@ import swmfpy
 help(swmfpy)  # To see list of functions
 help(swmfpy.io.read_gm_log)  # To see the function documentation
 ```
-
-To see an web version which is still a work in progress click [here](doc/html/index.html).
