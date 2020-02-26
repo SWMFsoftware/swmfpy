@@ -8,15 +8,16 @@ import pandas as pd
 
 
 def read_wdc_ae(wdc_filename):
-    """Read an AE WDC text file into a dictionary of arrays.
+    """Read an auroral electrojet (AE) indeces from Kyoto's World Data Center
+       text file into a dictionary of lists.
 
     Args:
         wdc_filename (str): Filename of wdc data from
                             http://wdc.kugi.kyoto-u.ac.jp/
     Returns:
-        dict: {"time": array of datetime objects corresponding to time
-                       in UT.
-               "al","ae"...: Indices.
+        dict: {"time" (datetime.datetime): list of datetime objects
+                                           corresponding to time in UT.
+               "AL", "AE", "AO", "AU" (int): Auroral indeces.
               }
     """
     data = {"AL": {"Time": [], "Index": []},
@@ -96,7 +97,7 @@ def coarse_filtering(data, coarseness=3):
         data[column] = data[data[column].abs() < mean+coarseness*sigma][column]
 
 
-def write_sw_input(data, outfilename="IMF.dat", enable_rb=True, **kwargs):
+def write_imf_input(data, outfilename="IMF.dat", enable_rb=True, **kwargs):
     """Writes the pandas.DataFrame into an input file
     that SWMF can read as input IMF (IMF.dat).
 
