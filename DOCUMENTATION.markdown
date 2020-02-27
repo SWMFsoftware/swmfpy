@@ -1,19 +1,3 @@
----
-description: |
-    API documentation for modules: swmfpy, swmfpy.io, swmfpy.paramin.
-
-lang: en
-
-classoption: oneside
-geometry: margin=1in
-papersize: a4
-
-linkcolor: blue
-links-as-notes: true
-...
-
-
-    
 # Module `swmfpy` {#swmfpy}
 
 A collection of tools to read, write, visualize with the
