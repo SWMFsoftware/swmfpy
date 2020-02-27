@@ -1,17 +1,16 @@
 """Tools to manipulate or create SWMF param.in files
 """
-
 import logging
 
 
-def replace(input_file, replace, output_file="PARAM.in"):
+def replace(input_file, parameters, output_file="PARAM.in"):
     """Replace values for the parameters in a PARAM.in file.
 
     Note, if you have repeat commands this will replace all the repeats.
 
     Args:
         input_file (str): String of PARAM.in file name.
-        replace (dict): Dictionary of strs with format
+        parameters (dict): Dictionary of strs with format
                         replace = {"#COMMAND": ["value", "comments", ...]}
                         This is case sensitive.
         output_file (str): (default "PARAM.in") The output file to write to.
@@ -36,9 +35,9 @@ def replace(input_file, replace, output_file="PARAM.in"):
         lines = list(paramin)
         for line_num, line in enumerate(lines):
             words = line.split()
-            if words and words[0] in replace.keys():
+            if words and words[0] in parameters.keys():
                 command = words[0]  # Current command
-                for param, value in enumerate(replace[command]):
+                for param, value in enumerate(parameters[command]):
                     newline = ""
                     for text in value:
                         newline += text + "\t\t\t"

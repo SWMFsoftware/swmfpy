@@ -167,18 +167,23 @@ def read_gm_log(filename, colnames=None, index_by_time=True):
 
     Args:
         filename (str): The filename as a string.
-        colnames (list(str)): Supply the name of the columns
+        colnames ([str]): Supply the name of the columns
         index_by_time (bool): Change the index to a time index
     Returns:
         pandas.DataFrame of the log file
 
     Examples:
-        # To plot AL and Dst get the log files
+        To plot AL and Dst get the log files
+        ```
         geo = swmfpy.read_gm_log("run/GM/IO2/geoindex_e20140215-100500.log")
         dst = swmfpy.read_gm_log("run/GM/IO2/log_e20140215-100500.log")
-        # Then plot using pandas features
+        ```
+
+        Then plot using pandas features
+        ```
         dst["dst_sm"].plot.line()
         geo["AL"].plot.line()
+        ```
     """
     # If column names were not specified
     if not colnames:

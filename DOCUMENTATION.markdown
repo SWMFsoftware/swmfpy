@@ -1,4 +1,4 @@
-# Module `swmfpy` {#swmfpy}
+# Module [swmfpy](#swmfpy)
 
 A collection of tools to read, write, visualize with the
 Space Weather Modeling Framework (SWMF)
@@ -17,7 +17,7 @@ Space Weather Modeling Framework (SWMF)
 
 
     
-# Module `swmfpy.io` {#swmfpy.io}
+# Module [swmfpy.io](#swmfpy.io)
 
 Input/Output tools for SWMF
 
@@ -30,8 +30,7 @@ Input/Output tools for SWMF
 
 
     
-### Function `coarse_filtering` {#swmfpy.io.coarse_filtering}
-
+### Function [swmfpy.io.coarse_filtering](#swmfpy.io.coarse_filtering)
 
 
     
@@ -42,7 +41,7 @@ Applies coarse filtering to a pandas.DataFrame
 
 
     
-### Function `read_gm_log` {#swmfpy.io.read_gm_log}
+### Function [swmfpy.io.read_gm_log](#swmfpy.io.read_gm_log)
 
 
 
@@ -82,7 +81,7 @@ geo["AL"].plot.line()
 
 
     
-### Function `read_omni_csv` {#swmfpy.io.read_omni_csv}
+### Function [swmfpy.io.read_omni_csv](#swmfpy.io.read_omni_csv)
 
 
 
@@ -122,7 +121,7 @@ Other Args:
 
 
     
-### Function `read_wdc_ae` {#swmfpy.io.read_wdc_ae}
+### Function [swmfpy.io.read_wdc_ae](#swmfpy.io.read_wdc_ae)
 
 
 
@@ -153,7 +152,7 @@ Read an auroral electrojet (AE) indeces from Kyoto's World Data Center
 
 
     
-### Function `write_imf_input` {#swmfpy.io.write_imf_input}
+### Function [swmfpy.io.write_imf_input](#swmfpy.io.write_imf_input)
 
 
 
@@ -188,7 +187,7 @@ Other paramaters:
 
 
     
-# Module `swmfpy.paramin` {#swmfpy.paramin}
+# Module [swmfpy.paramin](#swmfpy.paramin)
 
 Tools to manipulate or create SWMF param.in files
 
@@ -201,7 +200,7 @@ Tools to manipulate or create SWMF param.in files
 
 
     
-### Function `replace` {#swmfpy.paramin.replace}
+### Function [swmfpy.paramin.replace](#swmfpy.paramin.replace)
 
 
 
