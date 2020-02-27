@@ -17,6 +17,29 @@ Coding Standard
 
 Please write readable code. Make sure your function names well describes your functions. Always include docstrings that use the [Google coding style](http://google.github.io/styleguide/pyguide.html#381-docstrings). The Google coding style guide is a good document to follow so I recommend reading it.
 
+Metadata
+--------
+
+Include metadata if you made a new function or module. Name and email will suffice. For example:
+
+mynewpackage.py:
+
+```python
+"""A new package for swmfpy
+"""
+__name__ = "Rita Hayworth"
+__email__ = "rita@umich.edu"
+```
+
+Or for a function:
+```python
+def my_new_func(some_args):
+    # my docstring
+    __name__ = "Diane Selwyn"
+    __email__ = "diane@umich.edu"
+    # function body
+```
+
 Dependencies
 ------------
 

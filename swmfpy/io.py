@@ -45,22 +45,24 @@ def read_omni_csv(filename, filtering=False, **kwargs):
     and turn it into a pandas.DataFrame.
 
     Args:
-        fnames: dict with filenames from omni .lst files. The keys must be:
-            density, temperature, magnetic_field, velocity
-        filtering: default=False Remove points where the value
+        fnames (dict): dict with filenames from omni .lst files.
+                       The keys must be: density, temperature,
+                                         magnetic_field, velocity
+        filtering (bool): default=False Remove points where the value
                           is >sigma (default: sigma=3) from mean.
+        **kwargs:
+            coarseness (int): default=3, Number of standard deviations
+                              above which to remove if filtering=True.
+            clean (bool): default=True, Clean the omni data of bad data points
 
-    Returns: pandas.DataFrame object with solar wind data
+    Returns:
+        pandas.DataFrame: object with solar wind data
 
     Make sure to download the csv files with cdaweb.sci.gsfc.nasa.gov
     the header seperated into a json file for safety.
 
     This only tested with OMNI data specifically.
 
-    Other Args:
-        coarseness: default=3, Number of standard deviations above which to
-                    remove if filtering=True.
-        clean: default=True, Clean the omni data of bad data points
 
     """
     # Read the csv files and set the index to dates
