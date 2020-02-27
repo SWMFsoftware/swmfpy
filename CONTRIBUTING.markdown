@@ -27,7 +27,8 @@ mynewpackage.py:
 ```python
 """A new package for swmfpy
 """
-__name__ = "Rita Hayworth"
+__all__ = ['funcs', 'to', 'export']
+__author__ = "Rita Hayworth"
 __email__ = "rita@umich.edu"
 ```
 
@@ -35,7 +36,7 @@ Or for a function:
 ```python
 def my_new_func(some_args):
     # my docstring
-    __name__ = "Diane Selwyn"
+    __author__ = "Diane Selwyn"
     __email__ = "diane@umich.edu"
     # function body
 ```
