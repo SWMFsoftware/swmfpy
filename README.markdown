@@ -20,10 +20,15 @@ Then import it into your python project.
 import swmfpy
 ```
 
-Documentation is included.
+Documentation
+-------------
+
+Documentation is included as docstrings. Use python's *dir()* and *help()* inbuilt functions to see documentation.
 
 ```python
 import swmfpy
 help(swmfpy)  # To see list of functions
 help(swmfpy.io.read_gm_log)  # To see the function documentation
 ```
+
+An auto-generated markdown document can be found [here](DOCUMENTATION.markdown).

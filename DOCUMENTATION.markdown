@@ -1,0 +1,268 @@
+---
+description: |
+    API documentation for modules: swmfpy, swmfpy.io, swmfpy.paramin.
+
+lang: en
+
+classoption: oneside
+geometry: margin=1in
+papersize: a4
+
+linkcolor: blue
+links-as-notes: true
+...
+
+
+    
+# Module `swmfpy` {#swmfpy}
+
+A collection of tools to read, write, visualize with the
+Space Weather Modeling Framework (SWMF)
+
+
+
+    
+## Sub-modules
+
+* [swmfpy.io](#swmfpy.io)
+* [swmfpy.paramin](#swmfpy.paramin)
+
+
+
+
+
+
+    
+# Module `swmfpy.io` {#swmfpy.io}
+
+Input/Output tools for SWMF
+
+
+
+
+
+    
+## Functions
+
+
+    
+### Function `coarse_filtering` {#swmfpy.io.coarse_filtering}
+
+
+
+    
+> `def coarse_filtering(data, coarseness=3)`
+
+
+Applies coarse filtering to a pandas.DataFrame
+
+
+    
+### Function `read_gm_log` {#swmfpy.io.read_gm_log}
+
+
+
+    
+> `def read_gm_log(filename, colnames=None, index_by_time=True)`
+
+
+Make a pandas.DataFrame out of the Dst indeces outputted
+from the GM model log.
+
+
+###### Args
+
+**`filename`** :&ensp;`str`
+:   The filename as a string.
+
+
+colnames (list(str)): Supply the name of the columns
+**`index_by_time`** :&ensp;`bool`
+:   Change the index to a time index
+
+
+
+###### Returns
+
+`pandas.DataFrame` of `the` `log` `file`
+:   &nbsp;
+
+###### Examples
+
+##### To plot AL and Dst get the log files
+geo = swmfpy.read_gm_log("run/GM/IO2/geoindex_e20140215-100500.log")
+dst = swmfpy.read_gm_log("run/GM/IO2/log_e20140215-100500.log")
+##### Then plot using pandas features
+dst["dst_sm"].plot.line()
+geo["AL"].plot.line()
+
+
+    
+### Function `read_omni_csv` {#swmfpy.io.read_omni_csv}
+
+
+
+    
+> `def read_omni_csv(filename, filtering=False, **kwargs)`
+
+
+Take an OMNI csv file from cdaweb.sci.gsfc.nasa.gov
+and turn it into a pandas.DataFrame.
+
+
+###### Args
+
+**`fnames`**
+:   dict with filenames from omni .lst files. The keys must be:
+    density, temperature, magnetic_field, velocity
+
+
+**`filtering`**
+:   default=False Remove points where the value
+                  is >sigma (default: sigma=3) from mean.
+
+
+**`Returns`** :&ensp;`pandas.DataFrame` `object` `with` `solar` `wind` `data`
+:   &nbsp;
+
+
+Make sure to download the csv files with cdaweb.sci.gsfc.nasa.gov
+the header seperated into a json file for safety.
+
+This only tested with OMNI data specifically.
+
+Other Args:
+    coarseness: default=3, Number of standard deviations above which to
+                remove if filtering=True.
+    clean: default=True, Clean the omni data of bad data points
+
+
+    
+### Function `read_wdc_ae` {#swmfpy.io.read_wdc_ae}
+
+
+
+    
+> `def read_wdc_ae(wdc_filename)`
+
+
+Read an auroral electrojet (AE) indeces from Kyoto's World Data Center
+   text file into a dictionary of lists.
+
+
+###### Args
+
+**`wdc_filename`** :&ensp;`str`
+:   Filename of wdc data from
+                    <http://wdc.kugi.kyoto-u.ac.jp/>
+
+
+
+###### Returns
+
+**`dict`**
+:   {"time" (datetime.datetime): list of datetime objects
+                                   corresponding to time in UT.
+       "AL", "AE", "AO", "AU" (int): Auroral indeces.
+      }
+
+
+
+    
+### Function `write_imf_input` {#swmfpy.io.write_imf_input}
+
+
+
+    
+> `def write_imf_input(data, outfilename='IMF.dat', enable_rb=True, **kwargs)`
+
+
+Writes the pandas.DataFrame into an input file
+that SWMF can read as input IMF (IMF.dat).
+
+
+###### Args
+
+**`data`**
+:   pandas.DataFrame object with solar wind data
+
+
+**`outfilename`**
+:   The output file name for ballistic solar wind data.                 (default: "IMF.dat")
+
+
+**`enable_rb`**
+:   Enables solar wind input for the radiation belt model.                 (default: True)
+
+
+Other paramaters:
+    gse: (default=False)
+        Use GSE coordinate system for the file instead of GSM default.
+
+
+
+
+
+    
+# Module `swmfpy.paramin` {#swmfpy.paramin}
+
+Tools to manipulate or create SWMF param.in files
+
+
+
+
+
+    
+## Functions
+
+
+    
+### Function `replace` {#swmfpy.paramin.replace}
+
+
+
+    
+> `def replace(input_file, replace, output_file='PARAM.in')`
+
+
+Replace values for the parameters in a PARAM.in file.
+
+Note, if you have repeat commands this will replace all the repeats.
+
+
+###### Args
+
+**`input_file`** :&ensp;`str`
+:   String of PARAM.in file name.
+
+
+**[`replace()`](#swmfpy.paramin.replace)** :&ensp;`dict`
+:   Dictionary of strs with format
+                replace = {"#COMMAND": ["value", "comments", ...]}
+                This is case sensitive.
+
+
+**`output_file`** :&ensp;`str`
+:   (default "PARAM.in") The output file to write to.
+                   A value of None will not output a file.
+
+
+
+###### Returns
+
+A list of lines of the PARAM.in file that would be outputted.
+
+###### Examples
+
+```
+change["#SOLARWINDFILE"] = [["T", "UseSolarWindFile"],
+                            ["new_imf.dat", "NameSolarWindFile"]]
+##### This will overwrite PARAM.in
+swmfpy.paramin.replace("PARAM.in.template", change)
+```
+
+
+
+
+-----
+Generated by *pdoc* 0.7.5 (<https://pdoc3.github.io>).
