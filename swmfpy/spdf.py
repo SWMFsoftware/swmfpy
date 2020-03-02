@@ -3,8 +3,8 @@
 swmfpy.spdf
 ===========
 
-Here are a collection of tools to get date from
-NASA Goddard's Space Physics Data Facility.
+Here are a collection of tools to get data from
+NASA Goddard's Space Physics Data Facility website.
 """
 __author__ = 'Qusai Al Shidi'
 __email__ = 'qusai@umich.edu'
@@ -41,8 +41,11 @@ def get_omni_data(time_from, time_to, **kwargs):
         data = swmfpy.spdf.get_omni_data(from, to)
         ```
     """
+    # Author: Qusai Al Shidi
+    # Email: qusai@umich.edu
+
     # This is straight from the format guide on spdf
-    col_names = ['ID for IMF spacecraft',
+    col_names = ('ID for IMF spacecraft',
                  'ID for SW Plasma spacecraft',
                  '# of points in IMF averages',
                  '# of points in Plasma averages',
@@ -74,7 +77,7 @@ def get_omni_data(time_from, time_to, **kwargs):
                  'Z(s/c), GSE, Re',
                  'BSN location, Xgse, Re',
                  'BSN location, Ygse, Re',
-                 'BSN location, Zgse, Re']
+                 'BSN location, Zgse, Re')
 
     # Set the url
     omni_url = 'https://spdf.gsfc.nasa.gov/pub/data/omni/'
@@ -97,11 +100,10 @@ def get_omni_data(time_from, time_to, **kwargs):
         for line in data:
             cols = line.decode('ascii').split()
             # Time uses day of year which must be parsed
-            year, doy, hour, minute = cols[0], cols[1], cols[2], cols[3]
-            time = dt.datetime.strptime(year + ' ' +
-                                        doy + ' ' +
-                                        hour + ' ' +
-                                        minute,
+            time = dt.datetime.strptime(cols[0] + ' ' +  # year
+                                        cols[1] + ' ' +  # day of year
+                                        cols[2] + ' ' +  # hour
+                                        cols[3],  # minute
                                         '%Y %j %H %M')
             if time >= time_from and time <= time_to:
                 omni_data['Time [UT]'].append(time)
@@ -109,4 +111,4 @@ def get_omni_data(time_from, time_to, **kwargs):
                 for num, value in enumerate(cols[4:len(col_names)+4]):
                     omni_data[col_names[num]].append(float(value))
 
-    return omni_data
+    return omni_data  # dictionary with omni values where index is the row

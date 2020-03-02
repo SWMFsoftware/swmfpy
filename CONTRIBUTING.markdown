@@ -20,7 +20,7 @@ Please write readable code. Make sure your function names well describes your fu
 Metadata
 --------
 
-Include metadata if you made a new function or module. Name and email will suffice. For example:
+Include metadata if you made a new function or module. Name and email will suffice. Use the variable names `__author__` and `__email__` for modules and comments for functions that you add to someone else's module. For example:
 
 mynewpackage.py:
 
@@ -28,16 +28,18 @@ mynewpackage.py:
 """A new package for swmfpy
 """
 __all__ = ['funcs', 'to', 'export']
-__author__ = "Rita Hayworth"
-__email__ = "rita@umich.edu"
+__author__ = 'Rita Hayworth'
+__email__ = 'rita@umich.edu'
 ```
 
 Or for a function:
 ```python
 def my_new_func(some_args):
-    # my docstring
-    __author__ = "Diane Selwyn"
-    __email__ = "diane@umich.edu"
+    """my docstring
+    """
+    # Author: Diane Selwyn
+    # Email:  diane@umich.edu
+
     # function body
 ```
 
