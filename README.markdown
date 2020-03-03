@@ -30,5 +30,3 @@ import swmfpy
 help(swmfpy)  # To see list of functions
 help(swmfpy.io.read_gm_log)  # To see the function documentation
 ```
-
-An auto-generated markdown document can be found [here](DOCUMENTATION.markdown).

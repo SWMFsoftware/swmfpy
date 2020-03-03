@@ -1,10 +1,10 @@
-"""Tools to work with NASA SPDF.
+"""Tools to retrieve and send data on the web.
 
-swmfpy.spdf
+SWMF Web Tools (swmfpy.web)
 ===========
 
-Here are a collection of tools to get data from
-NASA Goddard's Space Physics Data Facility website.
+Here are a collection of tools to work with data on the internet. Thus,
+this module mostly requires an internet connection.
 """
 __author__ = 'Qusai Al Shidi'
 __email__ = 'qusai@umich.edu'
@@ -34,11 +34,12 @@ def get_omni_data(time_from, time_to, **kwargs):
     Examples:
         ```python
         import datetime
-        import swmfpy.spdf
+        import swmfpy.web
 
-        from = datetime.datetime(year=2000, month=1, day=1)
-        to = datetime.datetime(year=2000, month=2, day=15)
-        data = swmfpy.spdf.get_omni_data(from, to)
+        storm_start = datetime.datetime(year=2000, month=1, day=1)
+        storm_end = datetime.datetime(year=2000, month=2, day=15)
+        data = swmfpy.web.get_omni_data(time_from=storm_start,
+                                        time_to=storm_end)
         ```
     """
     # Author: Qusai Al Shidi
@@ -77,7 +78,16 @@ def get_omni_data(time_from, time_to, **kwargs):
                  'Z(s/c), GSE, Re',
                  'BSN location, Xgse, Re',
                  'BSN location, Ygse, Re',
-                 'BSN location, Zgse, Re')
+                 'BSN location, Zgse, Re',
+                 'AE-index, nT',
+                 'AL-index, nT',
+                 'AU-index, nT',
+                 'SYM/D index, nT',
+                 'SYM/H index, nT',
+                 'ASY/D index, nT',
+                 'ASY/H index, nT',
+                 'PC(N) index',
+                 'Magnetosonic mach number')
 
     # Set the url
     omni_url = 'https://spdf.gsfc.nasa.gov/pub/data/omni/'
@@ -85,30 +95,31 @@ def get_omni_data(time_from, time_to, **kwargs):
         omni_url += 'high_res_omni/monthly_1min/'
 
     # Initialize return dict
-    omni_data = {}
-    omni_data['Time [UT]'] = []
+    return_data = {}
+    return_data['Time [UT]'] = []
     for name in col_names:
-        omni_data[name] = []
+        return_data[name] = []
 
+    # Iterate monthly to save RAM
     for date in rrule.rrule(rrule.MONTHLY, dtstart=time_from, until=time_to):
         suffix = 'omni_min'
         suffix += str(date.year) + str(date.month).zfill(2)
         suffix += '.asc'
-        data = list(urllib.request.urlopen(omni_url+suffix))
+        omni_data = list(urllib.request.urlopen(omni_url+suffix))
 
         # Parse omni data
-        for line in data:
+        for line in omni_data:
             cols = line.decode('ascii').split()
             # Time uses day of year which must be parsed
-            time = dt.datetime.strptime(cols[0] + ' ' +  # year
-                                        cols[1] + ' ' +  # day of year
-                                        cols[2] + ' ' +  # hour
-                                        cols[3],  # minute
+            time = dt.datetime.strptime(cols[0] + ' '  # year
+                                        + cols[1] + ' '  # day of year
+                                        + cols[2] + ' '  # hour
+                                        + cols[3],  # minute
                                         '%Y %j %H %M')
             if time >= time_from and time <= time_to:
-                omni_data['Time [UT]'].append(time)
+                return_data['Time [UT]'].append(time)
                 # Assign the data from after the time columns (0:3)
                 for num, value in enumerate(cols[4:len(col_names)+4]):
-                    omni_data[col_names[num]].append(float(value))
+                    return_data[col_names[num]].append(float(value))
 
-    return omni_data  # dictionary with omni values where index is the row
+    return return_data  # dictionary with omni values where index is the row
