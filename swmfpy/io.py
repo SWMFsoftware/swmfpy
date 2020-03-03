@@ -1,5 +1,11 @@
-#!/usr/bin/env python3
-"""Input/Output tools for SWMF
+"""Input/Output tools
+
+Input/Output
+============
+
+Here are tools to read and write files relating to SWMF.
+
+TODO: Move pandas dependancy elsewhere.
 """
 
 import datetime as dt

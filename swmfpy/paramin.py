@@ -1,4 +1,9 @@
-"""Tools to manipulate or create SWMF param.in files
+"""Tools to manipulate or create param.in files
+
+PARAM.in Tools
+==============
+
+These tools are to help script the editing of PARAM.in files.
 """
 import logging
 

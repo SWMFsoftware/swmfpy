@@ -1,7 +1,7 @@
 """Tools to retrieve and send data on the web.
 
-SWMF Web Tools (swmfpy.web)
-===========
+SWMF Web Tools
+==============
 
 Here are a collection of tools to work with data on the internet. Thus,
 this module mostly requires an internet connection.
