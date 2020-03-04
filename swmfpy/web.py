@@ -130,7 +130,8 @@ def download_magnetogram_adapt(time, map_type='fixed', **kwargs):
     '''This routine downloads GONG ADAPT magnetograms.
 
     Downloads ADAPT magnetograms from ftp://gong2.nso.edu/adapt/maps/gong/
-    to a local directory.
+    to a local directory. It will download all maps with the regex file
+    pattern: adapt4[0,1]3*yyymmddhh
 
     Args:
         time (datetime.datetime): Time in which you want the magnetogram.
@@ -144,18 +145,18 @@ def download_magnetogram_adapt(time, map_type='fixed', **kwargs):
                                 current directory.
 
     Raises:
-        FileNotFoundError: If the map is not found on the server.
+        NotADirectoryError: If the adapt maps directory
+                            is not found on the server.
         ValueError: If map_type is not recognized.
                     (i.e. not 'fixed' or 'central')
-        FileNotFoundError: If the map could not be downloaded for any
-                           reason.
+        FileNotFoundError: If maps were not found.
 
     Examples:
         ```python
         import datetime as dt
 
         # Use datetime objects for the time
-        time_flare = dt.datetime(2018, 2, 12)
+        time_flare = dt.datetime(2018, 2, 12, hour=10)
         swmfpy.web.download_magnetogram_adapt(time=time_flare,
                                               map_type='central',
                                               download_dir='./mymaps/')
@@ -175,15 +176,7 @@ def download_magnetogram_adapt(time, map_type='fixed', **kwargs):
     elif map_type == 'central':
         map_id = '1'
     else:
-        print('Not recognized type of ADAPT map')
-        raise ValueError
-
-    # ADAPT maps only contains the hours for even numbers
-    hour = time.hour  # To ensure even hour
-    if hour % 2 != 0:
-        hour = math.floor(hour/2)*2
-        print('Warning: Hour must be an even number.',
-              'The entered hour value is changed to', hour)
+        raise ValueError('Not recognized type of ADAPT map')
 
     # Go to the the ADAPT ftp server
     ftp = FTP('gong2.nso.edu')
@@ -196,33 +189,28 @@ def download_magnetogram_adapt(time, map_type='fixed', **kwargs):
     try:
         ftp.cwd(str(time.year))
     except ftplib.all_errors:
-        print('Cannot go to the specific year directory')
-        raise FileNotFoundError
+        raise NotADirectoryError('Cannot go to the specific year directory')
     finally:
         ftp.quit()
 
+    # ADAPT maps only contains the hours for even numbers
+    if time.hour % 2 != 0:
+        print('Warning: Hour must be an even number.',
+              'The entered hour value is changed to',
+              math.floor(time.hour)/2*2)
     # Only consider the public (4) Carrington Fixed (0) GONG (3) ADAPT maps
     file_pattern = 'adapt4' + map_id + '3*' \
         + str(time.year).zfill(4) \
         + str(time.month).zfill(2) \
         + str(time.day).zfill(2) \
-        + str(hour).zfill(2) + '*'
+        + str(math.floor(time.hour)/2*2).zfill(2) + '*'
     # adapt4[0,1]3*yyymmddhh
-
-    # time_string = \
-    #     str(time.year).zfill(4) + '-' \
-    #     + str(time.month).zfill(2) + '-' \
-    #     + str(time.day).zfill(2) + 'T' \
-    #     + str(hour).zfill(2)
-    # print('Trying to download the', map_type, 'ADAPT map',
-    #       ' for date:', time_string)
-    # print('The file pattern is:', file_pattern)
 
     filenames = ftp.nlst(file_pattern)
 
     if len(filenames) < 1:
-        print('Could not find a file that matches the pattern.')
-        raise FileNotFoundError
+        raise FileNotFoundError('Could not find a file that matches'
+                                + 'the pattern.')
 
     for filename in filenames:
         # open the file locally
@@ -234,17 +222,12 @@ def download_magnetogram_adapt(time, map_type='fixed', **kwargs):
             try:
                 ftp.retrbinary('RETR ' + filename, fhandle.write)
             except ftplib.all_errors:
-                print('Cannot download ', filename)
-                raise FileNotFoundError
+                raise FileNotFoundError('Cannot download ', filename)
             finally:
                 ftp.quit()
 
-            # close the file
-            # print('Downloaded:',filename)
-
         # unzip the file
         if '.gz' in filename:
-            # print('Unzip',filename)
             filename_unzip = filename.replace('.gz', '')
             with gzip.open(directory + filename, 'rb') as s_file:
                 with open(directory + filename_unzip, 'wb') as d_file:
