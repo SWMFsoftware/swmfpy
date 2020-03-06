@@ -93,11 +93,11 @@ def read_omni_csv(filename, filtering=False, **kwargs):
         data["T [K]"] = data["T [K]"][data["T [K]"] < 1.e7]
 
     if filtering:
-        coarse_filtering(data, kwargs.get('coarseness', 3))
+        _coarse_filtering(data, kwargs.get('coarseness', 3))
     return data.interpolate().bfill().ffill()
 
 
-def coarse_filtering(data, coarseness=3):
+def _coarse_filtering(data, coarseness=3):
     """Applies coarse filtering to a pandas.DataFrame"""
     for column in data.columns:
         mean = data[column].abs().mean()
