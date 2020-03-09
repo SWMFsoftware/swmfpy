@@ -139,10 +139,8 @@ def download_magnetogram_adapt(time, map_type='fixed', **kwargs):
                         Choose either 'fixed' or 'central' for
                         the map type you want.
         **kwargs:
-            download_dir (str): (default is current dir) Absolute directory
+            download_dir (str): (default is current dir) Relative directory
                                 where you want the maps to be downloaded.
-                                Be sure to prefix './' if relative to
-                                current directory.
 
     Raises:
         NotADirectoryError: If the adapt maps directory
@@ -165,7 +163,6 @@ def download_magnetogram_adapt(time, map_type='fixed', **kwargs):
     # Author: Zhenguang Huang
     # Email: zghuang@umich.edu
 
-    import math
     import ftplib
     from ftplib import FTP
     import gzip
@@ -197,13 +194,13 @@ def download_magnetogram_adapt(time, map_type='fixed', **kwargs):
     if time.hour % 2 != 0:
         print('Warning: Hour must be an even number.',
               'The entered hour value is changed to',
-              math.floor(time.hour)/2*2)
+              time.hour//2*2)
     # Only consider the public (4) Carrington Fixed (0) GONG (3) ADAPT maps
     file_pattern = 'adapt4' + map_id + '3*' \
         + str(time.year).zfill(4) \
         + str(time.month).zfill(2) \
         + str(time.day).zfill(2) \
-        + str(math.floor(time.hour)/2*2).zfill(2) + '*'
+        + str(time.hour//2*2).zfill(2) + '*'
     # adapt4[0,1]3*yyymmddhh
 
     filenames = ftp.nlst(file_pattern)
