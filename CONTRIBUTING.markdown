@@ -46,11 +46,15 @@ def my_new_func(some_args):
 Dependencies
 ------------
 
-If your code has dependencies that is large and uncommon (e.g. SpacePy) then please seperate it as it's own module. For example you may create a folder:
+If your code has dependencies that is large and uncommon (e.g. SpacePy) then please import it in the function and be explicit about the dependencies. For example you may create a function:
 
-```bash
-mkdir swmfpy/spacepy
-touch swmfpy/__init__.py
+```python
+def func_with_dependency():
+	"""Func does this.
+
+	Depends on spacepy. Try `pip install -U spacepy`
+	"""
+	# Function body
 ```
 
 Then your functions will be in swmfpy.spacepy which has its own namespace.

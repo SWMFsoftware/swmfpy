@@ -142,6 +142,9 @@ def download_magnetogram_adapt(time, map_type='fixed', **kwargs):
             download_dir (str): (default is current dir) Relative directory
                                 where you want the maps to be downloaded.
 
+    Returns:
+        str: First unzipped filename found.
+
     Raises:
         NotADirectoryError: If the adapt maps directory
                             is not found on the server.
@@ -230,3 +233,9 @@ def download_magnetogram_adapt(time, map_type='fixed', **kwargs):
 
     # close the connection
     ftp.quit()
+
+    # return first file name if all goes well
+    return_name = filenames[0]
+    if '.gz' in return_name:
+        return_name = return_name[:-3]
+    return return_name
