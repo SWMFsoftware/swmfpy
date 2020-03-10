@@ -131,7 +131,7 @@ def download_magnetogram_adapt(time, map_type='fixed', **kwargs):
 
     Downloads ADAPT magnetograms from ftp://gong2.nso.edu/adapt/maps/gong/
     to a local directory. It will download all maps with the regex file
-    pattern: adapt4[0,1]3*yyymmddhh
+    pattern: adapt4[0,1]3*yyyymmddhh
 
     Args:
         time (datetime.datetime): Time in which you want the magnetogram.
@@ -186,9 +186,8 @@ def download_magnetogram_adapt(time, map_type='fixed', **kwargs):
     try:
         ftp.cwd(str(time.year))
     except ftplib.all_errors:
-        raise NotADirectoryError('Cannot go to the specific year directory')
-    finally:
         ftp.quit()
+        raise NotADirectoryError('Cannot go to the specific year directory')
 
     # ADAPT maps only contains the hours for even numbers
     if time.hour % 2 != 0:
@@ -201,7 +200,7 @@ def download_magnetogram_adapt(time, map_type='fixed', **kwargs):
         + str(time.month).zfill(2) \
         + str(time.day).zfill(2) \
         + str(time.hour//2*2).zfill(2) + '*'
-    # adapt4[0,1]3*yyymmddhh
+    # adapt4[0,1]3*yyyymmddhh
 
     filenames = ftp.nlst(file_pattern)
 
@@ -219,9 +218,8 @@ def download_magnetogram_adapt(time, map_type='fixed', **kwargs):
             try:
                 ftp.retrbinary('RETR ' + filename, fhandle.write)
             except ftplib.all_errors:
-                raise FileNotFoundError('Cannot download ', filename)
-            finally:
                 ftp.quit()
+                raise FileNotFoundError('Cannot download ', filename)
 
         # unzip the file
         if '.gz' in filename:
