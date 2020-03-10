@@ -10,7 +10,6 @@ TODO: Move pandas dependancy elsewhere.
 
 import datetime as dt
 import numpy as np
-import pandas as pd
 
 
 def read_wdc_ae(wdc_filename):
@@ -71,6 +70,7 @@ def read_omni_csv(filename, filtering=False, **kwargs):
 
 
     """
+    import pandas as pd
     # Read the csv files and set the index to dates
     colnames = ['Time', 'Bx [nT]', 'By [nT]', 'Bz [nT]',
                 'Vx [km/s]', 'Vy [km/s]', 'Vz [km/s]',
@@ -111,15 +111,16 @@ def write_imf_input(data, outfilename="IMF.dat", enable_rb=True, **kwargs):
 
     Args:
         data: pandas.DataFrame object with solar wind data
-        outfilename: The output file name for ballistic solar wind data. \
-                (default: "IMF.dat")
-        enable_rb: Enables solar wind input for the radiation belt model. \
-                (default: True)
+        outfilename: The output file name for ballistic solar wind data.
+                     (default: "IMF.dat")
+        enable_rb: Enables solar wind input for the radiation belt model.
+                   (default: True)
 
     Other paramaters:
         gse: (default=False)
             Use GSE coordinate system for the file instead of GSM default.
     """
+
     # Generate BATS-R-US solar wind input file
     with open(outfilename, 'w') as outfile:
         outfile.write("CSV files downloaded from ")
@@ -193,6 +194,9 @@ def read_gm_log(filename, colnames=None, index_by_time=True):
         geo["AL"].plot.line()
         ```
     """
+
+    import pandas as pd
+
     # If column names were not specified
     if not colnames:
         with open(filename, 'r') as logfile:
