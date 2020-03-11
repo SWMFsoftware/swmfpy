@@ -25,24 +25,41 @@ def read_wdc_ae(wdc_filename):
                "AL", "AE", "AO", "AU" (int): Auroral indeces.
               }
     """
-    data = {"AL": {"Time": [], "Index": []},
-            "AE": {"Time": [], "Index": []},
-            "AO": {"Time": [], "Index": []},
-            "AU": {"Time": [], "Index": []}}
+    data = {'AL': {'Time': [], 'Index': []},
+            'AE': {'Time': [], 'Index': []},
+            'AO': {'Time': [], 'Index': []},
+            'AU': {'Time': [], 'Index': []}}
     with open(wdc_filename) as wdc_file:
         for line in wdc_file:
             ind_data = line.split()
             for minute in range(60):
+                # TODO: Use .zfill()?
                 str_min = str(minute)
                 if minute < 10:
-                    str_min = "0" + str_min
+                    str_min = '0' + str_min
                 time = dt.datetime.strptime(ind_data[1][:-5]
                                             + ind_data[1][7:-2]
                                             + str_min,
-                                            "%y%m%d%H%M")
-                data[ind_data[1][-2:]]["Time"] += [time]
-                data[ind_data[1][-2:]]["Index"] += [int(ind_data[3+minute])]
+                                            '%y%m%d%H%M')
+                data[ind_data[1][-2:]]['Time'] += [time]
+                data[ind_data[1][-2:]]['Index'] += [int(ind_data[3+minute])]
     return data
+
+
+'''
+def read_wdc_asy_sym(wdc_filename):
+    """Docstring
+    """
+
+    return_data = {'ASY': {'Time': [], 'Index': []},
+                   'SYM': {'Time': [], 'Index': []}}
+
+    with open(wdc_filename) as wdc_file:
+        for line in wdc_file:
+            data = line.split()
+
+    return_data
+'''
 
 
 def read_omni_csv(filename, filtering=False, **kwargs):
