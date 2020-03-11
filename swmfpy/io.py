@@ -170,47 +170,63 @@ def write_imf_input(data, outfilename="IMF.dat", enable_rb=True, **kwargs):
                              + '\n')
 
 
-def read_gm_log(filename, colnames=None, index_by_time=True):
-    """Make a pandas.DataFrame out of the Dst indeces outputted
+def read_gm_log(filename, colnames=None, index_time=True):
+    """Make a dictionary out of the indeces outputted
     from the GM model log.
 
     Args:
         filename (str): The filename as a string.
-        colnames ([str]): Supply the name of the columns
-        index_by_time (bool): Change the index to a time index
+        colnames ([str]): (default: None) Supply the name of the columns.
+                                          If None it will use second line
+                                          of log file.
+        index_time (bool): (default: True) Make a column of dt.datetime objects
+                                           in dictionary key 'Time [UT]'.
+
     Returns:
-        pandas.DataFrame of the log file
+        Dictionary of the log file
 
     Examples:
         To plot AL and Dst get the log files
         ```
-        geo = swmfpy.read_gm_log("run/GM/IO2/geoindex_e20140215-100500.log")
-        dst = swmfpy.read_gm_log("run/GM/IO2/log_e20140215-100500.log")
+        geo = swmfpy.io.read_gm_log('run/GM/IO2/geoindex_e20140215-100500.log')
+        dst = swmfpy.io.read_gm_log('run/GM/IO2/log_e20140215-100500.log')
+
+        # Plot AL indeces
+        plt.plot(geo['Time [UT]', geo['AL'])
         ```
 
-        Then plot using pandas features
-        ```
-        dst["dst_sm"].plot.line()
-        geo["AL"].plot.line()
-        ```
     """
 
-    import pandas as pd
-
     # If column names were not specified
-    if not colnames:
-        with open(filename, 'r') as logfile:
-            # Usually the names are in the second line
-            logfile.readline()
+    return_data = {}
+    with open(filename, 'r') as logfile:
+
+        # Find column names and initialize
+        description = logfile.readline()
+        return_data['description'] = description
+        # Usually the names are in the second line
+        if not colnames:
             colnames = logfile.readline().split()
-    data = pd.read_fwf(filename, header=None, skiprows=2, names=colnames)
-    if index_by_time:
-        data.set_index(pd.to_datetime({'year': data['year'],
-                                       'month': data['mo'],
-                                       'day': data['dy'],
-                                       'h': data['hr'],
-                                       'm': data['mn'],
-                                       's': data['sc']}),
-                       inplace=True)
-        data.index.names = ['Time [UT]']
-    return data
+        for col in colnames:
+            return_data[col] = []
+
+        # Fill data dictionary
+        for line_num, line in enumerate(logfile):
+            if line_num > 2:  # First two lines are usually metadata
+                for col, data in enumerate(line.split()):
+                    return_data[colnames[col]].append(data)
+
+        # datetime index
+        if index_time:
+            return_data['Time [UT]'] = []
+            for row, year in enumerate(return_data[colnames[1]]):
+                return_data['Time [UT]'].append(
+                    dt.datetime(int(year),
+                                int(return_data[colnames[2]][row]),  # month
+                                int(return_data[colnames[3]][row]),  # day
+                                int(return_data[colnames[4]][row]),  # hour
+                                int(return_data[colnames[5]][row]),  # min
+                                int(return_data[colnames[6]][row]),  # sec
+                                int(return_data[colnames[7]][row])))  # ms
+
+    return return_data
