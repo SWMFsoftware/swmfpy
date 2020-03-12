@@ -46,7 +46,6 @@ def read_wdc_ae(wdc_filename):
     return data
 
 
-'''
 def read_wdc_asy_sym(wdc_filename):
     """Docstring
     """
@@ -55,11 +54,15 @@ def read_wdc_asy_sym(wdc_filename):
                    'SYM': {'Time': [], 'Index': []}}
 
     with open(wdc_filename) as wdc_file:
+        header = wdc_file.readline()[:6]
+        assert header == 'ASYSYM', ('File does not seem to be'
+                                    + 'an ASY/SYM file from wdc.'
+                                    + 'First six characters: '
+                                    + header)
         for line in wdc_file:
             data = line.split()
 
     return_data
-'''
 
 
 def read_omni_csv(filename, filtering=False, **kwargs):
