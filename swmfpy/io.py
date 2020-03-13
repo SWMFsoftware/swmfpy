@@ -20,49 +20,130 @@ def read_wdc_ae(wdc_filename):
         wdc_filename (str): Filename of wdc data from
                             http://wdc.kugi.kyoto-u.ac.jp/
     Returns:
-        dict: {"time" (datetime.datetime): list of datetime objects
-                                           corresponding to time in UT.
-               "AL", "AE", "AO", "AU" (int): Auroral indeces.
+        dict: {
+               Auroral indeces 'AL', 'AE', 'AO', 'AU' (int): {
+                    'times' (datetime.datetime): List of datetime objects
+                                                 corresponding to time in UT.
+                    'values' (int): List of indeces.
               }
     """
-    data = {'AL': {'Time': [], 'Index': []},
-            'AE': {'Time': [], 'Index': []},
-            'AO': {'Time': [], 'Index': []},
-            'AU': {'Time': [], 'Index': []}}
+
+    # Initialize return data
+    return_data = {'AL': {'times': [], 'values': []},
+                   'AE': {'times': [], 'values': []},
+                   'AO': {'times': [], 'values': []},
+                   'AU': {'times': [], 'values': []}}
+
+    # Open and make sure it is correct file
     with open(wdc_filename) as wdc_file:
+        header = wdc_file.readline()
+        assert header[:8] == 'AEALAOAU', ('Does not seem to be a WDC AE file.'
+                                          + 'First 8 characters: ' + header[:8]
+                                          )
+
+        # Parse
         for line in wdc_file:
-            ind_data = line.split()
-            for minute in range(60):
-                # TODO: Use .zfill()?
-                str_min = str(minute)
-                if minute < 10:
-                    str_min = '0' + str_min
-                time = dt.datetime.strptime(ind_data[1][:-5]
-                                            + ind_data[1][7:-2]
-                                            + str_min,
-                                            '%y%m%d%H%M')
-                data[ind_data[1][-2:]]['Time'] += [time]
-                data[ind_data[1][-2:]]['Index'] += [int(ind_data[3+minute])]
-    return data
+            data = line.split()
+            year_suffix = int(data[1][:2])
+            if year_suffix < 50:
+                year = 2000 + year_suffix
+            else:
+                year = 1990 + year_suffix
+            month = int(data[1][2:4])
+            day = int(data[1][4:6])
+            hour = int(data[1][7:9])
+            index = data[1][-2:]
+            values_60 = [int(val) for val in data[3:60+3]]
+
+            # Fill
+            for minute, value in enumerate(values_60):
+                return_data[index]['values'].append(value)
+                return_data[index]['times'].append(
+                    dt.datetime(year, month, day, hour, minute))
+
+    return return_data
 
 
 def read_wdc_asy_sym(wdc_filename):
-    """Docstring
+    """Reads a WDC file for ASY/SYM data.
+
+    Reads an ASY/SYM file downloaded from
+    http://wdc.kugi.kyoto-u.ac.jp/aeasy/index.html
+    and puts it into a dictionary.
+
+    Args:
+        wdc_filename (str): Relative filename to read.
+
+    Returns:
+        dict: of values.
+        {'[ASY-SYM]-[D-H]': 'times': [], 'values': []}
+
+    Examples:
+        ```
+        indeces = swmfpy.io.read_wdc_asy_sym('wdc.dat')
+        # Plot data
+        plt.plot(indeces['SYM-H']['times'],
+                 indeces['SYM-H']['values'],
+                 label='SYM-H [nT]'
+                 )
+        plt.xlabel('Time [UT]')
+        ```
+
+    Important to note if there is bad data it will be filled as None.
     """
 
-    return_data = {'ASY': {'Time': [], 'Index': []},
-                   'SYM': {'Time': [], 'Index': []}}
+    return_data = {
+        'ASY-D': {
+            'times': [],
+            'values': [],
+            },
+        'ASY-H': {
+            'times': [],
+            'values': [],
+            },
+        'SYM-D': {
+            'times': [],
+            'values': [],
+            },
+        'SYM-H': {
+            'times': [],
+            'values': []
+            }
+        }
 
     with open(wdc_filename) as wdc_file:
-        header = wdc_file.readline()[:6]
-        assert header == 'ASYSYM', ('File does not seem to be'
-                                    + 'an ASY/SYM file from wdc.'
-                                    + 'First six characters: '
-                                    + header)
-        for line in wdc_file:
-            data = line.split()
+        # Check for correct file
+        header = wdc_file.readline()
+        assert header[:12] == 'ASYSYM N6E01', ('File does not seem to be'
+                                               + 'an ASY/SYM file from wdc.'
+                                               + 'First 12 characters: '
+                                               + header)
+        return_data['edition'] = header[24:34]
 
-    return_data
+        for line in wdc_file:
+            # Parse
+            year = int(line[12:14])
+            month = int(line[14:16])
+            day = int(line[16:18])
+            hour = int(line[19:21])
+            comp = line[18]
+            index = line[21:24]
+
+            # Fill 60 min data
+            data = line.split()
+            values_60 = [int(val) for val in data[2:62]]
+            for minute, value in enumerate(values_60):
+                return_data[index+'-'+comp]['times'].append(
+                    dt.datetime(year, month, day, hour, minute))
+                # Check if data is bad
+                if value != 99999:
+                    return_data[index+'-'+comp]['values'].append(
+                        value)
+                else:
+                    return_data[index+'-'+comp]['values'].append(
+                        None)
+
+    return return_data
 
 
 def read_omni_csv(filename, filtering=False, **kwargs):
@@ -87,10 +168,11 @@ def read_omni_csv(filename, filtering=False, **kwargs):
     the header seperated into a json file for safety.
 
     This only tested with OMNI data specifically.
-
-
     """
+    # TODO: This needs a lot of work
+
     import pandas as pd
+
     # Read the csv files and set the index to dates
     colnames = ['Time', 'Bx [nT]', 'By [nT]', 'Bz [nT]',
                 'Vx [km/s]', 'Vy [km/s]', 'Vz [km/s]',
