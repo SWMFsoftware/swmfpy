@@ -97,7 +97,7 @@ def get_omni_data(time_from, time_to, **kwargs):
 
     # Initialize return dict
     return_data = {}
-    return_data['Time [UT]'] = []
+    return_data['times'] = []
     for name in col_names:
         return_data[name] = []
 
@@ -118,12 +118,23 @@ def get_omni_data(time_from, time_to, **kwargs):
                                         + cols[3],  # minute
                                         '%Y %j %H %M')
             if time >= time_from and time <= time_to:
-                return_data['Time [UT]'].append(time)
+                return_data['times'].append(time)
                 # Assign the data from after the time columns (0:3)
                 for num, value in enumerate(cols[4:len(col_names)+4]):
-                    return_data[col_names[num]].append(float(value))
+                    if _check_bad_omni_num(value):
+                        return_data[col_names[num]].append(None)
+                    else:
+                        return_data[col_names[num]].append(float(value))
 
     return return_data  # dictionary with omni values where index is the row
+
+
+def _check_bad_omni_num(value_string):
+    """Returns true if bad or false if not"""
+    for char in value_string:
+        if char != '9' and char != '.':
+            return False
+    return True
 
 
 def download_magnetogram_adapt(time, map_type='fixed', **kwargs):

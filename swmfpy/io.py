@@ -37,9 +37,8 @@ def read_wdc_ae(wdc_filename):
     # Open and make sure it is correct file
     with open(wdc_filename) as wdc_file:
         header = wdc_file.readline()
-        assert header[:8] == 'AEALAOAU', ('Does not seem to be a WDC AE file.'
-                                          + 'First 8 characters: ' + header[:8]
-                                          )
+        assert header[:8] == 'AEALAOAU', \
+            'Does not seem to be a WDC AE file. First 8 chars: ' + header[:8]
 
         # Parse
         for line in wdc_file:
@@ -72,7 +71,7 @@ def read_wdc_asy_sym(wdc_filename):
     and puts it into a dictionary.
 
     Args:
-        wdc_filename (str): Relative filename to read.
+        wdc_filename (str): Relative filename (or file handle no.) to read.
 
     Returns:
         dict: of values.
@@ -123,6 +122,10 @@ def read_wdc_asy_sym(wdc_filename):
         for line in wdc_file:
             # Parse
             year = int(line[12:14])
+            if year < 70:  # Starts from 1970 but only gives 2 digits
+                year += 2000
+            else:
+                year += 1900
             month = int(line[14:16])
             day = int(line[16:18])
             hour = int(line[19:21])
@@ -272,15 +275,17 @@ def write_imf_input(data, outfilename="IMF.dat", enable_rb=True, **kwargs):
                              + '\n')
 
 
-def read_gm_log(filename, colnames=None, index_time=True):
+def read_gm_log(filename, colnames=None, dtypes=None, index_time=True):
     """Make a dictionary out of the indeces outputted
     from the GM model log.
 
     Args:
-        filename (str): The filename as a string.
+        filename (str): The relative filename as a string. (or file handle no.)
         colnames ([str]): (default: None) Supply the name of the columns.
                                           If None it will use second line
                                           of log file.
+        dtypes ([types]): (default: None) Provide types for the columns, if
+                                          None then all will be float.
         index_time (bool): (default: True) Make a column of dt.datetime objects
                                            in dictionary key 'Time [UT]'.
 
@@ -294,7 +299,7 @@ def read_gm_log(filename, colnames=None, index_time=True):
         dst = swmfpy.io.read_gm_log('run/GM/IO2/log_e20140215-100500.log')
 
         # Plot AL indeces
-        plt.plot(geo['Time [UT]', geo['AL'])
+        plt.plot(geo['times', geo['AL'])
         ```
 
     """
@@ -316,13 +321,17 @@ def read_gm_log(filename, colnames=None, index_time=True):
         for line_num, line in enumerate(logfile):
             if line_num > 2:  # First two lines are usually metadata
                 for col, data in enumerate(line.split()):
+                    if dtypes:
+                        data = dtypes[col](data)
+                    else:
+                        data = float(data)
                     return_data[colnames[col]].append(data)
 
         # datetime index
         if index_time:
-            return_data['Time [UT]'] = []
+            return_data['times'] = []
             for row, year in enumerate(return_data[colnames[1]]):
-                return_data['Time [UT]'].append(
+                return_data['times'].append(
                     dt.datetime(int(year),
                                 int(return_data[colnames[2]][row]),  # month
                                 int(return_data[colnames[3]][row]),  # day
