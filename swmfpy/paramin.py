@@ -6,32 +6,12 @@ These tools are to help script the editing of PARAM.in files.
 """
 __all__ = [
     'read_command',
-    'replace_command',
-    'get_command'
+    'replace_command'
     ]
 __author__ = 'Qusai Al Shidi'
 __email__ = 'qusai@umich.edu'
 
 import logging
-
-
-def get_command(line):
-    """Returns the '#COMMAND' if on line.
-
-    Args:
-        line (str, list, tuple): The line in the PARAM.in file.
-
-    Returns:
-        (str): '#COMMAND' if found and None if not.
-    """
-    if isinstance(line, (str, list, tuple)):  # Raises type error otherwise
-        if isinstance(line, str):
-            to_check = line.split()
-            if to_check and to_check[0].startswith('#'):
-                return to_check[0]
-            return None
-        return get_command(line[0])
-    return None
 
 
 def replace_command(parameters, input_file, output_file='PARAM.in'):
@@ -73,7 +53,7 @@ def replace_command(parameters, input_file, output_file='PARAM.in'):
         for line_num, line in enumerate(lines):
 
             # If the current command is what we want
-            command = get_command(line)
+            command = _get_command(line)
             if command in parameters.keys():
 
                 for param, value in enumerate(parameters[command]):
@@ -133,12 +113,12 @@ def read_command(command, paramin_file='PARAM.in', **kwargs):
         command_found = False  # to know if worked
         in_command = False  # when after command needed
         for line in paramin:
-            if get_command(line) == command:
+            if _get_command(line) == command:
                 logger.info('Found command: %s', command)
                 command_found = True
                 in_command = True
                 return_values.append(command)
-            elif in_command and get_command(line):  # Make sure not out of cmd
+            elif in_command and _get_command(line):  # Make sure not out of cmd
                 in_command = False
             elif line.split() and in_command:
                 value = line.split()[0]
@@ -158,6 +138,7 @@ def read_command(command, paramin_file='PARAM.in', **kwargs):
         return return_values  # empty list might mean command not found
 
 
+# HIDDEN FUNCTIONS
 def _make_line(value):
     """Makes the paramin line based on value type recursively"""
     if isinstance(value, str):
@@ -165,3 +146,22 @@ def _make_line(value):
     elif isinstance(value, list):
         return '\t\t\t'.join([_make_line(v) for v in value])
     return str(value)
+
+
+def _get_command(line):
+    """Returns the '#COMMAND' if on line.
+
+    Args:
+        line (str, list, tuple): The line in the PARAM.in file.
+
+    Returns:
+        (str): '#COMMAND' if found and None if not.
+    """
+    if isinstance(line, (str, list, tuple)):  # Raises type error otherwise
+        if isinstance(line, str):
+            to_check = line.split()
+            if to_check and to_check[0].startswith('#'):
+                return to_check[0]
+            return None
+        return _get_command(line[0])
+    return None

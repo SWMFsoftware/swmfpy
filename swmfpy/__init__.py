@@ -1,7 +1,6 @@
-"""Tools for SWMF
-
-swmfpy
-======
+"""
+SWMF Tools
+==========
 
 A collection of tools to read, write, visualize with the
 Space Weather Modeling Framework (SWMF).
@@ -12,15 +11,15 @@ Modules
 These are automatically imported.
 
 - swmfpy.io: Input/Output tools.
-- paramin.io: PARAM.in editing tools.
-- web.io: Internet tools.
+- swmfpy.paramin: PARAM.in editing tools.
+- swmfpy.web: Internet data downloading/uploading tools.
 
 Extra Modules
 -------------
 
 These are not automatically imported. Might have extra dependancies.
 
-*Non yet.*
+*None yet.*
 """
 __author__ = "Qusai Al Shidi"
 __license__ = "MIT"
