@@ -1,5 +1,4 @@
-"""Tools to manipulate or create param.in files
-
+"""
 PARAM.in Tools
 --------------
 
@@ -7,27 +6,31 @@ These tools are to help script the editing of PARAM.in files.
 """
 __all__ = [
     'read_command',
-    'replace_command'
+    'replace_command',
+    'get_command'
     ]
 __author__ = 'Qusai Al Shidi'
 __email__ = 'qusai@umich.edu'
 
 import logging
 
+
 def get_command(line):
     """Returns the '#COMMAND' if on line.
 
     Args:
-        line (str): The line in the PARAM.in file.
+        line (str, list, tuple): The line in the PARAM.in file.
 
     Returns:
         (str): '#COMMAND' if found and None if not.
     """
-    to_check = line.split()
-    if isinstance(to_check, (str, tuple, list)):
-        if isinstance(to_check, str) and to_check.startswitch('#'):
-            return to_check
-        return get_command(to_check[0])
+    if isinstance(line, (str, list, tuple)):  # Raises type error otherwise
+        if isinstance(line, str):
+            to_check = line.split()
+            if to_check and to_check[0].startswith('#'):
+                return to_check[0]
+            return None
+        return get_command(line[0])
     return None
 
 
@@ -46,6 +49,9 @@ def replace_command(parameters, input_file, output_file='PARAM.in'):
     Returns:
         A list of lines of the PARAM.in file that would be outputted.
 
+    Raises:
+        TypeError: If a value given couldn't be converted to string.
+
     Examples:
         ```
         change['#SOLARWINDFILE'] = [['T', 'UseSolarWindFile'],
@@ -57,37 +63,25 @@ def replace_command(parameters, input_file, output_file='PARAM.in'):
     # Author: Qusai Al Shidi
     # Email: qusai@umich.edu
 
-    # TODO This will replace all for repeat commands.
     logger = logging.getLogger()  # For debugging
 
     # Read and replace paramin file by making a temp list
     with open(input_file, 'rt') as paramin:
-        command = None  # Current command
+
         # Compile lines in a list before editing/writing it
         lines = list(paramin)
         for line_num, line in enumerate(lines):
-            words = line.split()
 
             # If the current command is what we want
-            if words and words[0] in parameters.keys():
-                command = words[0]
+            command = get_command(line)
+            if command in parameters.keys():
 
-                # Replace code
                 for param, value in enumerate(parameters[command]):
-                    newline = ''
-                    # Allow additions of comments if list(str)
-                    if isinstance(value, list):
-                        for text in value:
-                            newline += text + '\t\t\t'
-                        logger.info('Replacing: %s\n with: %s\n',
-                                    line, newline)
-                        # Lines will be replaced in order
-                        lines[line_num+param+1] = newline + '\n'
-                    # Else just make a line
-                    elif isinstance(value, str):
-                        logger.info('Replacing: %s\n with: %s\n', line, value)
-                        # Lines will be replaced in order
-                        lines[line_num+param+1] = value + '\n'
+                    newline = _make_line(value)
+                    logger.info('Replacing: %s\n with: %s\n',
+                                line, newline)
+                    # Lines will be replaced in order
+                    lines[line_num+param+1] = newline + '\n'
 
     # Write the PARAM.in file
     if output_file is None:
@@ -136,25 +130,24 @@ def read_command(command, paramin_file='PARAM.in', **kwargs):
 
     with open(paramin_file) as paramin:
         return_values = []
-        found_command = False  # to know if worked
-        at_command = False  # when after command needed
+        command_found = False  # to know if worked
+        in_command = False  # when after command needed
         for line in paramin:
-            words = line.split()
-            if words and words[0] == command:
+            if get_command(line) == command:
                 logger.info('Found command: %s', command)
-                found_command = True
-                at_command = True
+                command_found = True
+                in_command = True
                 return_values.append(command)
-            elif words and words[0][0] == '#':
-                at_command = False
-            elif words and at_command:
-                value = words[0]
+            elif in_command and get_command(line):  # Make sure not out of cmd
+                in_command = False
+            elif line.split() and in_command:
+                value = line.split()[0]
                 logger.info('Value added: %s', value)
                 return_values.append(value)
 
         # Error handling
         # Unable to find #COMMAND
-        if not found_command:
+        if not command_found:
             raise ValueError(command + ' not found.')
 
         # To ignore additional lines
@@ -163,3 +156,12 @@ def read_command(command, paramin_file='PARAM.in', **kwargs):
             return_values = return_values[:value_limit+1]
 
         return return_values  # empty list might mean command not found
+
+
+def _make_line(value):
+    """Makes the paramin line based on value type recursively"""
+    if isinstance(value, str):
+        return value
+    elif isinstance(value, list):
+        return '\t\t\t'.join([_make_line(v) for v in value])
+    return str(value)
