@@ -1,15 +1,34 @@
 """Tools to manipulate or create param.in files
 
 PARAM.in Tools
-==============
+--------------
 
 These tools are to help script the editing of PARAM.in files.
 """
-__all__ = ['read_command', 'replace_command']
+__all__ = [
+    'read_command',
+    'replace_command'
+    ]
 __author__ = 'Qusai Al Shidi'
 __email__ = 'qusai@umich.edu'
 
 import logging
+
+def get_command(line):
+    """Returns the '#COMMAND' if on line.
+
+    Args:
+        line (str): The line in the PARAM.in file.
+
+    Returns:
+        (str): '#COMMAND' if found and None if not.
+    """
+    to_check = line.split()
+    if isinstance(to_check, (str, tuple, list)):
+        if isinstance(to_check, str) and to_check.startswitch('#'):
+            return to_check
+        return get_command(to_check[0])
+    return None
 
 
 def replace_command(parameters, input_file, output_file='PARAM.in'):
