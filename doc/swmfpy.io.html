@@ -1,0 +1,135 @@
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
+<html><head><title>Python: module swmfpy.io</title>
+<meta charset="utf-8">
+</head><body bgcolor="#f0f0f8">
+
+<table width="100%" cellspacing=0 cellpadding=2 border=0 summary="heading">
+<tr bgcolor="#7799ee">
+<td valign=bottom>&nbsp;<br>
+<font color="#ffffff" face="helvetica, arial">&nbsp;<br><big><big><strong><a href="swmfpy.html"><font color="#ffffff">swmfpy</font></a>.io</strong></big></big></font></td
+><td align=right valign=bottom
+><font color="#ffffff" face="helvetica, arial"><a href=".">index</a><br><a href="file:/home/qusai/Documents/Code/swmfpy/swmfpy/io.py">/home/qusai/Documents/Code/swmfpy/swmfpy/io.py</a></font></td></tr></table>
+    <p><tt>Input/Output&nbsp;tools<br>
+&nbsp;<br>
+Input/Output<br>
+============<br>
+&nbsp;<br>
+Here&nbsp;are&nbsp;tools&nbsp;to&nbsp;read&nbsp;and&nbsp;write&nbsp;files&nbsp;relating&nbsp;to&nbsp;SWMF.<br>
+&nbsp;<br>
+TODO:&nbsp;Move&nbsp;pandas&nbsp;dependancy&nbsp;elsewhere.</tt></p>
+<p>
+<table width="100%" cellspacing=0 cellpadding=2 border=0 summary="section">
+<tr bgcolor="#aa55cc">
+<td colspan=3 valign=bottom>&nbsp;<br>
+<font color="#ffffff" face="helvetica, arial"><big><strong>Modules</strong></big></font></td></tr>
+    
+<tr><td bgcolor="#aa55cc"><tt>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</tt></td><td>&nbsp;</td>
+<td width="100%"><table width="100%" summary="list"><tr><td width="25%" valign=top><a href="datetime.html">datetime</a><br>
+</td><td width="25%" valign=top><a href="numpy.html">numpy</a><br>
+</td><td width="25%" valign=top></td><td width="25%" valign=top></td></tr></table></td></tr></table><p>
+<table width="100%" cellspacing=0 cellpadding=2 border=0 summary="section">
+<tr bgcolor="#eeaa77">
+<td colspan=3 valign=bottom>&nbsp;<br>
+<font color="#ffffff" face="helvetica, arial"><big><strong>Functions</strong></big></font></td></tr>
+    
+<tr><td bgcolor="#eeaa77"><tt>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</tt></td><td>&nbsp;</td>
+<td width="100%"><dl><dt><a name="-read_gm_log"><strong>read_gm_log</strong></a>(filename, colnames<font color="#909090">=None</font>, dtypes<font color="#909090">=None</font>, index_time<font color="#909090">=True</font>)</dt><dd><tt>Make&nbsp;a&nbsp;dictionary&nbsp;out&nbsp;of&nbsp;the&nbsp;indeces&nbsp;outputted<br>
+from&nbsp;the&nbsp;GM&nbsp;model&nbsp;log.<br>
+&nbsp;<br>
+Args:<br>
+&nbsp;&nbsp;&nbsp;&nbsp;filename&nbsp;(str):&nbsp;The&nbsp;relative&nbsp;filename&nbsp;as&nbsp;a&nbsp;string.&nbsp;(or&nbsp;file&nbsp;handle&nbsp;no.)<br>
+&nbsp;&nbsp;&nbsp;&nbsp;colnames&nbsp;([str]):&nbsp;(default:&nbsp;None)&nbsp;Supply&nbsp;the&nbsp;name&nbsp;of&nbsp;the&nbsp;columns.<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;If&nbsp;None&nbsp;it&nbsp;will&nbsp;use&nbsp;second&nbsp;line<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;of&nbsp;log&nbsp;file.<br>
+&nbsp;&nbsp;&nbsp;&nbsp;dtypes&nbsp;([types]):&nbsp;(default:&nbsp;None)&nbsp;Provide&nbsp;types&nbsp;for&nbsp;the&nbsp;columns,&nbsp;if<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;None&nbsp;then&nbsp;all&nbsp;will&nbsp;be&nbsp;float.<br>
+&nbsp;&nbsp;&nbsp;&nbsp;index_time&nbsp;(bool):&nbsp;(default:&nbsp;True)&nbsp;Make&nbsp;a&nbsp;column&nbsp;of&nbsp;dt.datetime&nbsp;objects<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;in&nbsp;dictionary&nbsp;key&nbsp;'Time&nbsp;[UT]'.<br>
+&nbsp;<br>
+Returns:<br>
+&nbsp;&nbsp;&nbsp;&nbsp;Dictionary&nbsp;of&nbsp;the&nbsp;log&nbsp;file<br>
+&nbsp;<br>
+Examples:<br>
+&nbsp;&nbsp;&nbsp;&nbsp;To&nbsp;plot&nbsp;AL&nbsp;and&nbsp;Dst&nbsp;get&nbsp;the&nbsp;log&nbsp;files<br>
+&nbsp;&nbsp;&nbsp;&nbsp;```<br>
+&nbsp;&nbsp;&nbsp;&nbsp;geo&nbsp;=&nbsp;swmfpy.io.<a href="#-read_gm_log">read_gm_log</a>('run/GM/IO2/geoindex_e20140215-100500.log')<br>
+&nbsp;&nbsp;&nbsp;&nbsp;dst&nbsp;=&nbsp;swmfpy.io.<a href="#-read_gm_log">read_gm_log</a>('run/GM/IO2/log_e20140215-100500.log')<br>
+&nbsp;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;#&nbsp;Plot&nbsp;AL&nbsp;indeces<br>
+&nbsp;&nbsp;&nbsp;&nbsp;plt.plot(geo['times',&nbsp;geo['AL'])<br>
+&nbsp;&nbsp;&nbsp;&nbsp;```</tt></dd></dl>
+ <dl><dt><a name="-read_omni_csv"><strong>read_omni_csv</strong></a>(filename, filtering<font color="#909090">=False</font>, **kwargs)</dt><dd><tt>Take&nbsp;an&nbsp;OMNI&nbsp;csv&nbsp;file&nbsp;from&nbsp;cdaweb.sci.gsfc.nasa.gov<br>
+and&nbsp;turn&nbsp;it&nbsp;into&nbsp;a&nbsp;pandas.DataFrame.<br>
+&nbsp;<br>
+Args:<br>
+&nbsp;&nbsp;&nbsp;&nbsp;fnames&nbsp;(dict):&nbsp;dict&nbsp;with&nbsp;filenames&nbsp;from&nbsp;omni&nbsp;.lst&nbsp;files.<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;The&nbsp;keys&nbsp;must&nbsp;be:&nbsp;density,&nbsp;temperature,<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;magnetic_field,&nbsp;velocity<br>
+&nbsp;&nbsp;&nbsp;&nbsp;filtering&nbsp;(bool):&nbsp;default=False&nbsp;Remove&nbsp;points&nbsp;where&nbsp;the&nbsp;value<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;is&nbsp;&gt;sigma&nbsp;(default:&nbsp;sigma=3)&nbsp;from&nbsp;mean.<br>
+&nbsp;&nbsp;&nbsp;&nbsp;**kwargs:<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;coarseness&nbsp;(int):&nbsp;default=3,&nbsp;Number&nbsp;of&nbsp;standard&nbsp;deviations<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;above&nbsp;which&nbsp;to&nbsp;remove&nbsp;if&nbsp;filtering=True.<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;clean&nbsp;(bool):&nbsp;default=True,&nbsp;Clean&nbsp;the&nbsp;omni&nbsp;data&nbsp;of&nbsp;bad&nbsp;data&nbsp;points<br>
+&nbsp;<br>
+Returns:<br>
+&nbsp;&nbsp;&nbsp;&nbsp;pandas.DataFrame:&nbsp;object&nbsp;with&nbsp;solar&nbsp;wind&nbsp;data<br>
+&nbsp;<br>
+Make&nbsp;sure&nbsp;to&nbsp;download&nbsp;the&nbsp;csv&nbsp;files&nbsp;with&nbsp;cdaweb.sci.gsfc.nasa.gov<br>
+the&nbsp;header&nbsp;seperated&nbsp;into&nbsp;a&nbsp;json&nbsp;file&nbsp;for&nbsp;safety.<br>
+&nbsp;<br>
+This&nbsp;only&nbsp;tested&nbsp;with&nbsp;OMNI&nbsp;data&nbsp;specifically.</tt></dd></dl>
+ <dl><dt><a name="-read_wdc_ae"><strong>read_wdc_ae</strong></a>(wdc_filename)</dt><dd><tt>Read&nbsp;an&nbsp;auroral&nbsp;electrojet&nbsp;(AE)&nbsp;indeces&nbsp;from&nbsp;Kyoto's&nbsp;World&nbsp;Data&nbsp;Center<br>
+&nbsp;&nbsp;&nbsp;text&nbsp;file&nbsp;into&nbsp;a&nbsp;dictionary&nbsp;of&nbsp;lists.<br>
+&nbsp;<br>
+Args:<br>
+&nbsp;&nbsp;&nbsp;&nbsp;wdc_filename&nbsp;(str):&nbsp;Filename&nbsp;of&nbsp;wdc&nbsp;data&nbsp;from<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<a href="http://wdc.kugi.kyoto-u.ac.jp/">http://wdc.kugi.kyoto-u.ac.jp/</a><br>
+Returns:<br>
+&nbsp;&nbsp;&nbsp;&nbsp;dict:&nbsp;{<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Auroral&nbsp;indeces&nbsp;'AL',&nbsp;'AE',&nbsp;'AO',&nbsp;'AU'&nbsp;(int):&nbsp;{<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;'times'&nbsp;(datetime.datetime):&nbsp;List&nbsp;of&nbsp;datetime&nbsp;objects<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;corresponding&nbsp;to&nbsp;time&nbsp;in&nbsp;UT.<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;'values'&nbsp;(int):&nbsp;List&nbsp;of&nbsp;indeces.<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;}</tt></dd></dl>
+ <dl><dt><a name="-read_wdc_asy_sym"><strong>read_wdc_asy_sym</strong></a>(wdc_filename)</dt><dd><tt>Reads&nbsp;a&nbsp;WDC&nbsp;file&nbsp;for&nbsp;ASY/SYM&nbsp;data.<br>
+&nbsp;<br>
+Reads&nbsp;an&nbsp;ASY/SYM&nbsp;file&nbsp;downloaded&nbsp;from<br>
+<a href="http://wdc.kugi.kyoto-u.ac.jp/aeasy/index.html">http://wdc.kugi.kyoto-u.ac.jp/aeasy/index.html</a><br>
+and&nbsp;puts&nbsp;it&nbsp;into&nbsp;a&nbsp;dictionary.<br>
+&nbsp;<br>
+Args:<br>
+&nbsp;&nbsp;&nbsp;&nbsp;wdc_filename&nbsp;(str):&nbsp;Relative&nbsp;filename&nbsp;(or&nbsp;file&nbsp;handle&nbsp;no.)&nbsp;to&nbsp;read.<br>
+&nbsp;<br>
+Returns:<br>
+&nbsp;&nbsp;&nbsp;&nbsp;dict:&nbsp;of&nbsp;values.<br>
+&nbsp;&nbsp;&nbsp;&nbsp;{'[ASY-SYM]-[D-H]':&nbsp;'times':&nbsp;[],&nbsp;'values':&nbsp;[]}<br>
+&nbsp;<br>
+Examples:<br>
+&nbsp;&nbsp;&nbsp;&nbsp;```<br>
+&nbsp;&nbsp;&nbsp;&nbsp;indeces&nbsp;=&nbsp;swmfpy.io.<a href="#-read_wdc_asy_sym">read_wdc_asy_sym</a>('wdc.dat')<br>
+&nbsp;&nbsp;&nbsp;&nbsp;#&nbsp;Plot&nbsp;data<br>
+&nbsp;&nbsp;&nbsp;&nbsp;plt.plot(indeces['SYM-H']['times'],<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;indeces['SYM-H']['values'],<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;label='SYM-H&nbsp;[nT]'<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;)<br>
+&nbsp;&nbsp;&nbsp;&nbsp;plt.xlabel('Time&nbsp;[UT]')<br>
+&nbsp;&nbsp;&nbsp;&nbsp;```<br>
+&nbsp;<br>
+Important&nbsp;to&nbsp;note&nbsp;if&nbsp;there&nbsp;is&nbsp;bad&nbsp;data&nbsp;it&nbsp;will&nbsp;be&nbsp;filled&nbsp;as&nbsp;None.</tt></dd></dl>
+ <dl><dt><a name="-write_imf_input"><strong>write_imf_input</strong></a>(data, outfilename<font color="#909090">='IMF.dat'</font>, enable_rb<font color="#909090">=True</font>, **kwargs)</dt><dd><tt>Writes&nbsp;the&nbsp;pandas.DataFrame&nbsp;into&nbsp;an&nbsp;input&nbsp;file<br>
+that&nbsp;SWMF&nbsp;can&nbsp;read&nbsp;as&nbsp;input&nbsp;IMF&nbsp;(IMF.dat).<br>
+&nbsp;<br>
+Args:<br>
+&nbsp;&nbsp;&nbsp;&nbsp;data:&nbsp;pandas.DataFrame&nbsp;object&nbsp;with&nbsp;solar&nbsp;wind&nbsp;data<br>
+&nbsp;&nbsp;&nbsp;&nbsp;outfilename:&nbsp;The&nbsp;output&nbsp;file&nbsp;name&nbsp;for&nbsp;ballistic&nbsp;solar&nbsp;wind&nbsp;data.<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;(default:&nbsp;"IMF.dat")<br>
+&nbsp;&nbsp;&nbsp;&nbsp;enable_rb:&nbsp;Enables&nbsp;solar&nbsp;wind&nbsp;input&nbsp;for&nbsp;the&nbsp;radiation&nbsp;belt&nbsp;model.<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;(default:&nbsp;True)<br>
+&nbsp;<br>
+Other&nbsp;paramaters:<br>
+&nbsp;&nbsp;&nbsp;&nbsp;gse:&nbsp;(default=False)<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Use&nbsp;GSE&nbsp;coordinate&nbsp;system&nbsp;for&nbsp;the&nbsp;file&nbsp;instead&nbsp;of&nbsp;GSM&nbsp;default.</tt></dd></dl>
+</td></tr></table>
+</body></html>
