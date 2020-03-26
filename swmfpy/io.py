@@ -35,7 +35,7 @@ def read_wdc_ae(wdc_filename):
                    'AU': {'times': [], 'values': []}}
 
     # Open and make sure it is correct file
-    with open(wdc_filename) as wdc_file:
+    with open(wdc_filename, 'rt') as wdc_file:
         header = wdc_file.readline()
         assert header[:8] == 'AEALAOAU', \
             'Does not seem to be a WDC AE file. First 8 chars: ' + header[:8]
