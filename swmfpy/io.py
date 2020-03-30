@@ -314,13 +314,19 @@ def read_gm_log(filename, colnames=None, dtypes=None, index_time=True):
         # Usually the names are in the second line
         if not colnames:
             colnames = logfile.readline().split()
+        try:
+            colnames = _fix_str_duplicates(colnames)
+        except RuntimeWarning:
+            print(f'{__name__}: Warning: '
+                  + 'Found duplicates in column names. '
+                  + 'Changes made to column names.')
         for col in colnames:
             return_data[col] = []
 
         # Fill data dictionary
         for line_num, line in enumerate(logfile):
             if line_num > 2:  # First two lines are usually metadata
-                for col, data in enumerate(line.split()):
+                for col, data in enumerate(line.strip().split()):
                     if dtypes:
                         data = dtypes[col](data)
                     else:
@@ -341,3 +347,17 @@ def read_gm_log(filename, colnames=None, dtypes=None, index_time=True):
                                 int(return_data[colnames[7]][row])))  # ms
 
     return return_data
+
+
+def _fix_str_duplicates(str_list):
+    """Returns a list and bool if a fix was made.
+       The fix is adding an _[index] to avoid duplicates.
+    """
+    duplicate_found = False
+    for index, string in enumerate(str_list):
+        if str_list.count(string) > 1:
+            duplicate_found = True
+            str_list[index] = string + f'_{index}'
+    if duplicate_found:
+        raise RuntimeWarning
+    return str_list
