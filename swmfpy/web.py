@@ -31,6 +31,7 @@ def get_omni_data(time_from, time_to, **kwargs):
 
     Examples:
         ```python
+
         import datetime
         import swmfpy.web
 
@@ -138,7 +139,7 @@ def _check_bad_omni_num(value_string):
 
 
 def download_magnetogram_adapt(time, map_type='fixed', **kwargs):
-    '''This routine downloads GONG ADAPT magnetograms.
+    """This routine downloads GONG ADAPT magnetograms.
 
     Downloads ADAPT magnetograms from ftp://gong2.nso.edu/adapt/maps/gong/
     to a local directory. It will download all maps with the regex file
@@ -165,6 +166,7 @@ def download_magnetogram_adapt(time, map_type='fixed', **kwargs):
 
     Examples:
         ```python
+
         import datetime as dt
 
         # Use datetime objects for the time
@@ -173,7 +175,7 @@ def download_magnetogram_adapt(time, map_type='fixed', **kwargs):
                                               map_type='central',
                                               download_dir='./mymaps/')
         ```
-    '''
+    """
     # Author: Zhenguang Huang
     # Email: zghuang@umich.edu
 

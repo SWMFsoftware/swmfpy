@@ -33,11 +33,13 @@ def replace_command(parameters, input_file, output_file='PARAM.in'):
         TypeError: If a value given couldn't be converted to string.
 
     Examples:
-        ```
+        ```python
+
         change['#SOLARWINDFILE'] = [['T', 'UseSolarWindFile'],
                                     ['new_imf.dat', 'NameSolarWindFile']]
         # This will overwrite PARAM.in
         swmfpy.paramin.replace('PARAM.in.template', change)
+
         ```
     """
     # Author: Qusai Al Shidi
@@ -94,10 +96,14 @@ def read_command(command, paramin_file='PARAM.in', **kwargs):
         ValueError: When the #COMMAND is not found.
 
     Examples:
+        ```python
+
         start_time = swmfpy.paramin.read_command('#STARTTIME')
         end_time = swmfpy.paramin.read_command('#ENDTIME')
         print('Starting month is ', start_time[1])
         print('Ending month is ', end_time[1])
+
+        ```
 
     This will treat all following lines as values for the command. To suppress
     this, try using the `num_of_values` keyword. This is helpful if your
@@ -143,7 +149,7 @@ def _make_line(value):
     """Makes the paramin line based on value type recursively"""
     if isinstance(value, str):
         return value
-    elif isinstance(value, list):
+    if isinstance(value, list):
         return '\t\t\t'.join([_make_line(v) for v in value])
     return str(value)
 
