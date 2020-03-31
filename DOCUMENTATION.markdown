@@ -24,89 +24,6 @@ These are not automatically imported. Might have extra dependancies.
 *None yet.*
 
 
-# swmfpy.web
-Tools to retrieve and send data on the web.
-
-SWMF Web Tools
-==============
-
-Here are a collection of tools to work with data on the internet. Thus,
-this module mostly requires an internet connection.
-
-
-## get_omni_data
-```python
-get_omni_data(time_from, time_to, **kwargs)
-```
-Retrieve omni solar wind data over http.
-
-This will download omni data from https://spdf.gsfc.nasa.gov/pub/data/omni
-and put it into a dictionary. If your data is large, then make a csv and
-use swmfpy.io.read_omni_data().
-
-Args:
-    time_from (datetime.datetime): The start time of the solar wind
-                                   data that you want to receive.
-    time_to (datetime.datetime): The end time of the solar wind data
-                                 you want to receive.
-
-Returns:
-    dict: This will be a list of *all* columns
-          available in the omni data set.
-
-Examples:
-    ```python
-    import datetime
-    import swmfpy.web
-
-    storm_start = datetime.datetime(year=2000, month=1, day=1)
-    storm_end = datetime.datetime(year=2000, month=2, day=15)
-    data = swmfpy.web.get_omni_data(time_from=storm_start,
-                                    time_to=storm_end)
-    ```
-
-
-## download_magnetogram_adapt
-```python
-download_magnetogram_adapt(time, map_type='fixed', **kwargs)
-```
-This routine downloads GONG ADAPT magnetograms.
-
-Downloads ADAPT magnetograms from ftp://gong2.nso.edu/adapt/maps/gong/
-to a local directory. It will download all maps with the regex file
-pattern: adapt4[0,1]3*yyyymmddhh
-
-Args:
-    time (datetime.datetime): Time in which you want the magnetogram.
-    map_type (str): (default: 'fixed')
-                    Choose either 'fixed' or 'central' for
-                    the map type you want.
-    **kwargs:
-        download_dir (str): (default is current dir) Relative directory
-                            where you want the maps to be downloaded.
-
-Returns:
-    str: First unzipped filename found.
-
-Raises:
-    NotADirectoryError: If the adapt maps directory
-                        is not found on the server.
-    ValueError: If map_type is not recognized.
-                (i.e. not 'fixed' or 'central')
-    FileNotFoundError: If maps were not found.
-
-Examples:
-    ```python
-    import datetime as dt
-
-    # Use datetime objects for the time
-    time_flare = dt.datetime(2018, 2, 12, hour=10)
-    swmfpy.web.download_magnetogram_adapt(time=time_flare,
-                                          map_type='central',
-                                          download_dir='./mymaps/')
-    ```
-
-
 # swmfpy.io
 Input/Output tools
 
@@ -276,11 +193,13 @@ Raises:
     TypeError: If a value given couldn't be converted to string.
 
 Examples:
-    ```
+    ```python
+
     change['#SOLARWINDFILE'] = [['T', 'UseSolarWindFile'],
                                 ['new_imf.dat', 'NameSolarWindFile']]
     # This will overwrite PARAM.in
     swmfpy.paramin.replace('PARAM.in.template', change)
+
     ```
 
 
@@ -308,12 +227,101 @@ Raises:
     ValueError: When the [`COMMAND`](#COMMAND) is not found.
 
 Examples:
+    ```python
+
     start_time = swmfpy.paramin.read_command('#STARTTIME')
     end_time = swmfpy.paramin.read_command('#ENDTIME')
     print('Starting month is ', start_time[1])
     print('Ending month is ', end_time[1])
 
+    ```
+
 This will treat all following lines as values for the command. To suppress
 this, try using the `num_of_values` keyword. This is helpful if your
 PARAM.in is comment heavy.
+
+
+# swmfpy.web
+Tools to retrieve and send data on the web.
+
+SWMF Web Tools
+==============
+
+Here are a collection of tools to work with data on the internet. Thus,
+this module mostly requires an internet connection.
+
+
+## get_omni_data
+```python
+get_omni_data(time_from, time_to, **kwargs)
+```
+Retrieve omni solar wind data over http.
+
+This will download omni data from https://spdf.gsfc.nasa.gov/pub/data/omni
+and put it into a dictionary. If your data is large, then make a csv and
+use swmfpy.io.read_omni_data().
+
+Args:
+    time_from (datetime.datetime): The start time of the solar wind
+                                   data that you want to receive.
+    time_to (datetime.datetime): The end time of the solar wind data
+                                 you want to receive.
+
+Returns:
+    dict: This will be a list of *all* columns
+          available in the omni data set.
+
+Examples:
+    ```python
+
+    import datetime
+    import swmfpy.web
+
+    storm_start = datetime.datetime(year=2000, month=1, day=1)
+    storm_end = datetime.datetime(year=2000, month=2, day=15)
+    data = swmfpy.web.get_omni_data(time_from=storm_start,
+                                    time_to=storm_end)
+    ```
+
+
+## download_magnetogram_adapt
+```python
+download_magnetogram_adapt(time, map_type='fixed', **kwargs)
+```
+This routine downloads GONG ADAPT magnetograms.
+
+Downloads ADAPT magnetograms from ftp://gong2.nso.edu/adapt/maps/gong/
+to a local directory. It will download all maps with the regex file
+pattern: adapt4[0,1]3*yyyymmddhh
+
+Args:
+    time (datetime.datetime): Time in which you want the magnetogram.
+    map_type (str): (default: 'fixed')
+                    Choose either 'fixed' or 'central' for
+                    the map type you want.
+    **kwargs:
+        download_dir (str): (default is current dir) Relative directory
+                            where you want the maps to be downloaded.
+
+Returns:
+    str: First unzipped filename found.
+
+Raises:
+    NotADirectoryError: If the adapt maps directory
+                        is not found on the server.
+    ValueError: If map_type is not recognized.
+                (i.e. not 'fixed' or 'central')
+    FileNotFoundError: If maps were not found.
+
+Examples:
+    ```python
+
+    import datetime as dt
+
+    # Use datetime objects for the time
+    time_flare = dt.datetime(2018, 2, 12, hour=10)
+    swmfpy.web.download_magnetogram_adapt(time=time_flare,
+                                          map_type='central',
+                                          download_dir='./mymaps/')
+    ```
 
