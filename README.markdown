@@ -30,3 +30,5 @@ import swmfpy
 help(swmfpy)  # To see list of functions
 help(swmfpy.io.read_gm_log)  # To see the function documentation
 ```
+
+However if you would like an auto-documented version (uses exact same text as the help() function output), go [here](DOCUMENTATION.markdown).
