@@ -14,9 +14,11 @@ def read_wdc_ae(wdc_filename):
        text file into a dictionary of lists.
 
     Args:
+
         wdc_filename (str): Filename of wdc data from
                             http://wdc.kugi.kyoto-u.ac.jp/
     Returns:
+
         dict: {
                Auroral indeces 'AL', 'AE', 'AO', 'AU' (int): {
                     'times' (datetime.datetime): List of datetime objects
