@@ -28,7 +28,6 @@ def get_omni_data(time_from, time_to, **kwargs):
 
     Examples:
         ```python
-
         import datetime
         import swmfpy.web
 
@@ -163,7 +162,6 @@ def download_magnetogram_adapt(time, map_type='fixed', **kwargs):
 
     Examples:
         ```python
-
         import datetime as dt
 
         # Use datetime objects for the time

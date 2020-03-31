@@ -30,12 +30,10 @@ def replace_command(parameters, input_file, output_file='PARAM.in'):
 
     Examples:
         ```python
-
         change['#SOLARWINDFILE'] = [['T', 'UseSolarWindFile'],
                                     ['new_imf.dat', 'NameSolarWindFile']]
         # This will overwrite PARAM.in
         swmfpy.paramin.replace('PARAM.in.template', change)
-
         ```
     """
     # Author: Qusai Al Shidi
@@ -93,12 +91,10 @@ def read_command(command, paramin_file='PARAM.in', **kwargs):
 
     Examples:
         ```python
-
         start_time = swmfpy.paramin.read_command('#STARTTIME')
         end_time = swmfpy.paramin.read_command('#ENDTIME')
         print('Starting month is ', start_time[1])
         print('Ending month is ', end_time[1])
-
         ```
 
     This will treat all following lines as values for the command. To suppress

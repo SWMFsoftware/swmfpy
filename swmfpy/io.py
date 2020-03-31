@@ -21,9 +21,8 @@ def read_wdc_ae(wdc_filename):
 
         dict: {
                Auroral indeces 'AL', 'AE', 'AO', 'AU' (int): {
-                    'times' (datetime.datetime): List of datetime objects
-                                                 corresponding to time in UT.
-                    'values' (int): List of indeces.
+               'times' (datetime.datetime)
+               'values' (int): List of indeces.
               }
     """
 
@@ -78,7 +77,6 @@ def read_wdc_asy_sym(wdc_filename):
 
     Examples:
         ```python
-
         indeces = swmfpy.io.read_wdc_asy_sym('wdc.dat')
         # Plot data
         plt.plot(indeces['SYM-H']['times'],
@@ -86,7 +84,6 @@ def read_wdc_asy_sym(wdc_filename):
                  label='SYM-H [nT]'
                  )
         plt.xlabel('Time [UT]')
-
         ```
 
     Important to note if there is bad data it will be filled as None.
@@ -160,10 +157,11 @@ def read_omni_csv(filename, filtering=False, **kwargs):
                                          magnetic_field, velocity
         filtering (bool): default=False Remove points where the value
                           is >sigma (default: sigma=3) from mean.
-        **kwargs:
-            coarseness (int): default=3, Number of standard deviations
-                              above which to remove if filtering=True.
-            clean (bool): default=True, Clean the omni data of bad data points
+
+    **kwargs:
+        coarseness (int): default=3, Number of standard deviations
+                          above which to remove if filtering=True.
+        clean (bool): default=True, Clean the omni data of bad data points
 
     Returns:
         pandas.DataFrame: object with solar wind data
@@ -221,6 +219,9 @@ def write_imf_input(data, outfilename="IMF.dat", enable_rb=True, **kwargs):
                      (default: "IMF.dat")
         enable_rb: Enables solar wind input for the radiation belt model.
                    (default: True)
+
+    **kwargs:
+        gse (bool): (default: False) Use GSE coordinates instead of GSM.
 
     Other paramaters:
         gse: (default=False)
@@ -296,13 +297,11 @@ def read_gm_log(filename, colnames=None, dtypes=None, index_time=True):
     Examples:
         To plot AL and Dst get the log files
         ```python
-
         geo = swmfpy.io.read_gm_log('run/GM/IO2/geoindex_e20140215-100500.log')
         dst = swmfpy.io.read_gm_log('run/GM/IO2/log_e20140215-100500.log')
 
         # Plot AL indeces
         plt.plot(geo['times', geo['AL'])
-
         ```
 
     """

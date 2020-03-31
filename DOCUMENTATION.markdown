@@ -61,7 +61,6 @@ use swmfpy.io.read_omni_data().
 **Examples**:
 
   ```python
-  
   import datetime
   import swmfpy.web
   
@@ -112,7 +111,6 @@ pattern: adapt4[0,1]3*yyyymmddhh
 **Examples**:
 
   ```python
-  
   import datetime as dt
   
   # Use datetime objects for the time
@@ -152,8 +150,7 @@ text file into a dictionary of lists.
   
 - `dict` - {
   Auroral indeces 'AL', 'AE', 'AO', 'AU' (int): {
-- `'times'` _datetime.datetime_ - List of datetime objects
-  corresponding to time in UT.
+  'times' (datetime.datetime)
 - `'values'` _int_ - List of indeces.
   }
 
@@ -184,7 +181,6 @@ and puts it into a dictionary.
 **Examples**:
 
   ```python
-  
   indeces = swmfpy.io.read_wdc_asy_sym('wdc.dat')
   # Plot data
   plt.plot(indeces['SYM-H']['times'],
@@ -192,7 +188,6 @@ and puts it into a dictionary.
   label='SYM-H [nT]'
   )
   plt.xlabel('Time [UT]')
-  
   ```
   
   Important to note if there is bad data it will be filled as None.
@@ -214,6 +209,7 @@ and turn it into a pandas.DataFrame.
   magnetic_field, velocity
 - `filtering` _bool_ - default=False Remove points where the value
   is >sigma (default: sigma=3) from mean.
+  
   **kwargs:
 - `coarseness` _int_ - default=3, Number of standard deviations
   above which to remove if filtering=True.
@@ -246,6 +242,9 @@ that SWMF can read as input IMF (IMF.dat).
 - `(default` - "IMF.dat")
 - `enable_rb` - Enables solar wind input for the radiation belt model.
 - `(default` - True)
+  
+  **kwargs:
+- `gse` _bool_ - (default: False) Use GSE coordinates instead of GSM.
   
   Other paramaters:
 - `gse` - (default=False)
@@ -282,13 +281,11 @@ from the GM model log.
 
   To plot AL and Dst get the log files
   ```python
-  
   geo = swmfpy.io.read_gm_log('run/GM/IO2/geoindex_e20140215-100500.log')
   dst = swmfpy.io.read_gm_log('run/GM/IO2/log_e20140215-100500.log')
   
   # Plot AL indeces
   plt.plot(geo['times', geo['AL'])
-  
   ```
 
 <a name=".swmfpy.paramin"></a>
@@ -329,12 +326,10 @@ Note, if you have repeat commands this will replace all the repeats.
 **Examples**:
 
   ```python
-  
   change['`SOLARWINDFILE`'] = [['T', 'UseSolarWindFile'],
   ['new_imf.dat', 'NameSolarWindFile']]
   # This will overwrite PARAM.in
   swmfpy.paramin.replace('PARAM.in.template', change)
-  
   ```
 
 <a name=".swmfpy.paramin.read_command"></a>
@@ -372,12 +367,10 @@ This will find the `COMMAND` and return a list of values for the parameters.
 **Examples**:
 
   ```python
-  
   start_time = swmfpy.paramin.read_command('`STARTTIME`')
   end_time = swmfpy.paramin.read_command('`ENDTIME`')
   print('Starting month is ', start_time[1])
   print('Ending month is ', end_time[1])
-  
   ```
   
   This will treat all following lines as values for the command. To suppress
