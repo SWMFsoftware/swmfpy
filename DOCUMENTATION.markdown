@@ -27,9 +27,6 @@ These are not automatically imported. Might have extra dependancies.
 # swmfpy.io
 Input/Output tools
 
-Input/Output
-============
-
 Here are tools to read and write files relating to SWMF.
 
 TODO: Move pandas dependancy elsewhere.
@@ -72,7 +69,8 @@ Returns:
     {'[ASY-SYM]-[D-H]': 'times': [], 'values': []}
 
 Examples:
-    ```
+    ```python
+
     indeces = swmfpy.io.read_wdc_asy_sym('wdc.dat')
     # Plot data
     plt.plot(indeces['SYM-H']['times'],
@@ -80,6 +78,7 @@ Examples:
              label='SYM-H [nT]'
              )
     plt.xlabel('Time [UT]')
+
     ```
 
 Important to note if there is bad data it will be filled as None.
@@ -153,21 +152,19 @@ Returns:
 
 Examples:
     To plot AL and Dst get the log files
-    ```
+    ```python
+
     geo = swmfpy.io.read_gm_log('run/GM/IO2/geoindex_e20140215-100500.log')
     dst = swmfpy.io.read_gm_log('run/GM/IO2/log_e20140215-100500.log')
 
     # Plot AL indeces
     plt.plot(geo['times', geo['AL'])
+
     ```
 
 
 
 # swmfpy.paramin
-
-PARAM.in Tools
---------------
-
 These tools are to help script the editing of PARAM.in files.
 
 
@@ -243,9 +240,6 @@ PARAM.in is comment heavy.
 
 # swmfpy.web
 Tools to retrieve and send data on the web.
-
-SWMF Web Tools
-==============
 
 Here are a collection of tools to work with data on the internet. Thus,
 this module mostly requires an internet connection.

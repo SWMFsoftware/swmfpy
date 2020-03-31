@@ -1,8 +1,4 @@
-"""
-PARAM.in Tools
---------------
-
-These tools are to help script the editing of PARAM.in files.
+""" These tools are to help script the editing of PARAM.in files.
 """
 __all__ = [
     'read_command',
