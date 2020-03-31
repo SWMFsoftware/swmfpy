@@ -1,3 +1,19 @@
+# Table of Contents
+
+* [swmfpy](#.swmfpy)
+* [swmfpy.web](#.swmfpy.web)
+  * [get\_omni\_data](#.swmfpy.web.get_omni_data)
+  * [download\_magnetogram\_adapt](#.swmfpy.web.download_magnetogram_adapt)
+* [swmfpy.io](#.swmfpy.io)
+  * [read\_wdc\_ae](#.swmfpy.io.read_wdc_ae)
+  * [read\_wdc\_asy\_sym](#.swmfpy.io.read_wdc_asy_sym)
+  * [read\_omni\_csv](#.swmfpy.io.read_omni_csv)
+  * [write\_imf\_input](#.swmfpy.io.write_imf_input)
+  * [read\_gm\_log](#.swmfpy.io.read_gm_log)
+* [swmfpy.paramin](#.swmfpy.paramin)
+  * [replace\_command](#.swmfpy.paramin.replace_command)
+  * [read\_command](#.swmfpy.paramin.read_command)
+
 <a name=".swmfpy"></a>
 ## swmfpy
 
