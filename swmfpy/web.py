@@ -164,6 +164,8 @@ def download_magnetogram_hmi(time, **kwargs):
 
     Raises:
         ImportError: If module `drms` is not found.
+        FileNotFoundError: If the JSOC doesn't have the magnetograms for that
+                           time.
 
     Examples:
         ```python
@@ -211,6 +213,8 @@ def download_magnetogram_hmi(time, **kwargs):
     if not download_dir.endswith('/') and download_dir != '':
         download_dir += '/'
     for data_time, mag_url in zip(times, data[1].field):
+        if mag_url == 'BadSegLink':  # JSOC will return this if not found
+            raise FileNotFoundError('Could not find those HMI magnetograms.')
         filename = str(data_time).replace(' ', '_')  # Add timestamp
         filename += '_' + mag_url.split('/')[-1]  # Last is filename
         url = 'http://jsoc.stanford.edu' + mag_url
@@ -339,7 +343,7 @@ def download_magnetogram_adapt(time, map_type='fixed', **kwargs):
     ftp.quit()
 
     # return first file name if all goes well
-    return_name = filenames[0]
+    return_name = filenames
     if '.gz' in return_name:
-        return_name = return_name[:-3]
+        return_name = return_name.replace('.gz', '')
     return return_name
