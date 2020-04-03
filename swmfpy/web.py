@@ -149,7 +149,7 @@ def download_magnetogram_hmi(time, **kwargs):
     This unfortunately depends on sunpy/drms, if you don't have it try,
 
     ```bash
-    pip install -U --user sunpy
+    pip install -U --user drms
     ```
 
     Args:
