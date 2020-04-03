@@ -7,6 +7,7 @@ __author__ = 'Qusai Al Shidi'
 __email__ = 'qusai@umich.edu'
 
 import datetime as dt
+import urllib
 
 
 def get_omni_data(time_from, time_to, **kwargs):
@@ -40,7 +41,6 @@ def get_omni_data(time_from, time_to, **kwargs):
     # Author: Qusai Al Shidi
     # Email: qusai@umich.edu
 
-    import urllib.request
     from dateutil import rrule
 
     # This is straight from the format guide on spdf
@@ -140,6 +140,95 @@ def _check_bad_omni_num(value_string):
     return True
 
 
+def download_magnetogram_hmi(time, **kwargs):
+    """Downloads HMI vector magnetogram fits files.
+
+    This will download vector magnetogram FITS files from
+    Joint Science Operations Center (JSOC) for a certain hour.
+
+    This unfortunately depends on sunpy/drms, if you don't have it try,
+
+    ```bash
+    pip install -U --user sunpy
+    ```
+
+    Args:
+        time (datetime.datetime): Time after which to find vector magnetograms.
+
+    **kwargs:
+        download_dir (str): Relative directory to download to.
+        verbose (bool): (default False) print out the files it's downloading.
+
+    Returns:
+        (str) list of filenames downloaded.
+
+    Raises:
+        ImportError: If module `drms` is not found.
+
+    Examples:
+        ```python
+        from swmfpy.web import download_magnetogram_hmi
+        import datetime as dt
+
+        # I am interested in the hmi vector magnetogram from 2014, 2, 18
+        time_mag = dt.datetime(2014, 2, 18, 10)  # Around hour 10
+
+        # Calling it will download
+        filenames = download_magnetogram_hmi(time=time_mag,
+                                             download_dir='mydir/')
+
+        # To see my list
+        print('The magnetograms I downloaded are:', filenames)
+
+        # You may call and ignore the file list
+        download_magnetogram_hmi(time=time_mag, download_dir='mydir')
+        ```
+    """
+
+    # import drms dynamically
+    try:
+        import drms
+    except ImportError:
+        raise ImportError('''Error importing drms. Maybe try
+            `pip install -U --user drms` .
+            ''')
+
+    client = drms.Client()
+    query_string = 'hmi.B_720s['
+    query_string += f'{time.year}.'
+    query_string += f'{str(time.month).zfill(2)}.'
+    query_string += f'{str(time.day).zfill(2)}_'
+    query_string += f'{str(time.hour).zfill(2)}'
+    query_string += f'/1h]'
+    data = client.query(query_string, key='T_REC', seg='field')
+
+    # Download data
+    if kwargs.get('verbose', False):
+        print('Starting download of magnetograms:\n')
+    return_names = []
+    times = drms.to_datetime(data[0].T_REC)
+    download_dir = kwargs.get('download_dir', '')
+    if not download_dir.endswith('/') and download_dir != '':
+        download_dir += '/'
+    for data_time, mag_url in zip(times, data[1].field):
+        filename = str(data_time).replace(' ', '_')  # Add timestamp
+        filename += '_' + mag_url.split('/')[-1]  # Last is filename
+        url = 'http://jsoc.stanford.edu' + mag_url
+        if kwargs.get('verbose', False):
+            print(f'Downloading from {url} to {download_dir+filename}.')
+        with urllib.request.urlopen(url) as fits_file:
+            with open(download_dir+filename, 'wb') as local_file:
+                local_file.write(fits_file.read())
+        if kwargs.get('verbose', False):
+            print(f'Done writing {download_dir+filename}.\n')
+        return_names.append(download_dir+filename)
+
+    if kwargs.get('verbose', False):
+        print('Completed downloads.\n')
+
+    return return_names
+
+
 def download_magnetogram_adapt(time, map_type='fixed', **kwargs):
     """This routine downloads GONG ADAPT magnetograms.
 
@@ -152,9 +241,10 @@ def download_magnetogram_adapt(time, map_type='fixed', **kwargs):
         map_type (str): (default: 'fixed')
                         Choose either 'fixed' or 'central' for
                         the map type you want.
-        **kwargs:
-            download_dir (str): (default is current dir) Relative directory
-                                where you want the maps to be downloaded.
+
+    **kwargs:
+        download_dir (str): (default is current dir) Relative directory
+                            where you want the maps to be downloaded.
 
     Returns:
         str: First unzipped filename found.
