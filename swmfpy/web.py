@@ -99,7 +99,13 @@ def get_omni_data(time_from, time_to, **kwargs):
         return_data[name] = []
 
     # Iterate monthly to save RAM
-    for date in rrule.rrule(rrule.MONTHLY, dtstart=time_from, until=time_to):
+    for date in rrule.rrule(rrule.MONTHLY,
+                            dtstart=dt.datetime(time_from.year,
+                                                time_from.month,
+                                                1),
+                            until=dt.datetime(time_to.year,
+                                              time_to.month,
+                                              25)):
         suffix = 'omni_min'
         suffix += str(date.year) + str(date.month).zfill(2)
         suffix += '.asc'
