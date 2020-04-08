@@ -133,18 +133,20 @@ def get_omni_data(time_from, time_to, **kwargs):
 
 
 def _check_bad_omni_num(value_string):
-    """Returns true if bad or false if not"""
+    """Returns true if bad or false if not. Bad numbers usually just have 9s
+       in omni.
+    """
     for char in value_string:
         if char != '9' and char != '.':
             return False
     return True
 
 
-def download_magnetogram_hmi(time, **kwargs):
+def download_magnetogram_hmi(mag_time, **kwargs):
     """Downloads HMI vector magnetogram fits files.
 
     This will download vector magnetogram FITS files from
-    Joint Science Operations Center (JSOC) for a certain hour.
+    Joint Science Operations Center (JSOC) near a certain hour.
 
     This unfortunately depends on sunpy/drms, if you don't have it try,
 
@@ -153,7 +155,8 @@ def download_magnetogram_hmi(time, **kwargs):
     ```
 
     Args:
-        time (datetime.datetime): Time after which to find vector magnetograms.
+        mag_time (datetime.datetime): Time after which to find
+                                      vector magnetograms.
 
     **kwargs:
         download_dir (str): Relative directory to download to.
@@ -176,14 +179,14 @@ def download_magnetogram_hmi(time, **kwargs):
         time_mag = dt.datetime(2014, 2, 18, 10)  # Around hour 10
 
         # Calling it will download
-        filenames = download_magnetogram_hmi(time=time_mag,
+        filenames = download_magnetogram_hmi(mag_time=time_mag,
                                              download_dir='mydir/')
 
         # To see my list
         print('The magnetograms I downloaded are:', filenames)
 
         # You may call and ignore the file list
-        download_magnetogram_hmi(time=time_mag, download_dir='mydir')
+        download_magnetogram_hmi(mag_time=time_mag, download_dir='mydir')
         ```
     """
 
@@ -197,25 +200,30 @@ def download_magnetogram_hmi(time, **kwargs):
 
     client = drms.Client()
     query_string = 'hmi.B_720s['
-    query_string += f'{time.year}.'
-    query_string += f'{str(time.month).zfill(2)}.'
-    query_string += f'{str(time.day).zfill(2)}_'
-    query_string += f'{str(time.hour).zfill(2)}'
+    query_string += f'{mag_time.year}.'
+    query_string += f'{str(mag_time.month).zfill(2)}.'
+    query_string += f'{str(mag_time.day).zfill(2)}_'
+    query_string += f'{str(mag_time.hour).zfill(2)}'
     query_string += f'/1h]'
     data = client.query(query_string, key='T_REC', seg='field')
+
+    times = drms.to_datetime(data[0].T_REC)
+    nearest_time = _nearest(mag_time, times)
+    # Generator to find the nearest time
+    urls = ((data_time, mag_url) for (data_time, mag_url)
+            in zip(times, data[1].field) if data_time == nearest_time)
 
     # Download data
     if kwargs.get('verbose', False):
         print('Starting download of magnetograms:\n')
-    return_names = []
-    times = drms.to_datetime(data[0].T_REC)
+    return_name = ''
     download_dir = kwargs.get('download_dir', '')
     if not download_dir.endswith('/') and download_dir != '':
         download_dir += '/'
-    for data_time, mag_url in zip(times, data[1].field):
+    for data_time, mag_url in urls:
         if mag_url == 'BadSegLink':  # JSOC will return this if not found
             raise FileNotFoundError('Could not find those HMI magnetograms.')
-        filename = str(data_time).replace(' ', '_')  # Add timestamp
+        filename = 'hmi_' + str(data_time).replace(' ', '_')  # Add timestamp
         filename += '_' + mag_url.split('/')[-1]  # Last is filename
         url = 'http://jsoc.stanford.edu' + mag_url
         if kwargs.get('verbose', False):
@@ -225,12 +233,12 @@ def download_magnetogram_hmi(time, **kwargs):
                 local_file.write(fits_file.read())
         if kwargs.get('verbose', False):
             print(f'Done writing {download_dir+filename}.\n')
-        return_names.append(download_dir+filename)
+        return_name = download_dir+filename
 
     if kwargs.get('verbose', False):
         print('Completed downloads.\n')
 
-    return return_names
+    return return_name
 
 
 def download_magnetogram_adapt(time, map_type='fixed', **kwargs):
@@ -343,7 +351,13 @@ def download_magnetogram_adapt(time, map_type='fixed', **kwargs):
     ftp.quit()
 
     # return first file name if all goes well
-    return_name = filenames
-    if '.gz' in return_name:
-        return_name = return_name.replace('.gz', '')
-    return return_name
+    return_names = filenames
+    for index, filename in enumerate(return_names):
+        if '.gz' in filename:
+            return_names[index] = filename.replace('.gz', '')
+    return return_names
+
+
+def _nearest(pivot, items):
+    """Returns nearest point"""
+    return min(items, key=lambda x: abs(x - pivot))
