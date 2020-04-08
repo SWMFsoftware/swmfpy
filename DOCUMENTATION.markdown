@@ -113,7 +113,7 @@ pip install -U --user drms
 
 **Returns**:
 
-  (str) list of filenames downloaded.
+- `str` - list of filenames downloaded.
   
 
 **Raises**:
@@ -221,12 +221,9 @@ text file into a dictionary of lists.
 
 **Returns**:
 
-  
-- `dict` - {
-  Auroral indeces 'AL', 'AE', 'AO', 'AU' (int): {
-  'times' (datetime.datetime)
-- `'values'` _int_ - List of indeces.
-  }
+- `dict` - Auroral indeces 'AL', 'AE', 'AO', 'AU'
+- `datetime.datetime` - 'times'
+- `int` - 'values'
 
 <a name=".swmfpy.io.read_wdc_asy_sym"></a>
 #### read\_wdc\_asy\_sym
@@ -248,8 +245,7 @@ and puts it into a dictionary.
 
 **Returns**:
 
-- `dict` - of values.
-- `{'[ASY-SYM]-[D-H]'` - 'times': [], 'values': []}
+- `dict` - of values. {'[ASY-SYM]-[D-H]': 'times': [], 'values': []}
   
 
 **Examples**:
@@ -290,7 +286,7 @@ from the GM model log.
 
 **Returns**:
 
-  Dictionary of the log file
+- `dict` - Dictionary of the log file
   
 
 **Examples**:

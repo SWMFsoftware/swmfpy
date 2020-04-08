@@ -163,7 +163,7 @@ def download_magnetogram_hmi(mag_time, **kwargs):
         verbose (bool): (default False) print out the files it's downloading.
 
     Returns:
-        (str) list of filenames downloaded.
+        str: list of filenames downloaded.
 
     Raises:
         ImportError: If module `drms` is not found.

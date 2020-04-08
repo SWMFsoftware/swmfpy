@@ -17,12 +17,9 @@ def read_wdc_ae(wdc_filename):
         wdc_filename (str): Filename of wdc data from
                             http://wdc.kugi.kyoto-u.ac.jp/
     Returns:
-
-        dict: {
-               Auroral indeces 'AL', 'AE', 'AO', 'AU' (int): {
-               'times' (datetime.datetime)
-               'values' (int): List of indeces.
-              }
+        dict: Auroral indeces 'AL', 'AE', 'AO', 'AU'
+            datetime.datetime: 'times'
+            int: 'values'
     """
 
     # Initialize return data
@@ -71,8 +68,7 @@ def read_wdc_asy_sym(wdc_filename):
         wdc_filename (str): Relative filename (or file handle no.) to read.
 
     Returns:
-        dict: of values.
-        {'[ASY-SYM]-[D-H]': 'times': [], 'values': []}
+        dict: of values. {'[ASY-SYM]-[D-H]': 'times': [], 'values': []}
 
     Examples:
         ```python
@@ -169,7 +165,7 @@ def read_gm_log(filename, colnames=None, dtypes=None, index_time=True):
                                            in dictionary key 'Time [UT]'.
 
     Returns:
-        Dictionary of the log file
+        dict: Dictionary of the log file
 
     Examples:
         To plot AL and Dst get the log files
