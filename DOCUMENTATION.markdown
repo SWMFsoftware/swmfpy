@@ -3,12 +3,11 @@
 * [swmfpy](#.swmfpy)
 * [swmfpy.web](#.swmfpy.web)
   * [get\_omni\_data](#.swmfpy.web.get_omni_data)
+  * [download\_magnetogram\_hmi](#.swmfpy.web.download_magnetogram_hmi)
   * [download\_magnetogram\_adapt](#.swmfpy.web.download_magnetogram_adapt)
 * [swmfpy.io](#.swmfpy.io)
   * [read\_wdc\_ae](#.swmfpy.io.read_wdc_ae)
   * [read\_wdc\_asy\_sym](#.swmfpy.io.read_wdc_asy_sym)
-  * [read\_omni\_csv](#.swmfpy.io.read_omni_csv)
-  * [write\_imf\_input](#.swmfpy.io.write_imf_input)
   * [read\_gm\_log](#.swmfpy.io.read_gm_log)
 * [swmfpy.paramin](#.swmfpy.paramin)
   * [replace\_command](#.swmfpy.paramin.replace_command)
@@ -16,9 +15,6 @@
 
 <a name=".swmfpy"></a>
 ## swmfpy
-
-SWMF Tools
-==========
 
 A collection of tools to read, write, visualize with the
 Space Weather Modeling Framework (SWMF).
@@ -28,9 +24,9 @@ Modules
 
 These are automatically imported.
 
-- swmfpy.io: Input/Output tools.
-- swmfpy.paramin: PARAM.in editing tools.
-- swmfpy.web: Internet data downloading/uploading tools.
+- `swmfpy.io` Input/Output tools.
+- `swmfpy.paramin` PARAM.in editing tools.
+- `swmfpy.web` Internet data downloading/uploading tools.
 
 Extra Modules
 -------------
@@ -86,6 +82,67 @@ use swmfpy.io.read_omni_data().
   time_to=storm_end)
   ```
 
+<a name=".swmfpy.web.download_magnetogram_hmi"></a>
+#### download\_magnetogram\_hmi
+
+```python
+download_magnetogram_hmi(mag_time, **kwargs)
+```
+
+Downloads HMI vector magnetogram fits files.
+
+This will download vector magnetogram FITS files from
+Joint Science Operations Center (JSOC) near a certain hour.
+
+This unfortunately depends on sunpy/drms, if you don't have it try,
+
+
+```bash
+pip install -U --user drms
+```
+
+**Arguments**:
+
+- `mag_time` _datetime.datetime_ - Time after which to find
+  vector magnetograms.
+  
+  **kwargs:
+- `download_dir` _str_ - Relative directory to download to.
+- `verbose` _bool_ - (default False) print out the files it's downloading.
+  
+
+**Returns**:
+
+  (str) list of filenames downloaded.
+  
+
+**Raises**:
+
+- `ImportError` - If module `drms` is not found.
+- `FileNotFoundError` - If the JSOC doesn't have the magnetograms for that
+  time.
+  
+
+**Examples**:
+
+  ```python
+  from swmfpy.web import download_magnetogram_hmi
+  import datetime as dt
+  
+  # I am interested in the hmi vector magnetogram from 2014, 2, 18
+  time_mag = dt.datetime(2014, 2, 18, 10)  # Around hour 10
+  
+  # Calling it will download
+  filenames = download_magnetogram_hmi(mag_time=time_mag,
+  download_dir='mydir/')
+  
+  # To see my list
+  print('The magnetograms I downloaded are:', filenames)
+  
+  # You may call and ignore the file list
+  download_magnetogram_hmi(mag_time=time_mag, download_dir='mydir')
+  ```
+
 <a name=".swmfpy.web.download_magnetogram_adapt"></a>
 #### download\_magnetogram\_adapt
 
@@ -105,6 +162,7 @@ pattern: adapt4[0,1]3*yyyymmddhh
 - `map_type` _str_ - (default: 'fixed')
   Choose either 'fixed' or 'central' for
   the map type you want.
+  
   **kwargs:
 - `download_dir` _str_ - (default is current dir) Relative directory
   where you want the maps to be downloaded.
@@ -208,64 +266,6 @@ and puts it into a dictionary.
   
   Important to note if there is bad data it will be filled as None.
 
-<a name=".swmfpy.io.read_omni_csv"></a>
-#### read\_omni\_csv
-
-```python
-read_omni_csv(filename, filtering=False, **kwargs)
-```
-
-Take an OMNI csv file from cdaweb.sci.gsfc.nasa.gov
-and turn it into a pandas.DataFrame.
-
-**Arguments**:
-
-- `fnames` _dict_ - dict with filenames from omni .lst files.
-  The keys must be: density, temperature,
-  magnetic_field, velocity
-- `filtering` _bool_ - default=False Remove points where the value
-  is >sigma (default: sigma=3) from mean.
-  
-  **kwargs:
-- `coarseness` _int_ - default=3, Number of standard deviations
-  above which to remove if filtering=True.
-- `clean` _bool_ - default=True, Clean the omni data of bad data points
-  
-
-**Returns**:
-
-- `pandas.DataFrame` - object with solar wind data
-  
-  Make sure to download the csv files with cdaweb.sci.gsfc.nasa.gov
-  the header seperated into a json file for safety.
-  
-  This only tested with OMNI data specifically.
-
-<a name=".swmfpy.io.write_imf_input"></a>
-#### write\_imf\_input
-
-```python
-write_imf_input(data, outfilename="IMF.dat", enable_rb=True, **kwargs)
-```
-
-Writes the pandas.DataFrame into an input file
-that SWMF can read as input IMF (IMF.dat).
-
-**Arguments**:
-
-- `data` - pandas.DataFrame object with solar wind data
-- `outfilename` - The output file name for ballistic solar wind data.
-- `(default` - "IMF.dat")
-- `enable_rb` - Enables solar wind input for the radiation belt model.
-- `(default` - True)
-  
-  **kwargs:
-- `gse` _bool_ - (default: False) Use GSE coordinates instead of GSM.
-  
-  Other paramaters:
-- `gse` - (default=False)
-  Use GSE coordinate system for the file instead of GSM default.
-
 <a name=".swmfpy.io.read_gm_log"></a>
 #### read\_gm\_log
 
@@ -323,7 +323,7 @@ Note, if you have repeat commands this will replace all the repeats.
 **Arguments**:
 
 - `parameters` _dict_ - Dictionary of strs with format
-  replace = {'`COMMAND`': ['value', 'comments', ...]}
+  replace = {'COMMAND': ['value', 'comments', ...]}
   This is case sensitive.
 - `input_file` _str_ - String of PARAM.in file name.
 - `output_file` _str_ - (default 'PARAM.in') The output file to write to.
@@ -342,7 +342,7 @@ Note, if you have repeat commands this will replace all the repeats.
 **Examples**:
 
   ```python
-  change['`SOLARWINDFILE`'] = [['T', 'UseSolarWindFile'],
+  change['SOLARWINDFILE'] = [['T', 'UseSolarWindFile'],
   ['new_imf.dat', 'NameSolarWindFile']]
   # This will overwrite PARAM.in
   swmfpy.paramin.replace('PARAM.in.template', change)
@@ -357,11 +357,12 @@ read_command(command, paramin_file='PARAM.in', **kwargs)
 
 Get parameters of a certain command in PARAM.in file.
 
-This will find the `COMMAND` and return a list of values for the parameters.
+This will find the COMMAND and return a list of
+values for the parameters.
 
 **Arguments**:
 
-- `command` _str_ - This is the `COMMAND` you're looking for.
+- `command` _str_ - This is the COMMAND you're looking for.
 - `paramin_file` _str_ - (default: 'PARAM.in') The file in which you're
   looking for the command values.
   **kwargs:
@@ -371,13 +372,13 @@ This will find the `COMMAND` and return a list of values for the parameters.
 
 **Returns**:
 
-- `list` - Values found for the `COMMAND` in file. Index 0 is `COMMAND` and
-  the values follow (1 for first argument...)
+- `list` - Values found for the COMMAND in file. Index 0 is
+  COMMAND and the values follow (1 for first argument...)
   
 
 **Raises**:
 
-- `ValueError` - When the `COMMAND` is not found.
+- `ValueError` - When the COMMAND is not found.
   
 
 **Examples**:

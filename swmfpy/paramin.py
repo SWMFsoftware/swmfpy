@@ -17,8 +17,8 @@ def replace_command(parameters, input_file, output_file='PARAM.in'):
 
     Args:
         parameters (dict): Dictionary of strs with format
-                        replace = {'#COMMAND': ['value', 'comments', ...]}
-                        This is case sensitive.
+              replace = {'COMMAND': ['value', 'comments', ...]}
+              This is case sensitive.
         input_file (str): String of PARAM.in file name.
         output_file (str): (default 'PARAM.in') The output file to write to.
                            A value of None will not output a file.
@@ -30,7 +30,7 @@ def replace_command(parameters, input_file, output_file='PARAM.in'):
 
     Examples:
         ```python
-        change['#SOLARWINDFILE'] = [['T', 'UseSolarWindFile'],
+        change['SOLARWINDFILE'] = [['T', 'UseSolarWindFile'],
                                     ['new_imf.dat', 'NameSolarWindFile']]
         # This will overwrite PARAM.in
         swmfpy.paramin.replace('PARAM.in.template', change)
@@ -72,10 +72,11 @@ def replace_command(parameters, input_file, output_file='PARAM.in'):
 def read_command(command, paramin_file='PARAM.in', **kwargs):
     """Get parameters of a certain command in PARAM.in file.
 
-    This will find the #COMMAND and return a list of values for the parameters.
+    This will find the COMMAND and return a list of
+    values for the parameters.
 
     Args:
-        command (str): This is the #COMMAND you're looking for.
+        command (str): This is the COMMAND you're looking for.
         paramin_file (str): (default: 'PARAM.in') The file in which you're
                             looking for the command values.
         **kwargs:
@@ -83,11 +84,11 @@ def read_command(command, paramin_file='PARAM.in', **kwargs):
                                  command.
 
     Returns:
-        list: Values found for the #COMMAND in file. Index 0 is #COMMAND and
-              the values follow (1 for first argument...)
+        list: Values found for the COMMAND in file. Index 0 is
+        COMMAND and the values follow (1 for first argument...)
 
     Raises:
-        ValueError: When the #COMMAND is not found.
+        ValueError: When the COMMAND is not found.
 
     Examples:
         ```python
@@ -147,7 +148,7 @@ def _make_line(value):
 
 
 def _get_command(line):
-    """Returns the '#COMMAND' if on line.
+    """Returns the 'COMMAND' if on line.
 
     Args:
         line (str, list, tuple): The line in the PARAM.in file.
