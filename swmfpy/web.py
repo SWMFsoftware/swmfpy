@@ -7,6 +7,7 @@ __author__ = 'Qusai Al Shidi'
 __email__ = 'qusai@umich.edu'
 
 import datetime as dt
+import urllib
 
 
 def get_omni_data(time_from, time_to, **kwargs):
@@ -40,7 +41,6 @@ def get_omni_data(time_from, time_to, **kwargs):
     # Author: Qusai Al Shidi
     # Email: qusai@umich.edu
 
-    import urllib.request
     from dateutil import rrule
 
     # This is straight from the format guide on spdf
@@ -133,11 +133,112 @@ def get_omni_data(time_from, time_to, **kwargs):
 
 
 def _check_bad_omni_num(value_string):
-    """Returns true if bad or false if not"""
+    """Returns true if bad or false if not. Bad numbers usually just have 9s
+       in omni.
+    """
     for char in value_string:
         if char != '9' and char != '.':
             return False
     return True
+
+
+def download_magnetogram_hmi(mag_time, **kwargs):
+    """Downloads HMI vector magnetogram fits files.
+
+    This will download vector magnetogram FITS files from
+    Joint Science Operations Center (JSOC) near a certain hour.
+
+    This unfortunately depends on sunpy/drms, if you don't have it try,
+
+    ```bash
+    pip install -U --user drms
+    ```
+
+    Args:
+        mag_time (datetime.datetime): Time after which to find
+                                      vector magnetograms.
+
+    **kwargs:
+        download_dir (str): Relative directory to download to.
+        verbose (bool): (default False) print out the files it's downloading.
+
+    Returns:
+        (str) list of filenames downloaded.
+
+    Raises:
+        ImportError: If module `drms` is not found.
+        FileNotFoundError: If the JSOC doesn't have the magnetograms for that
+                           time.
+
+    Examples:
+        ```python
+        from swmfpy.web import download_magnetogram_hmi
+        import datetime as dt
+
+        # I am interested in the hmi vector magnetogram from 2014, 2, 18
+        time_mag = dt.datetime(2014, 2, 18, 10)  # Around hour 10
+
+        # Calling it will download
+        filenames = download_magnetogram_hmi(mag_time=time_mag,
+                                             download_dir='mydir/')
+
+        # To see my list
+        print('The magnetograms I downloaded are:', filenames)
+
+        # You may call and ignore the file list
+        download_magnetogram_hmi(mag_time=time_mag, download_dir='mydir')
+        ```
+    """
+
+    # import drms dynamically
+    try:
+        import drms
+    except ImportError:
+        raise ImportError('''Error importing drms. Maybe try
+            `pip install -U --user drms` .
+            ''')
+
+    client = drms.Client()
+    query_string = 'hmi.B_720s['
+    query_string += f'{mag_time.year}.'
+    query_string += f'{str(mag_time.month).zfill(2)}.'
+    query_string += f'{str(mag_time.day).zfill(2)}_'
+    query_string += f'{str(mag_time.hour).zfill(2)}'
+    query_string += f'/1h]'
+    data = client.query(query_string, key='T_REC', seg='field')
+
+    times = drms.to_datetime(data[0].T_REC)
+    nearest_time = _nearest(mag_time, times)
+    # Generator to find the nearest time
+    urls = ((data_time, mag_url) for (data_time, mag_url)
+            in zip(times, data[1].field) if data_time == nearest_time)
+
+    # Download data
+    if kwargs.get('verbose', False):
+        print('Starting download of magnetograms:\n')
+    return_name = ''
+    download_dir = kwargs.get('download_dir', '')
+    if not download_dir.endswith('/') and download_dir != '':
+        download_dir += '/'
+    for data_time, mag_url in urls:
+        if mag_url == 'BadSegLink':  # JSOC will return this if not found
+            raise FileNotFoundError('Could not find those HMI magnetograms.')
+        filename = 'hmi_' + str(data_time).replace(' ', '_')  # Add timestamp
+        filename += '_' + mag_url.split('/')[-1]  # Last is filename
+        url = 'http://jsoc.stanford.edu' + mag_url
+        if kwargs.get('verbose', False):
+            print(f'Downloading from {url} to {download_dir+filename}.')
+        with urllib.request.urlopen(url) as fits_file:
+            with open(download_dir+filename, 'wb') as local_file:
+                local_file.write(fits_file.read())
+        if kwargs.get('verbose', False):
+            print(f'Done writing {download_dir+filename}.\n')
+        return_name = download_dir+filename
+
+    if kwargs.get('verbose', False):
+        print('Completed downloads.\n')
+
+    return return_name
 
 
 def download_magnetogram_adapt(time, map_type='fixed', **kwargs):
@@ -152,9 +253,10 @@ def download_magnetogram_adapt(time, map_type='fixed', **kwargs):
         map_type (str): (default: 'fixed')
                         Choose either 'fixed' or 'central' for
                         the map type you want.
-        **kwargs:
-            download_dir (str): (default is current dir) Relative directory
-                                where you want the maps to be downloaded.
+
+    **kwargs:
+        download_dir (str): (default is current dir) Relative directory
+                            where you want the maps to be downloaded.
 
     Returns:
         str: First unzipped filename found.
@@ -249,7 +351,13 @@ def download_magnetogram_adapt(time, map_type='fixed', **kwargs):
     ftp.quit()
 
     # return first file name if all goes well
-    return_name = filenames[0]
-    if '.gz' in return_name:
-        return_name = return_name[:-3]
-    return return_name
+    return_names = filenames
+    for index, filename in enumerate(return_names):
+        if '.gz' in filename:
+            return_names[index] = filename.replace('.gz', '')
+    return return_names
+
+
+def _nearest(pivot, items):
+    """Returns nearest point"""
+    return min(items, key=lambda x: abs(x - pivot))
