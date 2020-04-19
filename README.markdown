@@ -8,13 +8,13 @@ This is a work in progress.
 Usage
 -----
 
-Clone into the directory you want to use it.
+Clone into the directory you want to use it (swmfpy also is part of the SWMF and gets cloned into SWMF/share/Python)
 
 ```bash
-git clone https://gitlab.umich.edu/qusai/swmfpy.git /path/to/my/dir
+git clone https://gitlab.umich.edu/swmf_sofware/swmfpy.git /path/to/my/dir
 ```
 
-Then import it into your python project.
+Set the PYTHONPATH environment variable to include this directory. Then import it into your python project. 
 
 ```python
 import swmfpy
