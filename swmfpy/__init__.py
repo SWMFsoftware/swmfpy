@@ -17,11 +17,11 @@ These are not automatically imported. Might have extra dependancies.
 
 *None yet.*
 """
-__author__ = "Qusai Al Shidi"
-__license__ = "MIT"
-__version__ = "0.0.1"
-__maintainer__ = "Qusai Al Shidi"
-__email__ = "qusai@umich.edu"
+__author__ = 'Qusai Al Shidi'
+__license__ = 'MIT'
+__version__ = '2020.0'
+__maintainer__ = 'Qusai Al Shidi'
+__email__ = 'qusai@umich.edu'
 
 
 from . import paramin

@@ -8,13 +8,20 @@ This is a work in progress.
 Usage
 -----
 
-Clone into the directory you want to use it (swmfpy also is part of the SWMF and gets cloned into SWMF/share/Python)
+Clone into the directory you want to use it (swmfpy also is part of the SWMF and gets cloned into `SWMF/share/Python`)
 
 ```bash
 git clone https://gitlab.umich.edu/swmf_sofware/swmfpy.git /path/to/my/dir
 ```
 
-Set the PYTHONPATH environment variable to include this directory. Then import it into your python project. 
+Then go to its directory and run `setup.py` make sure to include `--user`.
+
+```bash
+cd /path/to/swmfpy
+python3 setup.py install --user
+```
+
+Then import it into your python project. 
 
 ```python
 import swmfpy
@@ -32,3 +39,8 @@ help(swmfpy.io.read_gm_log)  # To see the function documentation
 ```
 
 However if you would like an auto-documented version (uses exact same text as the help() function output), go [here](DOCUMENTATION.markdown).
+
+Issues
+------
+
+If you are experiencing any issues or bugs please go to the [Issues](issues) page and create an issue. Make sure you include steps to recreate the problem in your post.
