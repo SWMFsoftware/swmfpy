@@ -24,6 +24,8 @@ __maintainer__ = 'Qusai Al Shidi'
 __email__ = 'qusai@umich.edu'
 
 
+import sys
+assert sys.version_info >= (3, 6), "swmfpy requires Python >=3.6. Sorry :(."
 from . import paramin
 from . import io
 from . import web
