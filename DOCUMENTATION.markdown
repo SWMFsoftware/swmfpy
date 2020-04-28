@@ -1,17 +1,18 @@
 # Table of Contents
 
 * [swmfpy](#.swmfpy)
-* [swmfpy.web](#.swmfpy.web)
-  * [get\_omni\_data](#.swmfpy.web.get_omni_data)
-  * [download\_magnetogram\_hmi](#.swmfpy.web.download_magnetogram_hmi)
-  * [download\_magnetogram\_adapt](#.swmfpy.web.download_magnetogram_adapt)
 * [swmfpy.io](#.swmfpy.io)
   * [read\_wdc\_ae](#.swmfpy.io.read_wdc_ae)
   * [read\_wdc\_asy\_sym](#.swmfpy.io.read_wdc_asy_sym)
   * [read\_gm\_log](#.swmfpy.io.read_gm_log)
+* [swmfpy.tools](#.swmfpy.tools)
 * [swmfpy.paramin](#.swmfpy.paramin)
   * [replace\_command](#.swmfpy.paramin.replace_command)
   * [read\_command](#.swmfpy.paramin.read_command)
+* [swmfpy.web](#.swmfpy.web)
+  * [get\_omni\_data](#.swmfpy.web.get_omni_data)
+  * [download\_magnetogram\_hmi](#.swmfpy.web.download_magnetogram_hmi)
+  * [download\_magnetogram\_adapt](#.swmfpy.web.download_magnetogram_adapt)
 
 <a name=".swmfpy"></a>
 ## swmfpy
@@ -34,165 +35,6 @@ Extra Modules
 These are not automatically imported. Might have extra dependancies.
 
 *None yet.*
-
-<a name=".swmfpy.web"></a>
-## swmfpy.web
-
-Tools to retrieve and send data on the web.
-
-Here are a collection of tools to work with data on the internet. Thus,
-this module mostly requires an internet connection.
-
-<a name=".swmfpy.web.get_omni_data"></a>
-#### get\_omni\_data
-
-```python
-get_omni_data(time_from, time_to, **kwargs)
-```
-
-Retrieve omni solar wind data over http.
-
-This will download omni data from https://spdf.gsfc.nasa.gov/pub/data/omni
-and put it into a dictionary. If your data is large, then make a csv and
-use swmfpy.io.read_omni_data().
-
-**Arguments**:
-
-- `time_from` _datetime.datetime_ - The start time of the solar wind
-  data that you want to receive.
-- `time_to` _datetime.datetime_ - The end time of the solar wind data
-  you want to receive.
-  
-
-**Returns**:
-
-- `dict` - This will be a list of *all* columns
-  available in the omni data set.
-  
-
-**Examples**:
-
-  ```python
-  import datetime
-  import swmfpy.web
-  
-  storm_start = datetime.datetime(year=2000, month=1, day=1)
-  storm_end = datetime.datetime(year=2000, month=2, day=15)
-  data = swmfpy.web.get_omni_data(time_from=storm_start,
-  time_to=storm_end)
-  ```
-
-<a name=".swmfpy.web.download_magnetogram_hmi"></a>
-#### download\_magnetogram\_hmi
-
-```python
-download_magnetogram_hmi(mag_time, **kwargs)
-```
-
-Downloads HMI vector magnetogram fits files.
-
-This will download vector magnetogram FITS files from
-Joint Science Operations Center (JSOC) near a certain hour.
-
-This unfortunately depends on sunpy/drms, if you don't have it try,
-
-
-```bash
-pip install -U --user drms
-```
-
-**Arguments**:
-
-- `mag_time` _datetime.datetime_ - Time after which to find
-  vector magnetograms.
-  
-  **kwargs:
-- `download_dir` _str_ - Relative directory to download to.
-- `verbose` _bool_ - (default False) print out the files it's downloading.
-  
-
-**Returns**:
-
-- `str` - list of filenames downloaded.
-  
-
-**Raises**:
-
-- `ImportError` - If module `drms` is not found.
-- `FileNotFoundError` - If the JSOC doesn't have the magnetograms for that
-  time.
-  
-
-**Examples**:
-
-  ```python
-  from swmfpy.web import download_magnetogram_hmi
-  import datetime as dt
-  
-  # I am interested in the hmi vector magnetogram from 2014, 2, 18
-  time_mag = dt.datetime(2014, 2, 18, 10)  # Around hour 10
-  
-  # Calling it will download
-  filenames = download_magnetogram_hmi(mag_time=time_mag,
-  download_dir='mydir/')
-  
-  # To see my list
-  print('The magnetograms I downloaded are:', filenames)
-  
-  # You may call and ignore the file list
-  download_magnetogram_hmi(mag_time=time_mag, download_dir='mydir')
-  ```
-
-<a name=".swmfpy.web.download_magnetogram_adapt"></a>
-#### download\_magnetogram\_adapt
-
-```python
-download_magnetogram_adapt(time, map_type='fixed', **kwargs)
-```
-
-This routine downloads GONG ADAPT magnetograms.
-
-Downloads ADAPT magnetograms from ftp://gong2.nso.edu/adapt/maps/gong/
-to a local directory. It will download all maps with the regex file
-pattern: adapt4[0,1]3*yyyymmddhh
-
-**Arguments**:
-
-- `time` _datetime.datetime_ - Time in which you want the magnetogram.
-- `map_type` _str_ - (default: 'fixed')
-  Choose either 'fixed' or 'central' for
-  the map type you want.
-  
-  **kwargs:
-- `download_dir` _str_ - (default is current dir) Relative directory
-  where you want the maps to be downloaded.
-  
-
-**Returns**:
-
-- `str` - First unzipped filename found.
-  
-
-**Raises**:
-
-- `NotADirectoryError` - If the adapt maps directory
-  is not found on the server.
-- `ValueError` - If map_type is not recognized.
-  (i.e. not 'fixed' or 'central')
-- `FileNotFoundError` - If maps were not found.
-  
-
-**Examples**:
-
-  ```python
-  import datetime as dt
-  
-  # Use datetime objects for the time
-  time_flare = dt.datetime(2018, 2, 12, hour=10)
-  swmfpy.web.download_magnetogram_adapt(time=time_flare,
-  map_type='central',
-  download_dir='./mymaps/')
-  ```
 
 <a name=".swmfpy.io"></a>
 ## swmfpy.io
@@ -300,6 +142,12 @@ from the GM model log.
   plt.plot(geo['times', geo['AL'])
   ```
 
+<a name=".swmfpy.tools"></a>
+## swmfpy.tools
+
+Tools to be used in swmfpy functions and classes. Some of the functions are
+*hidden functions*.
+
 <a name=".swmfpy.paramin"></a>
 ## swmfpy.paramin
 
@@ -319,7 +167,7 @@ Note, if you have repeat commands this will replace all the repeats.
 **Arguments**:
 
 - `parameters` _dict_ - Dictionary of strs with format
-  replace = {'COMMAND': ['value', 'comments', ...]}
+  replace = 'COMMAND': ['value', 'comments', ...]
   This is case sensitive.
 - `input_file` _str_ - String of PARAM.in file name.
 - `output_file` _str_ - (default 'PARAM.in') The output file to write to.
@@ -338,7 +186,7 @@ Note, if you have repeat commands this will replace all the repeats.
 **Examples**:
 
   ```python
-  change['SOLARWINDFILE'] = [['T', 'UseSolarWindFile'],
+  change['`SOLARWINDFILE`'] = [['T', 'UseSolarWindFile'],
   ['new_imf.dat', 'NameSolarWindFile']]
   # This will overwrite PARAM.in
   swmfpy.paramin.replace('PARAM.in.template', change)
@@ -389,4 +237,168 @@ values for the parameters.
   This will treat all following lines as values for the command. To suppress
   this, try using the `num_of_values` keyword. This is helpful if your
   PARAM.in is comment heavy.
+
+<a name=".swmfpy.web"></a>
+## swmfpy.web
+
+Tools to retrieve and send data on the web.
+
+Here are a collection of tools to work with data on the internet. Thus,
+this module mostly requires an internet connection.
+
+<a name=".swmfpy.web.get_omni_data"></a>
+#### get\_omni\_data
+
+```python
+get_omni_data(time_from, time_to, **kwargs)
+```
+
+Retrieve omni solar wind data over http.
+
+This will download omni data from https://spdf.gsfc.nasa.gov/pub/data/omni
+and put it into a dictionary. If your data is large, then make a csv and
+use swmfpy.io.read_omni_data().
+
+**Arguments**:
+
+- `time_from` _datetime.datetime_ - The start time of the solar wind
+  data that you want to receive.
+- `time_to` _datetime.datetime_ - The end time of the solar wind data
+  you want to receive.
+  
+
+**Returns**:
+
+- `dict` - This will be a list of *all* columns
+  available in the omni data set.
+  
+
+**Examples**:
+
+  ```python
+  import datetime
+  import swmfpy.web
+  
+  storm_start = datetime.datetime(year=2000, month=1, day=1)
+  storm_end = datetime.datetime(year=2000, month=2, day=15)
+  data = swmfpy.web.get_omni_data(time_from=storm_start,
+  time_to=storm_end)
+  ```
+
+<a name=".swmfpy.web.download_magnetogram_hmi"></a>
+#### download\_magnetogram\_hmi
+
+```python
+download_magnetogram_hmi(mag_time, hmi_map, **kwargs)
+```
+
+Downloads HMI vector magnetogram fits files.
+
+This will download vector magnetogram FITS files from
+Joint Science Operations Center (JSOC) near a certain hour.
+
+This unfortunately depends on sunpy and drms, if you don't have it try,
+
+
+```bash
+pip install -U --user sunpy drms
+```
+
+**Arguments**:
+
+- `mag_time` _datetime.datetime_ - Time after which to find
+  vector magnetograms.
+- `hmi_map` _str_ - JSOC prefix for hmi maps. Currently can only do
+  'hmi.B_720s' and 'hmi.b_synoptic.small'.
+  
+  **kwargs:
+- `download_dir` _str_ - Relative directory to download to.
+- `verbose` _bool_ - (default False) print out the files it's downloading.
+  
+
+**Returns**:
+
+- `str` - list of filenames downloaded.
+  
+
+**Raises**:
+
+- `ImportError` - If module `drms` is not found.
+- `FileNotFoundError` - If the JSOC doesn't have the magnetograms for that
+  time.
+  
+
+**Examples**:
+
+  ```python
+  from swmfpy.web import download_magnetogram_hmi
+  import datetime as dt
+  
+  # I am interested in the hmi vector magnetogram from 2014, 2, 18
+  time_mag = dt.datetime(2014, 2, 18, 10)  # Around hour 10
+  
+  # Calling it will download
+  filenames = download_magnetogram_hmi(mag_time=time_mag,
+  hmi_map='B_720s',
+  download_dir='mydir/')
+  
+  # To see my list
+  print('The magnetograms I downloaded are:', filenames)
+  
+  # You may call and ignore the file list
+  download_magnetogram_hmi(mag_time=time_mag,
+  hmi_map='b_synoptic_small',
+  download_dir='mydir')
+  ```
+
+<a name=".swmfpy.web.download_magnetogram_adapt"></a>
+#### download\_magnetogram\_adapt
+
+```python
+download_magnetogram_adapt(time, map_type='fixed', **kwargs)
+```
+
+This routine downloads GONG ADAPT magnetograms.
+
+Downloads ADAPT magnetograms from ftp://gong2.nso.edu/adapt/maps/gong/
+to a local directory. It will download all maps with the regex file
+pattern: adapt4[0,1]3*yyyymmddhh
+
+**Arguments**:
+
+- `time` _datetime.datetime_ - Time in which you want the magnetogram.
+- `map_type` _str_ - (default: 'fixed')
+  Choose either 'fixed' or 'central' for
+  the map type you want.
+  
+  **kwargs:
+- `download_dir` _str_ - (default is current dir) Relative directory
+  where you want the maps to be downloaded.
+  
+
+**Returns**:
+
+- `str` - First unzipped filename found.
+  
+
+**Raises**:
+
+- `NotADirectoryError` - If the adapt maps directory
+  is not found on the server.
+- `ValueError` - If map_type is not recognized.
+  (i.e. not 'fixed' or 'central')
+- `FileNotFoundError` - If maps were not found.
+  
+
+**Examples**:
+
+  ```python
+  import datetime as dt
+  
+  # Use datetime objects for the time
+  time_flare = dt.datetime(2018, 2, 12, hour=10)
+  swmfpy.web.download_magnetogram_adapt(time=time_flare,
+  map_type='central',
+  download_dir='./mymaps/')
+  ```
 

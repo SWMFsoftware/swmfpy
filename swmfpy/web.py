@@ -8,6 +8,7 @@ __email__ = 'qusai@umich.edu'
 
 import datetime as dt
 import urllib
+from .tools import _import_error_string, _nearest
 
 
 def get_omni_data(time_from, time_to, **kwargs):
@@ -142,21 +143,24 @@ def _check_bad_omni_num(value_string):
     return True
 
 
-def download_magnetogram_hmi(mag_time, **kwargs):
+
+def download_magnetogram_hmi(mag_time, hmi_map='hmi.B_720s', **kwargs):
     """Downloads HMI vector magnetogram fits files.
 
     This will download vector magnetogram FITS files from
     Joint Science Operations Center (JSOC) near a certain hour.
 
-    This unfortunately depends on sunpy/drms, if you don't have it try,
+    This unfortunately depends on sunpy and drms, if you don't have it try,
 
     ```bash
-    pip install -U --user drms
+    pip install -U --user sunpy drms
     ```
 
     Args:
         mag_time (datetime.datetime): Time after which to find
                                       vector magnetograms.
+        hmi_map (str): JSOC prefix for hmi maps. Currently can only do
+                       'hmi.B_720s' and 'hmi.b_synoptic.small'.
 
     **kwargs:
         download_dir (str): Relative directory to download to.
@@ -180,13 +184,16 @@ def download_magnetogram_hmi(mag_time, **kwargs):
 
         # Calling it will download
         filenames = download_magnetogram_hmi(mag_time=time_mag,
+                                             hmi_map='B_720s',
                                              download_dir='mydir/')
 
         # To see my list
         print('The magnetograms I downloaded are:', filenames)
 
         # You may call and ignore the file list
-        download_magnetogram_hmi(mag_time=time_mag, download_dir='mydir')
+        download_magnetogram_hmi(mag_time=time_mag,
+                                 hmi_map='b_synoptic_small',
+                                 download_dir='mydir')
         ```
     """
 
@@ -194,24 +201,15 @@ def download_magnetogram_hmi(mag_time, **kwargs):
     try:
         import drms
     except ImportError:
-        raise ImportError('''Error importing drms. Maybe try
-            `pip install -U --user drms` .
-            ''')
+        raise ImportError(_import_error_string('drms'))
 
+    get_urls = {
+        'hmi.B_720s': _get_urls_hmi_b720,
+        'hmi.b_synoptic_small': _get_urls_hmi_b_synoptic_small,
+        }
     client = drms.Client()
-    query_string = 'hmi.B_720s['
-    query_string += f'{mag_time.year}.'
-    query_string += f'{str(mag_time.month).zfill(2)}.'
-    query_string += f'{str(mag_time.day).zfill(2)}_'
-    query_string += f'{str(mag_time.hour).zfill(2)}'
-    query_string += f'/1h]'
-    data = client.query(query_string, key='T_REC', seg='field')
 
-    times = drms.to_datetime(data[0].T_REC)
-    nearest_time = _nearest(mag_time, times)
-    # Generator to find the nearest time
-    urls = ((data_time, mag_url) for (data_time, mag_url)
-            in zip(times, data[1].field) if data_time == nearest_time)
+    urls = get_urls[hmi_map](client, mag_time)    
 
     # Download data
     if kwargs.get('verbose', False):
@@ -241,6 +239,61 @@ def download_magnetogram_hmi(mag_time, **kwargs):
     return return_name
 
 
+def _get_urls_hmi_b_synoptic_small(client, mag_time):
+    """Returns for #download_magnetogram_hmi needed urls
+
+    Args:
+        client (drms.Client): To query and return urls.
+        mag_time (datetime.datetime): To find nearest magnetogram.
+
+    Returns:
+        generator that yields (datetime.datetime, str): Time of magnetogram,
+            suffix url of magnetogram
+    """
+    import drms
+    try:
+        from sunpy.coordinates.sun import carrington_rotation_number
+    except ImportError as error:
+        print(_import_error_string('sunpy'))
+        raise error
+
+    cr_number = int(round(carrington_rotation_number(mag_time)))
+    query_string = f'hmi.b_synoptic_small[{int(round(cr_number))}]'
+    components = ['Bp', 'Bt', 'Br']
+    data = client.query(query_string, seg=components)
+    # Generator to find the nearest time
+    prefix_str = 'CR' + str(cr_number) + '_' + str(mag_time)
+    urls = ((prefix_str, data[component][0]) for component in components)
+    return urls
+
+
+def _get_urls_hmi_b720(client, mag_time):
+    """Returns for #download_magnetogram_hmi needed urls for hmi.B_720s
+
+    Args:
+        client (drms.Client): To query and return urls.
+        mag_time (datetime.datetime): To find nearest magnetogram.
+
+    Returns:
+        generator that yields (datetime.datetime, str): Time of magnetogram,
+            suffix url of magnetogram
+    """
+    import drms
+    query_string = 'hmi.B_720s'
+    query_string += f'[{mag_time.year}.'
+    query_string += f'{str(mag_time.month).zfill(2)}.'
+    query_string += f'{str(mag_time.day).zfill(2)}_'
+    query_string += f'{str(mag_time.hour).zfill(2)}'
+    query_string += f'/1h]'
+    data = client.query(query_string, key='T_REC', seg='field')
+    times = drms.to_datetime(data[0].T_REC)
+    nearest_time = _nearest(mag_time, times)
+    # Generator to find the nearest time
+    urls = ((data_time, mag_url) for (data_time, mag_url)
+            in zip(times, data[1].field) if data_time == nearest_time)
+    return urls
+
+ 
 def download_magnetogram_adapt(time, map_type='fixed', **kwargs):
     """This routine downloads GONG ADAPT magnetograms.
 
@@ -356,8 +409,3 @@ def download_magnetogram_adapt(time, map_type='fixed', **kwargs):
         if '.gz' in filename:
             return_names[index] = filename.replace('.gz', '')
     return return_names
-
-
-def _nearest(pivot, items):
-    """Returns nearest point"""
-    return min(items, key=lambda x: abs(x - pivot))

@@ -10,7 +10,7 @@ with open('README.markdown') as readme_fh:
 
 setuptools.setup(
     name='swmfpy',
-    version='2020.0',
+    version='2020.1',
     author='Qusai Al Shidi',
     author_email='qusai@umich.edu',
     description='''A collection of tools for the Space Weather Modelling

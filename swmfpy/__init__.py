@@ -19,7 +19,7 @@ These are not automatically imported. Might have extra dependancies.
 """
 __author__ = 'Qusai Al Shidi'
 __license__ = 'MIT'
-__version__ = '2020.0'
+__version__ = '2020.1'
 __maintainer__ = 'Qusai Al Shidi'
 __email__ = 'qusai@umich.edu'
 
