@@ -1,3 +1,5 @@
+![swmfpy logo](share/logo/swmfpy.png "swmfpy")
+
 swmfpy
 ======
 

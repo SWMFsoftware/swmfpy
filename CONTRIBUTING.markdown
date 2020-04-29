@@ -14,6 +14,10 @@ git checkout -b my_new_feature
 
 and start commiting there to test and work on. We will follow a [trunk-based development model](https://youtu.be/ykZbBD-CmP8). This means we will rapidly merge branches once you have something stable and continue with master branch. So make sure to push something stable instead of being in your feature branch for too long. I will try to address your pull request ASAP.
 
+<figure class="video_container">
+  <iframe src="https://www.youtube.com/embed/ykZbBD-CmP8" frameborder="0" allowfullscreen="true"> </iframe>
+</figure>
+
 Coding Style: PEP 8
 -------------------
 
