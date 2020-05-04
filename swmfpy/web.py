@@ -26,6 +26,11 @@ def get_omni_data(time_from, time_to, **kwargs):
                                        data that you want to receive.
         time_to (datetime.datetime): The end time of the solar wind data
                                      you want to receive.
+        **kwargs:
+            original_colnames (bool): Use the original column names from the
+                                      spdf specification. The alternative is
+                                      nicer and shorter names. Defaults to
+                                      False.
 
     Returns:
         dict: This will be a list of *all* columns
@@ -52,13 +57,17 @@ def get_omni_data(time_from, time_to, **kwargs):
     if kwargs.get('high_res', True):
         omni_url += 'high_res_omni/monthly_1min/'
 
-    col_names = OMNI_COLS  # column names from spdf
-
     # Initialize return dict
     return_data = {}
     return_data['times'] = []
-    for name in col_names:
-        return_data[name] = []
+    col_names = []
+    for name in OMNI_COLS:
+        if kwargs.get('original_colnames', False):
+            col_names += [name[0]]
+            return_data[name[0]] = []
+        else:
+            col_names += [name[1]]
+            return_data[name[1]] = []
 
     # Iterate monthly to save RAM
     for date in rrule.rrule(rrule.MONTHLY,
@@ -83,13 +92,13 @@ def get_omni_data(time_from, time_to, **kwargs):
                                         + cols[3],  # minute
                                         '%Y %j %H %M')
             if time >= time_from and time <= time_to:
-                return_data['times'].append(time)
+                return_data['times'] += [time]
                 # Assign the data from after the time columns (0:3)
                 for num, value in enumerate(cols[4:len(col_names)+4]):
                     if _check_bad_omni_num(value):
-                        return_data[col_names[num]].append(None)
+                        return_data[col_names[num]] += [None]
                     else:
-                        return_data[col_names[num]].append(float(value))
+                        return_data[col_names[num]] += [float(value)]
 
     return return_data  # dictionary with omni values where index is the row
 
