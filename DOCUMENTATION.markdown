@@ -1,15 +1,15 @@
 # Table of Contents
 
 * [swmfpy](#.swmfpy)
-* [swmfpy.web](#.swmfpy.web)
-  * [get\_omni\_data](#.swmfpy.web.get_omni_data)
-  * [download\_magnetogram\_hmi](#.swmfpy.web.download_magnetogram_hmi)
-  * [download\_magnetogram\_adapt](#.swmfpy.web.download_magnetogram_adapt)
+* [swmfpy.tools](#.swmfpy.tools)
 * [swmfpy.io](#.swmfpy.io)
   * [read\_wdc\_ae](#.swmfpy.io.read_wdc_ae)
   * [read\_wdc\_asy\_sym](#.swmfpy.io.read_wdc_asy_sym)
   * [read\_gm\_log](#.swmfpy.io.read_gm_log)
-* [swmfpy.tools](#.swmfpy.tools)
+* [swmfpy.web](#.swmfpy.web)
+  * [get\_omni\_data](#.swmfpy.web.get_omni_data)
+  * [download\_magnetogram\_hmi](#.swmfpy.web.download_magnetogram_hmi)
+  * [download\_magnetogram\_adapt](#.swmfpy.web.download_magnetogram_adapt)
 * [swmfpy.paramin](#.swmfpy.paramin)
   * [replace\_command](#.swmfpy.paramin.replace_command)
   * [read\_command](#.swmfpy.paramin.read_command)
@@ -20,8 +20,7 @@
 A collection of tools to read, write, visualize with the
 Space Weather Modeling Framework (SWMF).
 
-Modules
--------
+### Modules
 
 These are automatically imported.
 
@@ -29,20 +28,131 @@ These are automatically imported.
 - `swmfpy.paramin` PARAM.in editing tools.
 - `swmfpy.web` Internet data downloading/uploading tools.
 
-Extra Modules
--------------
+### Extra Modules
 
 These are not automatically imported. Might have extra dependancies.
 
 *None yet.*
 
+<a name=".swmfpy.tools"></a>
+## swmfpy.tools
+
+Tools to be used in swmfpy functions and classes. Some of the functions are
+*hidden functions*.
+
+<a name=".swmfpy.io"></a>
+## swmfpy.io
+
+### Input/Output tools
+
+Here are tools to read and write files relating to SWMF.
+
+<a name=".swmfpy.io.read_wdc_ae"></a>
+#### read\_wdc\_ae
+
+```python
+read_wdc_ae(wdc_filename)
+```
+
+Read an auroral electrojet (AE) indeces from Kyoto's World Data Center
+text file into a dictionary of lists.
+
+**Arguments**:
+
+  
+- `wdc_filename` _str_ - Filename of wdc data from
+  http://wdc.kugi.kyoto-u.ac.jp/
+
+**Returns**:
+
+- `dict` - Auroral indeces 'AL', 'AE', 'AO', 'AU'
+- `datetime.datetime` - 'times'
+- `int` - 'values'
+
+<a name=".swmfpy.io.read_wdc_asy_sym"></a>
+#### read\_wdc\_asy\_sym
+
+```python
+read_wdc_asy_sym(wdc_filename)
+```
+
+Reads a WDC file for ASY/SYM data.
+
+Reads an ASY/SYM file downloaded from
+http://wdc.kugi.kyoto-u.ac.jp/aeasy/index.html
+and puts it into a dictionary.
+
+**Arguments**:
+
+- `wdc_filename` _str_ - Relative filename (or file handle no.) to read.
+  
+
+**Returns**:
+
+- `dict` - of values. {'[ASY-SYM]-[D-H]': 'times': [], 'values': []}
+  
+
+**Examples**:
+
+  ```python
+  indeces = swmfpy.io.read_wdc_asy_sym('wdc.dat')
+  # Plot data
+  plt.plot(indeces['SYM-H']['times'],
+  indeces['SYM-H']['values'],
+  label='SYM-H [nT]'
+  )
+  plt.xlabel('Time [UT]')
+  ```
+  
+  Important to note if there is bad data it will be filled as None.
+
+<a name=".swmfpy.io.read_gm_log"></a>
+#### read\_gm\_log
+
+```python
+read_gm_log(filename, colnames=None, dtypes=None, index_time=True)
+```
+
+Make a dictionary out of the indeces outputted
+from the GM model log.
+
+**Arguments**:
+
+- `filename` _str_ - The relative filename as a string. (or file handle no.)
+- `colnames` _[str]_ - (default: None) Supply the name of the columns.
+  If None it will use second line
+  of log file.
+- `dtypes` _[types]_ - (default: None) Provide types for the columns, if
+  None then all will be float.
+- `index_time` _bool_ - (default: True) Make a column of dt.datetime objects
+  in dictionary key 'Time [UT]'.
+  
+
+**Returns**:
+
+- `dict` - Dictionary of the log file
+  
+
+**Examples**:
+
+  To plot AL and Dst get the log files
+  ```python
+  geo = swmfpy.io.read_gm_log('run/GM/IO2/geoindex_e20140215-100500.log')
+  dst = swmfpy.io.read_gm_log('run/GM/IO2/log_e20140215-100500.log')
+  
+  # Plot AL indeces
+  plt.plot(geo['times', geo['AL'])
+  ```
+
 <a name=".swmfpy.web"></a>
 ## swmfpy.web
 
-Tools to retrieve and send data on the web.
+### Tools to download/upload data on the web
 
 Here are a collection of tools to work with data on the internet. Thus,
-this module mostly requires an internet connection.
+this module mostly requires an internet connection. Which on some
+supercomputers would be turned off during a job run. In scripts, make sure to
+use these to preprocess before submitting jobs.
 
 <a name=".swmfpy.web.get_omni_data"></a>
 #### get\_omni\_data
@@ -200,122 +310,12 @@ pattern: adapt4[0,1]3*yyyymmddhh
   download_dir='./mymaps/')
   ```
 
-<a name=".swmfpy.io"></a>
-## swmfpy.io
-
-Input/Output tools
-
-Here are tools to read and write files relating to SWMF.
-
-TODO: Move pandas dependancy elsewhere.
-
-<a name=".swmfpy.io.read_wdc_ae"></a>
-#### read\_wdc\_ae
-
-```python
-read_wdc_ae(wdc_filename)
-```
-
-Read an auroral electrojet (AE) indeces from Kyoto's World Data Center
-text file into a dictionary of lists.
-
-**Arguments**:
-
-  
-- `wdc_filename` _str_ - Filename of wdc data from
-  http://wdc.kugi.kyoto-u.ac.jp/
-
-**Returns**:
-
-- `dict` - Auroral indeces 'AL', 'AE', 'AO', 'AU'
-- `datetime.datetime` - 'times'
-- `int` - 'values'
-
-<a name=".swmfpy.io.read_wdc_asy_sym"></a>
-#### read\_wdc\_asy\_sym
-
-```python
-read_wdc_asy_sym(wdc_filename)
-```
-
-Reads a WDC file for ASY/SYM data.
-
-Reads an ASY/SYM file downloaded from
-http://wdc.kugi.kyoto-u.ac.jp/aeasy/index.html
-and puts it into a dictionary.
-
-**Arguments**:
-
-- `wdc_filename` _str_ - Relative filename (or file handle no.) to read.
-  
-
-**Returns**:
-
-- `dict` - of values. {'[ASY-SYM]-[D-H]': 'times': [], 'values': []}
-  
-
-**Examples**:
-
-  ```python
-  indeces = swmfpy.io.read_wdc_asy_sym('wdc.dat')
-  # Plot data
-  plt.plot(indeces['SYM-H']['times'],
-  indeces['SYM-H']['values'],
-  label='SYM-H [nT]'
-  )
-  plt.xlabel('Time [UT]')
-  ```
-  
-  Important to note if there is bad data it will be filled as None.
-
-<a name=".swmfpy.io.read_gm_log"></a>
-#### read\_gm\_log
-
-```python
-read_gm_log(filename, colnames=None, dtypes=None, index_time=True)
-```
-
-Make a dictionary out of the indeces outputted
-from the GM model log.
-
-**Arguments**:
-
-- `filename` _str_ - The relative filename as a string. (or file handle no.)
-- `colnames` _[str]_ - (default: None) Supply the name of the columns.
-  If None it will use second line
-  of log file.
-- `dtypes` _[types]_ - (default: None) Provide types for the columns, if
-  None then all will be float.
-- `index_time` _bool_ - (default: True) Make a column of dt.datetime objects
-  in dictionary key 'Time [UT]'.
-  
-
-**Returns**:
-
-- `dict` - Dictionary of the log file
-  
-
-**Examples**:
-
-  To plot AL and Dst get the log files
-  ```python
-  geo = swmfpy.io.read_gm_log('run/GM/IO2/geoindex_e20140215-100500.log')
-  dst = swmfpy.io.read_gm_log('run/GM/IO2/log_e20140215-100500.log')
-  
-  # Plot AL indeces
-  plt.plot(geo['times', geo['AL'])
-  ```
-
-<a name=".swmfpy.tools"></a>
-## swmfpy.tools
-
-Tools to be used in swmfpy functions and classes. Some of the functions are
-*hidden functions*.
-
 <a name=".swmfpy.paramin"></a>
 ## swmfpy.paramin
 
-These tools are to help script the editing of PARAM.in files.
+### Editing PARAM.in files
+
+These tools are to help script the editing and reading of PARAM.in files.
 
 <a name=".swmfpy.paramin.replace_command"></a>
 #### replace\_command
@@ -331,7 +331,7 @@ Note, if you have repeat commands this will replace all the repeats.
 **Arguments**:
 
 - `parameters` _dict_ - Dictionary of strs with format
-  replace = 'COMMAND': ['value', 'comments', ...]
+  replace = '#COMMAND': ['value', 'comments', ...]
   This is case sensitive.
 - `input_file` _str_ - String of PARAM.in file name.
 - `output_file` _str_ - (default 'PARAM.in') The output file to write to.
@@ -350,7 +350,7 @@ Note, if you have repeat commands this will replace all the repeats.
 **Examples**:
 
   ```python
-  change['\#SOLARWINDFILE'] = [['T', 'UseSolarWindFile'],
+  change['#SOLARWINDFILE'] = [['T', 'UseSolarWindFile'],
   ['new_imf.dat', 'NameSolarWindFile']]
   # This will overwrite PARAM.in
   swmfpy.paramin.replace('PARAM.in.template', change)
@@ -365,12 +365,12 @@ read_command(command, paramin_file='PARAM.in', **kwargs)
 
 Get parameters of a certain command in PARAM.in file.
 
-This will find the COMMAND and return a list of
+This will find the #COMMAND and return a list of
 values for the parameters.
 
 **Arguments**:
 
-- `command` _str_ - This is the COMMAND you're looking for.
+- `command` _str_ - This is the #COMMAND you're looking for.
 - `paramin_file` _str_ - (default: 'PARAM.in') The file in which you're
   looking for the command values.
   **kwargs:
@@ -380,20 +380,20 @@ values for the parameters.
 
 **Returns**:
 
-- `list` - Values found for the COMMAND in file. Index 0 is
-  COMMAND and the values follow (1 for first argument...)
+- `list` - Values found for the #COMMAND in file. Index 0 is
+  #COMMAND and the values follow (1 for first argument...)
   
 
 **Raises**:
 
-- `ValueError` - When the COMMAND is not found.
+- `ValueError` - When the #COMMAND is not found.
   
 
 **Examples**:
 
   ```python
-  start_time = swmfpy.paramin.read_command('\#STARTTIME')
-  end_time = swmfpy.paramin.read_command('\#ENDTIME')
+  start_time = swmfpy.paramin.read_command('#STARTTIME')
+  end_time = swmfpy.paramin.read_command('#ENDTIME')
   print('Starting month is ', start_time[1])
   print('Ending month is ', end_time[1])
   ```
