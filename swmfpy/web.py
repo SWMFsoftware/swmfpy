@@ -1,13 +1,16 @@
-"""Tools to retrieve and send data on the web.
+"""### Tools to download/upload data on the web
 
 Here are a collection of tools to work with data on the internet. Thus,
-this module mostly requires an internet connection.
+this module mostly requires an internet connection. Which on some
+supercomputers would be turned off during a job run. In scripts, make sure to
+use these to preprocess before submitting jobs.
 """
 __author__ = 'Qusai Al Shidi'
 __email__ = 'qusai@umich.edu'
 
 import datetime as dt
 import urllib
+from .__init__ import OMNI_COLS
 from .tools import _import_error_string, _nearest
 
 
@@ -44,54 +47,12 @@ def get_omni_data(time_from, time_to, **kwargs):
 
     from dateutil import rrule
 
-    # This is straight from the format guide on spdf
-    col_names = ('ID for IMF spacecraft',
-                 'ID for SW Plasma spacecraft',
-                 '# of points in IMF averages',
-                 '# of points in Plasma averages',
-                 'Percent interp',
-                 'Timeshift, sec',
-                 'RMS, Timeshift',
-                 'RMS, Phase front normal',
-                 'Time btwn observations, sec',
-                 'Field magnitude average, nT',
-                 'Bx, nT (GSE, GSM)',
-                 'By, nT (GSE)',
-                 'Bz, nT (GSE)',
-                 'By, nT (GSM)',
-                 'Bz, nT (GSM)',
-                 'RMS SD B scalar, nT',
-                 'RMS SD field vector, nT',
-                 'Flow speed, km/s',
-                 'Vx Velocity, km/s, GSE',
-                 'Vy Velocity, km/s, GSE',
-                 'Vz Velocity, km/s, GSE',
-                 'Proton Density, n/cc',
-                 'Temperature, K',
-                 'Flow pressure, nPa',
-                 'Electric field, mV/m',
-                 'Plasma beta',
-                 'Alfven mach number',
-                 'X(s/c), GSE, Re',
-                 'Y(s/c), GSE, Re',
-                 'Z(s/c), GSE, Re',
-                 'BSN location, Xgse, Re',
-                 'BSN location, Ygse, Re',
-                 'BSN location, Zgse, Re',
-                 'AE-index, nT',
-                 'AL-index, nT',
-                 'AU-index, nT',
-                 'SYM/D index, nT',
-                 'SYM/H index, nT',
-                 'ASY/D index, nT',
-                 'ASY/H index, nT',
-                 'PC(N) index',
-                 'Magnetosonic mach number')
-
     # Set the url
     omni_url = 'https://spdf.gsfc.nasa.gov/pub/data/omni/'
     if kwargs.get('high_res', True):
         omni_url += 'high_res_omni/monthly_1min/'
+
+    col_names = OMNI_COLS  # column names from spdf
 
     # Initialize return dict
     return_data = {}
@@ -138,10 +99,9 @@ def _check_bad_omni_num(value_string):
        in omni.
     """
     for char in value_string:
-        if char != '9' and char != '.':
+        if char not in ('9', '.'):
             return False
     return True
-
 
 
 def download_magnetogram_hmi(mag_time, hmi_map='hmi.B_720s', **kwargs):
@@ -209,7 +169,7 @@ def download_magnetogram_hmi(mag_time, hmi_map='hmi.B_720s', **kwargs):
         }
     client = drms.Client()
 
-    urls = get_urls[hmi_map](client, mag_time)    
+    urls = get_urls[hmi_map](client, mag_time)
 
     # Download data
     if kwargs.get('verbose', False):
@@ -250,7 +210,6 @@ def _get_urls_hmi_b_synoptic_small(client, mag_time):
         generator that yields (datetime.datetime, str): Time of magnetogram,
             suffix url of magnetogram
     """
-    import drms
     try:
         from sunpy.coordinates.sun import carrington_rotation_number
     except ImportError as error:
@@ -284,7 +243,7 @@ def _get_urls_hmi_b720(client, mag_time):
     query_string += f'{str(mag_time.month).zfill(2)}.'
     query_string += f'{str(mag_time.day).zfill(2)}_'
     query_string += f'{str(mag_time.hour).zfill(2)}'
-    query_string += f'/1h]'
+    query_string += '/1h]'
     data = client.query(query_string, key='T_REC', seg='field')
     times = drms.to_datetime(data[0].T_REC)
     nearest_time = _nearest(mag_time, times)
@@ -293,7 +252,7 @@ def _get_urls_hmi_b720(client, mag_time):
             in zip(times, data[1].field) if data_time == nearest_time)
     return urls
 
- 
+
 def download_magnetogram_adapt(time, map_type='fixed', **kwargs):
     """This routine downloads GONG ADAPT magnetograms.
 

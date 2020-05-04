@@ -35,17 +35,15 @@ import swmfpy
 Documentation
 -------------
 
-Documentation is included as docstrings. Use python's *dir()* and *help()* inbuilt functions to see documentation.
+An auto-documented version can be found [here](DOCUMENTATION.markdown).
+
+However, documentation is included as docstrings. Use python's *dir()* and *help()* inbuilt functions to see documentation.
 
 ```python
 import swmfpy
 help(swmfpy)  # To see list of functions
 help(swmfpy.io.read_gm_log)  # To see the function documentation
 ```
-
-However if you would like an auto-documented version (uses exact same text as the help() function output), go [here](DOCUMENTATION.markdown).
-
-*Note*: The autodoc tool has troubles escaping the `#` symbol so examples with `#COMMAND`s in `PARAM.in` files will not show the symbol. Perhaps I can find a fix but the `help()` pages are always better and up to date.
 
 Issues
 ------

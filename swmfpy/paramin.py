@@ -1,4 +1,6 @@
-""" These tools are to help script the editing of PARAM.in files.
+"""### Editing PARAM.in files
+
+These tools are to help script the editing and reading of PARAM.in files.
 """
 __all__ = [
     'read_command',
@@ -30,7 +32,7 @@ def replace_command(parameters, input_file, output_file='PARAM.in'):
 
     Examples:
         ```python
-        change['#SOLARWINDFILE'] = [['T', 'UseSolarWindFile'],
+        change['\043SOLARWINDFILE'] = [['T', 'UseSolarWindFile'],
                                     ['new_imf.dat', 'NameSolarWindFile']]
         # This will overwrite PARAM.in
         swmfpy.paramin.replace('PARAM.in.template', change)
@@ -92,8 +94,8 @@ def read_command(command, paramin_file='PARAM.in', **kwargs):
 
     Examples:
         ```python
-        start_time = swmfpy.paramin.read_command('#STARTTIME')
-        end_time = swmfpy.paramin.read_command('#ENDTIME')
+        start_time = swmfpy.paramin.read_command('\043STARTTIME')
+        end_time = swmfpy.paramin.read_command('\043ENDTIME')
         print('Starting month is ', start_time[1])
         print('Ending month is ', end_time[1])
         ```
@@ -154,7 +156,7 @@ def _get_command(line):
         line (str, list, tuple): The line in the PARAM.in file.
 
     Returns:
-        (str): '#COMMAND' if found and None if not.
+        (str): '\043COMMAND' if found and None if not.
     """
     if isinstance(line, (str, list, tuple)):  # Raises type error otherwise
         if isinstance(line, str):
