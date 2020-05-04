@@ -1,4 +1,6 @@
-""" These tools are to help script the editing of PARAM.in files.
+"""### Editing PARAM.in files
+
+These tools are to help script the editing and reading of PARAM.in files.
 """
 __all__ = [
     'read_command',
@@ -18,7 +20,7 @@ def replace_command(parameters, input_file, output_file='PARAM.in'):
 
     Args:
         parameters (dict): Dictionary of strs with format
-              replace = 'COMMAND': ['value', 'comments', ...]
+              replace = '\043COMMAND': ['value', 'comments', ...]
               This is case sensitive.
         input_file (str): String of PARAM.in file name.
         output_file (str): (default 'PARAM.in') The output file to write to.
@@ -31,7 +33,7 @@ def replace_command(parameters, input_file, output_file='PARAM.in'):
 
     Examples:
         ```python
-        change['#SOLARWINDFILE'] = [['T', 'UseSolarWindFile'],
+        change['\043SOLARWINDFILE'] = [['T', 'UseSolarWindFile'],
                                     ['new_imf.dat', 'NameSolarWindFile']]
         # This will overwrite PARAM.in
         swmfpy.paramin.replace('PARAM.in.template', change)
@@ -73,11 +75,11 @@ def replace_command(parameters, input_file, output_file='PARAM.in'):
 def read_command(command, paramin_file='PARAM.in', **kwargs):
     """Get parameters of a certain command in PARAM.in file.
 
-    This will find the COMMAND and return a list of
+    This will find the \043COMMAND and return a list of
     values for the parameters.
 
     Args:
-        command (str): This is the COMMAND you're looking for.
+        command (str): This is the \043COMMAND you're looking for.
         paramin_file (str): (default: 'PARAM.in') The file in which you're
                             looking for the command values.
         **kwargs:
@@ -85,16 +87,16 @@ def read_command(command, paramin_file='PARAM.in', **kwargs):
                                  command.
 
     Returns:
-        list: Values found for the COMMAND in file. Index 0 is
-        COMMAND and the values follow (1 for first argument...)
+        list: Values found for the \043COMMAND in file. Index 0 is
+        \043COMMAND and the values follow (1 for first argument...)
 
     Raises:
-        ValueError: When the COMMAND is not found.
+        ValueError: When the \043COMMAND is not found.
 
     Examples:
         ```python
-        start_time = swmfpy.paramin.read_command('#STARTTIME')
-        end_time = swmfpy.paramin.read_command('#ENDTIME')
+        start_time = swmfpy.paramin.read_command('\043STARTTIME')
+        end_time = swmfpy.paramin.read_command('\043ENDTIME')
         print('Starting month is ', start_time[1])
         print('Ending month is ', end_time[1])
         ```
@@ -140,13 +142,13 @@ def read_command(command, paramin_file='PARAM.in', **kwargs):
 
 # HIDDEN FUNCTIONS
 def _get_command(line):
-    """Returns the 'COMMAND' if on line.
+    """Returns the '\043COMMAND' if on line.
 
     Args:
         line (str, list, tuple): The line in the PARAM.in file.
 
     Returns:
-        (str): '#COMMAND' if found and None if not.
+        (str): '\043COMMAND' if found and None if not.
     """
     if isinstance(line, (str, list, tuple)):  # Raises type error otherwise
         if isinstance(line, str):

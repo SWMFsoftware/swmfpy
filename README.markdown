@@ -1,3 +1,5 @@
+![swmfpy logo](share/logo/swmfpy.png "swmfpy")
+
 swmfpy
 ======
 
@@ -5,12 +7,12 @@ A collection of tools to make it easier to work with Python and Space Weather Mo
 
 This is a work in progress.
 
-Usage
------
-
-*Note*: swmfpy also is part of the SWMF and gets cloned into `SWMF/share/Python`. If you ran `Config.pl -install` while installing SWMF you probably already have it installed in your Python distribution. If you have already done this it is installed on your system. However, if you would like to [develop](CONTRIBUTING.markdown) for swmfpy or have a local copy continue reading.
+Installation
+------------
 
 Clone into the directory you want to use it.
+
+*Note*: swmfpy also is part of the SWMF and gets cloned into `SWMF/share/Python`. However, if you would like to [develop](CONTRIBUTING.markdown) for swmfpy or have a local copy do the following:
 
 ```bash
 git clone https://gitlab.umich.edu/swmf_sofware/swmfpy.git /path/to/my/dir
@@ -33,17 +35,15 @@ import swmfpy
 Documentation
 -------------
 
-Documentation is included as docstrings. Use python's *dir()* and *help()* inbuilt functions to see documentation.
+An auto-documented version can be found [here](DOCUMENTATION.markdown).
+
+However, documentation is included as docstrings. Use python's *dir()* and *help()* inbuilt functions to see documentation.
 
 ```python
 import swmfpy
 help(swmfpy)  # To see list of functions
 help(swmfpy.io.read_gm_log)  # To see the function documentation
 ```
-
-However if you would like an auto-documented version (uses exact same text as the help() function output), go [here](DOCUMENTATION.markdown).
-
-*Note*: The autodoc tool has troubles escaping the `#` symbol so examples with `#COMMAND`s in `PARAM.in` files will not show the symbol. Perhaps I can find a fix but the `help()` pages are always better and up to date.
 
 Issues
 ------

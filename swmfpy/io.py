@@ -1,8 +1,6 @@
-"""Input/Output tools
+"""### Input/Output tools
 
 Here are tools to read and write files relating to SWMF.
-
-TODO: Move pandas dependancy elsewhere.
 """
 
 import datetime as dt

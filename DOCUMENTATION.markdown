@@ -1,18 +1,18 @@
 # Table of Contents
 
 * [swmfpy](#.swmfpy)
+* [swmfpy.tools](#.swmfpy.tools)
 * [swmfpy.io](#.swmfpy.io)
   * [read\_wdc\_ae](#.swmfpy.io.read_wdc_ae)
   * [read\_wdc\_asy\_sym](#.swmfpy.io.read_wdc_asy_sym)
   * [read\_gm\_log](#.swmfpy.io.read_gm_log)
-* [swmfpy.tools](#.swmfpy.tools)
-* [swmfpy.paramin](#.swmfpy.paramin)
-  * [replace\_command](#.swmfpy.paramin.replace_command)
-  * [read\_command](#.swmfpy.paramin.read_command)
 * [swmfpy.web](#.swmfpy.web)
   * [get\_omni\_data](#.swmfpy.web.get_omni_data)
   * [download\_magnetogram\_hmi](#.swmfpy.web.download_magnetogram_hmi)
   * [download\_magnetogram\_adapt](#.swmfpy.web.download_magnetogram_adapt)
+* [swmfpy.paramin](#.swmfpy.paramin)
+  * [replace\_command](#.swmfpy.paramin.replace_command)
+  * [read\_command](#.swmfpy.paramin.read_command)
 
 <a name=".swmfpy"></a>
 ## swmfpy
@@ -20,8 +20,7 @@
 A collection of tools to read, write, visualize with the
 Space Weather Modeling Framework (SWMF).
 
-Modules
--------
+### Modules
 
 These are automatically imported.
 
@@ -29,21 +28,24 @@ These are automatically imported.
 - `swmfpy.paramin` PARAM.in editing tools.
 - `swmfpy.web` Internet data downloading/uploading tools.
 
-Extra Modules
--------------
+### Extra Modules
 
 These are not automatically imported. Might have extra dependancies.
 
 *None yet.*
 
+<a name=".swmfpy.tools"></a>
+## swmfpy.tools
+
+Tools to be used in swmfpy functions and classes. Some of the functions are
+*hidden functions*.
+
 <a name=".swmfpy.io"></a>
 ## swmfpy.io
 
-Input/Output tools
+### Input/Output tools
 
 Here are tools to read and write files relating to SWMF.
-
-TODO: Move pandas dependancy elsewhere.
 
 <a name=".swmfpy.io.read_wdc_ae"></a>
 #### read\_wdc\_ae
@@ -142,109 +144,15 @@ from the GM model log.
   plt.plot(geo['times', geo['AL'])
   ```
 
-<a name=".swmfpy.tools"></a>
-## swmfpy.tools
-
-Tools to be used in swmfpy functions and classes. Some of the functions are
-*hidden functions*.
-
-<a name=".swmfpy.paramin"></a>
-## swmfpy.paramin
-
-These tools are to help script the editing of PARAM.in files.
-
-<a name=".swmfpy.paramin.replace_command"></a>
-#### replace\_command
-
-```python
-replace_command(parameters, input_file, output_file='PARAM.in')
-```
-
-Replace values for the parameters in a PARAM.in file.
-
-Note, if you have repeat commands this will replace all the repeats.
-
-**Arguments**:
-
-- `parameters` _dict_ - Dictionary of strs with format
-  replace = 'COMMAND': ['value', 'comments', ...]
-  This is case sensitive.
-- `input_file` _str_ - String of PARAM.in file name.
-- `output_file` _str_ - (default 'PARAM.in') The output file to write to.
-  A value of None will not output a file.
-
-**Returns**:
-
-  A list of lines of the PARAM.in file that would be outputted.
-  
-
-**Raises**:
-
-- `TypeError` - If a value given couldn't be converted to string.
-  
-
-**Examples**:
-
-  ```python
-  change['`SOLARWINDFILE`'] = [['T', 'UseSolarWindFile'],
-  ['new_imf.dat', 'NameSolarWindFile']]
-  # This will overwrite PARAM.in
-  swmfpy.paramin.replace('PARAM.in.template', change)
-  ```
-
-<a name=".swmfpy.paramin.read_command"></a>
-#### read\_command
-
-```python
-read_command(command, paramin_file='PARAM.in', **kwargs)
-```
-
-Get parameters of a certain command in PARAM.in file.
-
-This will find the COMMAND and return a list of
-values for the parameters.
-
-**Arguments**:
-
-- `command` _str_ - This is the COMMAND you're looking for.
-- `paramin_file` _str_ - (default: 'PARAM.in') The file in which you're
-  looking for the command values.
-  **kwargs:
-- `num_of_values` _int_ - (default: None) Number of values to take from
-  command.
-  
-
-**Returns**:
-
-- `list` - Values found for the COMMAND in file. Index 0 is
-  COMMAND and the values follow (1 for first argument...)
-  
-
-**Raises**:
-
-- `ValueError` - When the COMMAND is not found.
-  
-
-**Examples**:
-
-  ```python
-  start_time = swmfpy.paramin.read_command('`STARTTIME`')
-  end_time = swmfpy.paramin.read_command('`ENDTIME`')
-  print('Starting month is ', start_time[1])
-  print('Ending month is ', end_time[1])
-  ```
-  
-  This will treat all following lines as values for the command. To suppress
-  this, try using the `num_of_values` keyword. This is helpful if your
-  PARAM.in is comment heavy.
-
 <a name=".swmfpy.web"></a>
 ## swmfpy.web
 
-Tools to retrieve and send data on the web.
+### Tools to download/upload data on the web
 
 Here are a collection of tools to work with data on the internet. Thus,
-this module mostly requires an internet connection.
+this module mostly requires an internet connection. Which on some
+supercomputers would be turned off during a job run. In scripts, make sure to
+use these to preprocess before submitting jobs.
 
 <a name=".swmfpy.web.get_omni_data"></a>
 #### get\_omni\_data
@@ -289,7 +197,7 @@ use swmfpy.io.read_omni_data().
 #### download\_magnetogram\_hmi
 
 ```python
-download_magnetogram_hmi(mag_time, hmi_map, **kwargs)
+download_magnetogram_hmi(mag_time, hmi_map='hmi.B_720s', **kwargs)
 ```
 
 Downloads HMI vector magnetogram fits files.
@@ -401,4 +309,96 @@ pattern: adapt4[0,1]3*yyyymmddhh
   map_type='central',
   download_dir='./mymaps/')
   ```
+
+<a name=".swmfpy.paramin"></a>
+## swmfpy.paramin
+
+### Editing PARAM.in files
+
+These tools are to help script the editing and reading of PARAM.in files.
+
+<a name=".swmfpy.paramin.replace_command"></a>
+#### replace\_command
+
+```python
+replace_command(parameters, input_file, output_file='PARAM.in')
+```
+
+Replace values for the parameters in a PARAM.in file.
+
+Note, if you have repeat commands this will replace all the repeats.
+
+**Arguments**:
+
+- `parameters` _dict_ - Dictionary of strs with format
+  replace = '#COMMAND': ['value', 'comments', ...]
+  This is case sensitive.
+- `input_file` _str_ - String of PARAM.in file name.
+- `output_file` _str_ - (default 'PARAM.in') The output file to write to.
+  A value of None will not output a file.
+
+**Returns**:
+
+  A list of lines of the PARAM.in file that would be outputted.
+  
+
+**Raises**:
+
+- `TypeError` - If a value given couldn't be converted to string.
+  
+
+**Examples**:
+
+  ```python
+  change['#SOLARWINDFILE'] = [['T', 'UseSolarWindFile'],
+  ['new_imf.dat', 'NameSolarWindFile']]
+  # This will overwrite PARAM.in
+  swmfpy.paramin.replace('PARAM.in.template', change)
+  ```
+
+<a name=".swmfpy.paramin.read_command"></a>
+#### read\_command
+
+```python
+read_command(command, paramin_file='PARAM.in', **kwargs)
+```
+
+Get parameters of a certain command in PARAM.in file.
+
+This will find the #COMMAND and return a list of
+values for the parameters.
+
+**Arguments**:
+
+- `command` _str_ - This is the #COMMAND you're looking for.
+- `paramin_file` _str_ - (default: 'PARAM.in') The file in which you're
+  looking for the command values.
+  **kwargs:
+- `num_of_values` _int_ - (default: None) Number of values to take from
+  command.
+  
+
+**Returns**:
+
+- `list` - Values found for the #COMMAND in file. Index 0 is
+  #COMMAND and the values follow (1 for first argument...)
+  
+
+**Raises**:
+
+- `ValueError` - When the #COMMAND is not found.
+  
+
+**Examples**:
+
+  ```python
+  start_time = swmfpy.paramin.read_command('#STARTTIME')
+  end_time = swmfpy.paramin.read_command('#ENDTIME')
+  print('Starting month is ', start_time[1])
+  print('Ending month is ', end_time[1])
+  ```
+  
+  This will treat all following lines as values for the command. To suppress
+  this, try using the `num_of_values` keyword. This is helpful if your
+  PARAM.in is comment heavy.
 
