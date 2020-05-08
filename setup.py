@@ -5,8 +5,11 @@ swmfpy.
 import setuptools
 
 
-with open('README.markdown') as readme_fh:
-    LONG_DESCRIPTION = readme_fh.read()
+with open('README.markdown') as fh_readme:
+    LONG_DESCRIPTION = fh_readme.read()
+
+with open('requirements.txt') as fh_requirements:
+    REQUIREMENTS = list(fh_requirements)
 
 setuptools.setup(
     name='swmfpy',
@@ -24,5 +27,6 @@ setuptools.setup(
         'License :: OSI Approved :: MIT License',
         'Operating System :: OS Independent',
         ],
+    install_requires=REQUIREMENTS,
     python_requires='>=3.6'
     )

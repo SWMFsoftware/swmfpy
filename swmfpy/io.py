@@ -45,7 +45,8 @@ def write_imf_input(imf_data, filename='IMF.dat', **kwargs):
 
     with open(filename, 'w') as file_imf:
         # header
-        file_imf.write('\t'.join(columns_dat)+'\n\n')
+        file_imf.write('Made with swmfpy ')
+        file_imf.write('(https://gitlab.umich.edu/swmf_software/swmfpy)\n\n')
 
         # write commands
         commands = kwargs.get('commands', None)
@@ -58,6 +59,7 @@ def write_imf_input(imf_data, filename='IMF.dat', **kwargs):
                 file_imf.write(_make_line(command)+'\n')
 
         # write dat file
+        file_imf.write('\n'+'\t'.join(columns_dat))
         file_imf.write('#START\n')
         lines = []
         for index, _time in enumerate(imf_data[columns_dict[0]]):
