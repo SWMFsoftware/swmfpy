@@ -27,16 +27,25 @@ def write_imf_input(imf_data, filename='IMF.dat', **kwargs):
     Raises:
         TypeError: If commands is not a list or tuple. It must be at least a
                    one element list of strings.
+        AssertionError: If inputs aren't prepared properly (key names)
 
     Examples:
+        ```python
+        from swmfpy.io import write_imf_input
+
+        # Prepare imf dictionary: imf_data
+        write_imf_input(imf_data, filename='run/IMF.dat')
+        ```
     """
 
     columns_dat = ['year', 'month', 'day', 'hour', 'min', 'sec', 'msec',
                    'bx', 'by', 'bz', 'vx', 'vy', 'vz',
                    'density', 'temperature']
-    columns_dict = ['times',
-                    'bx', 'by', 'bz', 'vx', 'vy', 'vz',
-                    'density', 'temperature']
+    column_keys = ['times',
+                   'bx', 'by', 'bz', 'vx', 'vy', 'vz',
+                   'density', 'temperature']
+    if kwargs.get('column_keys', None):
+        column_keys = kwargs.get('column_keys', column_keys)
 
     def _time_repr(time_raw):
         'Represent time in a suitable format'
@@ -59,15 +68,18 @@ def write_imf_input(imf_data, filename='IMF.dat', **kwargs):
                 file_imf.write(_make_line(command)+'\n')
 
         # write dat file
-        file_imf.write('\n'+'\t'.join(columns_dat))
-        file_imf.write('#START\n')
+        def justified(str_list, width=7):
+            'Returns justified'
+            return [s.rjust(width) for s in str_list]
+        file_imf.write('\n'+' '.join(justified(columns_dat)))
+        file_imf.write('\n#START\n')
         lines = []
-        for index, _time in enumerate(imf_data[columns_dict[0]]):
-            line = [_time_repr(_time)]
-            for key in columns_dict[1:]:
-                line += [str(imf_data[key][index])]
-            line = '\t'.join(line)
-            lines += line
+        for index, _time in enumerate(imf_data[column_keys[0]]):
+            line = _time_repr(_time)
+            for key in column_keys[1:]:
+                line += [str(round(imf_data[key][index], 2))]
+            line = ' '.join(justified(line))
+            lines += line + '\n'
         file_imf.writelines(lines)
 
 

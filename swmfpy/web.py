@@ -9,8 +9,7 @@ __author__ = 'Qusai Al Shidi'
 __email__ = 'qusai@umich.edu'
 
 import datetime as dt
-import ftplib
-from ftplib import FTP
+from ftplib import FTP, all_errors
 import gzip
 from operator import itemgetter
 import shutil
@@ -157,6 +156,10 @@ def get_omni_data(time_from, time_to, **kwargs):
         storm_end = datetime.datetime(year=2000, month=2, day=15)
         data = swmfpy.web.get_omni_data(time_from=storm_start,
                                         time_to=storm_end)
+        # or for low res
+        data = swmfpy.web.get_omni_data(time_from=storm_start,
+                                        time_to=storm_end,
+                                        resolution='low')
         ```
     """
     # Author: Qusai Al Shidi
@@ -440,7 +443,7 @@ def download_magnetogram_adapt(time, map_type='fixed', **kwargs):
         raise ValueError('Not recognized type of ADAPT map')
 
     # Go to the the ADAPT ftp server
-    ftp = FTP('gong2.nso.edu')
+    ftp = ftplib.FTP('gong2.nso.edu')
     ftp.login()
 
     # Only ADAPT GONG is considered
