@@ -51,6 +51,7 @@ period.
 - `time_from` _datetime.datetime_ - Time to begin omni data retrieval
 - `time_to` _datetime.datetime_ - Time to end omni data retrieval
 - `filename` _str_ - The filename for the dat file, defaults to 'IMF.dat'.
+  
   **kwargs:
   see `swmfpy.io.write_imf_input()` and `swmfpy.web.get_omni_data()`
   
@@ -412,7 +413,7 @@ Note, if you have repeat commands this will replace all the repeats.
 **Arguments**:
 
 - `parameters` _dict_ - Dictionary of strs with format
-  replace = '\#COMMAND': ['value', 'comments', ...]
+  replace = '#COMMAND': ['value', 'comments', ...]
   This is case sensitive.
 - `input_file` _str_ - String of PARAM.in file name.
 - `output_file` _str_ - (default 'PARAM.in') The output file to write to.
@@ -431,7 +432,7 @@ Note, if you have repeat commands this will replace all the repeats.
 **Examples**:
 
   ```python
-  change['\#SOLARWINDFILE'] = [['T', 'UseSolarWindFile'],
+  change['#SOLARWINDFILE'] = [['T', 'UseSolarWindFile'],
   ['new_imf.dat', 'NameSolarWindFile']]
   # This will overwrite PARAM.in
   swmfpy.paramin.replace('PARAM.in.template', change)
@@ -446,12 +447,12 @@ read_command(command, paramin_file='PARAM.in', **kwargs)
 
 Get parameters of a certain command in PARAM.in file.
 
-This will find the \#COMMAND and return a list of
+This will find the #COMMAND and return a list of
 values for the parameters.
 
 **Arguments**:
 
-- `command` _str_ - This is the \#COMMAND you're looking for.
+- `command` _str_ - This is the #COMMAND you're looking for.
 - `paramin_file` _str_ - (default: 'PARAM.in') The file in which you're
   looking for the command values.
   **kwargs:
@@ -461,20 +462,20 @@ values for the parameters.
 
 **Returns**:
 
-- `list` - Values found for the \#COMMAND in file. Index 0 is
-  \#COMMAND and the values follow (1 for first argument...)
+- `list` - Values found for the #COMMAND in file. Index 0 is
+  #COMMAND and the values follow (1 for first argument...)
   
 
 **Raises**:
 
-- `ValueError` - When the \#COMMAND is not found.
+- `ValueError` - When the #COMMAND is not found.
   
 
 **Examples**:
 
   ```python
-  start_time = swmfpy.paramin.read_command('\#STARTTIME')
-  end_time = swmfpy.paramin.read_command('\#ENDTIME')
+  start_time = swmfpy.paramin.read_command('#STARTTIME')
+  end_time = swmfpy.paramin.read_command('#ENDTIME')
   print('Starting month is ', start_time[1])
   print('Ending month is ', end_time[1])
   ```

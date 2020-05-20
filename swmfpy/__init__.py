@@ -37,8 +37,9 @@ def write_imf_from_omni(time_from, time_to, filename='IMF.dat', **kwargs):
         time_from (datetime.datetime): Time to begin omni data retrieval
         time_to (datetime.datetime): Time to end omni data retrieval
         filename (str): The filename for the dat file, defaults to 'IMF.dat'.
-        **kwargs:
-            see #swmfpy.io.write_imf_input() and #swmfpy.web.get_omni_data()
+
+    **kwargs:
+        see #swmfpy.io.write_imf_input() and #swmfpy.web.get_omni_data()
 
     Examples:
         Using this function is simple:
