@@ -4,6 +4,83 @@ Here are tools to read and write files relating to SWMF.
 """
 
 import datetime as dt
+from .tools import _make_line
+
+
+def write_imf_input(imf_data, filename='IMF.dat', **kwargs):
+    """Creates the IMF.dat input file for the SWMF BATS-R-US geospace model.
+
+    `imf_data` must be a dictionary of array_like objects with same length
+    in data. In swmfpy Pythonic versions are always preferred so the 'times'
+    must be `datetime.datetime` array.
+    imf_data = dict(times, bx, by, bz, vx, vy, vz, density, temperature)
+
+    Args:
+        imf_data (dict): This dictionary contains the solar wind data.
+        filename (str): (default: 'IMF.dat') Filename to write to.
+        **kwargs:
+            commands ([str]): (default: None) List of commands to write to imf
+                              input file (indexed by line then by tabs on same
+                              line). *Note*: Must be a list if have one command
+                              str.
+
+    Raises:
+        TypeError: If commands is not a list or tuple. It must be at least a
+                   one element list of strings.
+        AssertionError: If inputs aren't prepared properly (key names)
+
+    Examples:
+        ```python
+        from swmfpy.io import write_imf_input
+
+        # Prepare imf dictionary: imf_data
+        write_imf_input(imf_data, filename='run/IMF.dat')
+        ```
+    """
+
+    columns_dat = ['year', 'month', 'day', 'hour', 'min', 'sec', 'msec',
+                   'bx', 'by', 'bz', 'vx', 'vy', 'vz',
+                   'density', 'temperature']
+    column_keys = ['times',
+                   'bx', 'by', 'bz', 'vx', 'vy', 'vz',
+                   'density', 'temperature']
+    if kwargs.get('column_keys', None):
+        column_keys = kwargs.get('column_keys', column_keys)
+
+    def _time_repr(time_raw):
+        'Represent time in a suitable format'
+        raw_str = dt.datetime.strftime(time_raw, '%Y %m %d %H %M %S %f')[:-3]
+        return raw_str.split()
+
+    with open(filename, 'w') as file_imf:
+        # header
+        file_imf.write('Made with swmfpy ')
+        file_imf.write('(https://gitlab.umich.edu/swmf_software/swmfpy)\n\n')
+
+        # write commands
+        commands = kwargs.get('commands', None)
+        if commands:
+            try:
+                isinstance(commands, (list, tuple))
+            except TypeError:
+                raise TypeError(f'{__name__}: commands must be list or tuple')
+            for command in commands:
+                file_imf.write(_make_line(command)+'\n')
+
+        # write dat file
+        def justified(str_list, width=7):
+            'Returns justified'
+            return [s.rjust(width) for s in str_list]
+        file_imf.write('\n'+' '.join(justified(columns_dat)))
+        file_imf.write('\n#START\n')
+        lines = []
+        for index, _time in enumerate(imf_data[column_keys[0]]):
+            line = _time_repr(_time)
+            for key in column_keys[1:]:
+                line += [str(round(imf_data[key][index], 2))]
+            line = ' '.join(justified(line))
+            lines += line + '\n'
+        file_imf.writelines(lines)
 
 
 def read_wdc_ae(wdc_filename):

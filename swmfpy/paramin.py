@@ -10,6 +10,7 @@ __author__ = 'Qusai Al Shidi'
 __email__ = 'qusai@umich.edu'
 
 import logging
+from .tools import _make_line
 
 
 def replace_command(parameters, input_file, output_file='PARAM.in'):
@@ -140,15 +141,6 @@ def read_command(command, paramin_file='PARAM.in', **kwargs):
 
 
 # HIDDEN FUNCTIONS
-def _make_line(value):
-    """Makes the paramin line based on value type recursively"""
-    if isinstance(value, str):
-        return value
-    if isinstance(value, list):
-        return '\t\t\t'.join([_make_line(v) for v in value])
-    return str(value)
-
-
 def _get_command(line):
     """Returns the '\043COMMAND' if on line.
 

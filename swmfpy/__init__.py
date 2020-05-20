@@ -23,51 +23,42 @@ __email__ = 'qusai@umich.edu'
 
 
 import sys
-assert sys.version_info >= (3, 6), "swmfpy requires Python >=3.6. Sorry :(."
 from . import paramin
 from . import io
 from . import web
+assert sys.version_info >= (3, 6), "swmfpy requires Python >=3.6. Sorry :(."
 
-# This is straight from the format guide on spdf
-OMNI_COLS = ('ID for IMF spacecraft',
-             'ID for SW Plasma spacecraft',
-             '# of points in IMF averages',
-             '# of points in Plasma averages',
-             'Percent interp',
-             'Timeshift, sec',
-             'RMS, Timeshift',
-             'RMS, Phase front normal',
-             'Time btwn observations, sec',
-             'Field magnitude average, nT',
-             'Bx, nT (GSE, GSM)',
-             'By, nT (GSE)',
-             'Bz, nT (GSE)',
-             'By, nT (GSM)',
-             'Bz, nT (GSM)',
-             'RMS SD B scalar, nT',
-             'RMS SD field vector, nT',
-             'Flow speed, km/s',
-             'Vx Velocity, km/s, GSE',
-             'Vy Velocity, km/s, GSE',
-             'Vz Velocity, km/s, GSE',
-             'Proton Density, n/cc',
-             'Temperature, K',
-             'Flow pressure, nPa',
-             'Electric field, mV/m',
-             'Plasma beta',
-             'Alfven mach number',
-             'X(s/c), GSE, Re',
-             'Y(s/c), GSE, Re',
-             'Z(s/c), GSE, Re',
-             'BSN location, Xgse, Re',
-             'BSN location, Ygse, Re',
-             'BSN location, Zgse, Re',
-             'AE-index, nT',
-             'AL-index, nT',
-             'AU-index, nT',
-             'SYM/D index, nT',
-             'SYM/H index, nT',
-             'ASY/D index, nT',
-             'ASY/H index, nT',
-             'PC(N) index',
-             'Magnetosonic mach number')
+
+def write_imf_from_omni(time_from, time_to, filename='IMF.dat', **kwargs):
+    """Writes an IMF.dat file for the geospace model runs for a specific time
+    period.
+
+    Args:
+        time_from (datetime.datetime): Time to begin omni data retrieval
+        time_to (datetime.datetime): Time to end omni data retrieval
+        filename (str): The filename for the dat file, defaults to 'IMF.dat'.
+        **kwargs:
+            see #swmfpy.io.write_imf_input() and #swmfpy.web.get_omni_data()
+
+    Examples:
+        Using this function is simple:
+        ```python
+        import swmfpy
+        import datetime as dt
+        times = (dt.datetime(2014, 2, 2), dt.datetime(2014, 2, 4))
+        # Usually the kwargs are unecessary
+        swmfpy.write_imf_input(*times)
+        # Sometimes this
+        swmfpy.write_imf_input(*times, filename='run/IMF.dat')
+        ```
+    """
+    omni_data = web.get_omni_data(time_from, time_to, **kwargs)
+    commands = ['#COOR', 'GSE']
+    if kwargs.get('commands', None):
+        kwargs['commands'] += commands
+    else:
+        kwargs['commands'] = commands
+    column_keys = ['times',
+                   'bx', 'by_gse', 'bz_gse', 'vx_gse', 'vy_gse', 'vz_gse',
+                   'density', 'temperature']
+    io.write_imf_input(omni_data, filename, column_keys=column_keys, **kwargs)
