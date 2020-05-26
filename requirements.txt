@@ -1,4 +1,0 @@
-dateutil
-numpy
-drms
-sunpy
