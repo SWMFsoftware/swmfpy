@@ -1,0 +1,107 @@
+- bb06e1c **(2020-05-20, Qusai Al Shidi)**: _CHEAD -> master, tag: v2020.2, origin/master, origin/HEAD_: v2020.2 changelog
+- c10ece8 **(2020-05-20, Qusai Al Shidi)**: _C_: v2020.2 commit
+- 9cb028f **(2020-05-20, Qusai Al Shidi)**: _C_: Fixed installation directions
+- 48200d7 **(2020-05-20, Qusai Al Shidi)**: _C_: Merge branch 'imf-f107' into 'master'
+- 3c75787 **(2020-05-19, Qusai Al Shidi)**: _Corigin/imf-f107, imf-f107_: Working and tested. Made documentation. Added new feature swmfpy.write_imf_from_omni
+- e4f879c **(2020-05-13, Qusai Al Shidi)**: _C_: Transformation function made. Write IMF untested. Almost done.
+- 0d243de **(2020-05-08, Qusai Al Shidi)**: _C_: Not a working commit. Just pushing this to work on another computer
+- 6784109 **(2020-05-04, Qusai Al Shidi)**: _C_: Nicer omni key names. original_colnames kwarg added if you have code that depended on the old names
+- f564dbe **(2020-05-04, Qusai Al Shidi)**: _C_: Merge branch 'master' into imf-f107
+- d4a5c35 **(2020-05-04, Qusai Al Shidi)**: _C_: Removed Config.pl -install messages Installation section still needs work
+- 41efc0b **(2020-05-04, Qusai Al Shidi)**: _C_: Escape of # unecessary in markdown
+- 63f6dab **(2020-05-04, Qusai Al Shidi)**: _C_: lint fixes and found documentation method to show # symbol. Use `share/make_docs.sh`
+- 8038562 **(2020-04-29, Qusai Al Shidi)**: _C_: Perhaps this change in contributing will show the youtube video.
+- 3cbe318 **(2020-04-29, Qusai Al Shidi)**: _C_: Added logo to readme and contributing should show the trunk based git development vid
+- b7ed409 **(2020-04-29, Qusai Al Shidi)**: _C_: Added logo
+- 339c191 **(2020-04-29, Qusai Al Shidi)**: _C_: Untested initial commit for the new IMF and F10.7 features needed for SWMF GM
+- 4067a38 **(2020-04-28, Qusai Al Shidi)**: _C_: Added changelog
+- 8acb8c3 **(2020-04-28, Qusai Al Shidi)**: _Ctag: v2020.1_: Version 2020.1. Changed download_magnetogram_hmi to take a new argument for either B_720s or b_synoptic_small which is needed.
+- 3a10227 **(2020-04-24, Qusai Al Shidi)**: _Ctag: v2020.0_: 2020.0 commit
+- 6f8cbfc **(2020-04-21, Qusai Al Shidi)**: _C_: Updated readme to reflect the new state of swmfpy in SWMF installation
+- 9141aa9 **(2020-04-21, Qusai Al Shidi)**: _C_: setup.py commit
+- 6ab869c **(2020-04-21, Qusai Al Shidi)**: _C_: Added tests directory but no tests yet. setup.py added to ensure it can be installed
+- 37d5b4f **(2020-04-19, Gabor Toth)**: _C_: Update README.markdown
+- 6c9c58a **(2020-04-08, Qusai Al Shidi)**: _C_: Documentation fixes
+- dffef34 **(2020-04-08, Qusai Al Shidi)**: _C_: Removed deprecated functions and added to documentation
+- 8011884 **(2020-04-08, Qusai Al Shidi)**: _C_: Removed deprecated functions. Will write new ones.
+- 5e00d81 **(2020-04-08, Qusai Al Shidi)**: _C_: Merge branch 'download_magnetogram_hmi' into 'master'
+- 7518f1e **(2020-04-08, Qusai Al Shidi)**: _Corigin/download_magnetogram_hmi, download_magnetogram_hmi_: Fixed download_magnetogram_adapt in filename return. Now download_magnetogram_hmi downloads only the nearest time. hmi_ is preppended to filename.
+- 523f958 **(2020-04-03, Qusai Al Shidi)**: _C_: Fixed download_magnetogram_adapt. Also raise new error if hmi mag not found
+- 36ba08e **(2020-04-03, Qusai Al Shidi)**: _C_: Added section to CONTRIBUTING
+- 39ba725 **(2020-04-03, Qusai Al Shidi)**: _C_: Fixed docstring
+- c3b6429 **(2020-04-03, Qusai Al Shidi)**: _C_: Working download of hmi magnetograms
+- 5fb291b **(2020-04-02, Qusai Al Shidi)**: _C_: Fixed get_omni_data to get all months instead of months-1
+- ee68b59 **(2020-03-31, Qusai Al Shidi)**: _C_: Documentation with toc
+- 3ef8ce1 **(2020-03-31, Qusai Al Shidi)**: _C_: More doc fixes
+- b5a80a1 **(2020-03-31, Qusai Al Shidi)**: _C_: Hopefully this works for docs
+- b5760f3 **(2020-03-31, Qusai Al Shidi)**: _C_: More doc fixes
+- 3b96ad4 **(2020-03-31, Qusai Al Shidi)**: _C_: Oops documetnation fixed
+- 76a1e2c **(2020-03-31, Qusai Al Shidi)**: _C_: Documentation fixes
+- 1a7f0c7 **(2020-03-31, Qusai Al Shidi)**: _C_: Autodoc
+- bfefaee **(2020-03-30, Qusai Al Shidi)**: _C_: Minor change that doesn't matter
+- 57ac926 **(2020-03-26, Qusai Al Shidi)**: _C_: Ensure text file opening of wdc
+- 7f32fdd **(2020-03-20, Qusai Al Shidi)**: _C_: html documentation through pydoc
+- f53e5c5 **(2020-03-20, Qusai Al Shidi)**: _C_: Added documentation improvements
+- cc46626 **(2020-03-20, Qusai Al Shidi)**: _C_: Improved pydoc
+- f9f3b69 **(2020-03-20, Qusai Al Shidi)**: _C_: Improved paramin functions
+- 113cbec **(2020-03-20, Qusai Al Shidi)**: _C_: Some paramin changes untested
+- a7e3222 **(2020-03-17, Qusai Al Shidi)**: _C_: Many changes to io for better parsing. WDC functions work better
+- 26a66ca **(2020-03-13, Qusai Al Shidi)**: _C_: Fixed WDC functions in swmfpy.io
+- cb2f765 **(2020-03-12, Qusai Al Shidi)**: _C_: COVID commit again
+- 430569d **(2020-03-11, Qusai Al Shidi)**: _C_: Commit just in case CSRB closes due to coronavirus
+- 505679c **(2020-03-11, Qusai Al Shidi)**: _C_: io.read_gm_log does not rely on pandas anymore instead it gives a dict
+- 7a4e7d2 **(2020-03-10, Qusai Al Shidi)**: _C_: Made dependency handling more clear.
+- 2d6c838 **(2020-03-10, Qusai Al Shidi)**: _C_: Merging my adapt branch
+- 63fbd1a **(2020-03-10, Qusai Al Shidi)**: _C_: removed read_fits.py code since it's deprecated
+- 3f9a436 **(2020-03-09, Qusai Al Shidi)**: _C_: Merge web.py from adapt branch
+- 567bea8 **(2020-03-09, Qusai Al Shidi)**: _C_: Working on this
+- 7512947 **(2020-03-06, Qusai Al Shidi)**: _C_: Hid coarse_filtering from import
+- 52aaf23 **(2020-03-04, Qusai Al Shidi)**: _C_: Cleaning Zhenguang code further.
+- 36cec6b **(2020-03-04, Qusai Al Shidi)**: _C_: Added cleaned Zhenguang code.
+- 063e33c **(2020-03-03, Qusai Al Shidi)**: _C_: Fixed paramin replace and changed name added paramin.read_command()
+- 569080e **(2020-03-03, Qusai Al Shidi)**: _C_: Help page of swmfpy made clearer.
+- 79d6122 **(2020-03-03, Qusai Al Shidi)**: _C_: Better module docstrings
+- 5b3c7cb **(2020-03-03, Qusai Al Shidi)**: _C_: Fixed swmfpy module docstring to be better
+- 45de9a4 **(2020-03-03, Qusai Al Shidi)**: _C_: Changed name of spdf.py to web.py Removed DOCUMENTATION link because it is not quite ready. Readability changes.
+- 4c4abad **(2020-03-02, Qusai Al Shidi)**: _C_: Fixed PEP-8 of get_omni_data, fixed CONTRIBUTING
+- 41dc03e **(2020-03-02, Qusai Al Shidi)**: _C_: Made swmfpy.spdf.get_omni_data faster
+- 519991f **(2020-03-02, Qusai Al Shidi)**: _C_: Added swmf.spdf.get_omni_data that downloads omni data directly into a dictionary
+- a02018f **(2020-02-27, Qusai Al Shidi)**: _C_: changed name to author in contributing
+- 6ccdbcd **(2020-02-27, Qusai Al Shidi)**: _C_: Changed contributing to include metadata directions
+- fd26dd4 **(2020-02-27, Qusai Al Shidi)**: _C_: Fixed Documentation
+- b1af5a3 **(2020-02-27, Qusai Al Shidi)**: _C_: Documentation needed fix
+- 02be787 **(2020-02-27, Qusai Al Shidi)**: _C_: Added pdoc generated documentation
+- d07a704 **(2020-02-26, Qusai Al Shidi)**: _C_: Added contributing
+- fa37f91 **(2020-02-26, Qusai Al Shidi)**: _C_: Fixed readability in read_wdc_ae docstring
+- a1ad542 **(2020-02-20, Qusai Al Shidi)**: _C_: gitlab doesn't allow html docs will host externally
+- 65aa496 **(2020-02-20, Qusai Al Shidi)**: _C_: Web docs
+- cf4b705 **(2020-02-20, Qusai Al Shidi)**: _C_: Added web docs
+- 19c2fd5 **(2020-02-19, Qusai Al Shidi)**: _C_: more readme fix
+- 7d24114 **(2020-02-19, Qusai Al Shidi)**: _C_: Merge branch 'master' of gitlab.umich.edu:qusai/swmfpy
+- f10e0ff **(2020-02-19, Qusai Al Shidi)**: _C_: Added better clone line because of file structure change
+- b0ca0ba **(2020-02-19, Qusai Al Shidi)**: _C_: Added better clone line because of file structure change
+- dfee4c9 **(2020-02-19, Qusai Al Shidi)**: _C_: Restructured file structure
+- 18ebfe2 **(2020-02-19, Qusai Al Shidi)**: _C_: File structure changes
+- a08b83e **(2020-02-19, Qusai Al Shidi)**: _C_: paramin_replace usable
+- 3d2f2e0 **(2020-02-17, Qusai Al Shidi)**: _C_: Changed module docstring
+- e0306b6 **(2020-02-17, Qusai Al Shidi)**: _C_: replace paramin function works as expected now
+- f68d57f **(2020-02-17, Qusai Al Shidi)**: _C_: Fixed syntax highlighting
+- 281329c **(2020-02-17, Qusai Al Shidi)**: _C_: Added more readme
+- be28064 **(2020-02-17, Qusai Al Shidi)**: _C_: Commit before gitlab transfer haven't tested new replace features
+- f0575f2 **(2020-02-07, Qusai Al Shidi)**: _C_: PARAMin find replace added
+- cf39804 **(2019-11-27, Qusai Al Shidi)**: _C_: Reads gm logs well
+- c2c47c0 **(2019-11-18, Qusai Al Shidi)**: _C_: Initial commit for library
+- 8b6ace2 **(2019-10-17, Qusai Al Shidi)**: _C_: Added radiation belt model input file creation as well.
+- a2ce534 **(2019-08-30, Qusai Al Shidi)**: _C_: Just have the python header.
+- f4c7b4f **(2019-08-30, Qusai Al Shidi)**: _C_: Fixed microsecond to millisecond mistake in write_data
+- 0943f8d **(2019-08-28, Qusai Al Shidi)**: _C_: Updated readme
+- eb4e761 **(2019-08-28, Qusai Al Shidi)**: _C_: Added a way to write out DataFrame into IMF.dat file
+- 41a6385 **(2019-08-28, Qusai Al Shidi)**: _C_: Added function combine data for ACE and WIND data that interpolates
+- ab0813c **(2019-08-22, Qusai Al Shidi)**: _C_: Added fix if data ends with baddata
+- 6d1bbb4 **(2019-08-20, Qusai Al Shidi)**: _C_: Added readme
+- 0b11a57 **(2019-08-20, Qusai Al Shidi)**: _C_: Merge branch 'master' of github.com:qalshidi/omni2swmf
+- 864495e **(2019-08-20, Qusai Al Shidi)**: _C_: Commit before github push
+- e753deb **(2019-08-20, Qusai Al Shidi)**: _C_: Initial commit
+- 2c71470 **(2019-08-19, Qusai Al Shidi)**: _C_: Added closing of files
+- 2f84fb6 **(2019-08-19, Qusai Al Shidi)**: _C_: Working scripts
+- 4500bca **(2019-08-19, Qusai Al Shidi)**: _C_: Initial commit.
