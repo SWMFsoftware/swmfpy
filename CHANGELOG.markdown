@@ -1,4 +1,8 @@
-- bb06e1c **(2020-05-20, Qusai Al Shidi)**: _CHEAD -> master, tag: v2020.2, origin/master, origin/HEAD_: v2020.2 changelog
+- fac5971 **(2020-05-26, Qusai Al Shidi)**: _CHEAD -> master, tag: v2020.3_: Fixed up README and made new version due to @tkeebler fix
+- 6f0f40d **(2020-05-26, Qusai Al Shidi)**: _Corigin/master, origin/HEAD_: Bash markdown now has $ sign for better readability
+- a7a0280 **(2020-05-20, Qusai Al Shidi)**: _C_: Fixed Documentation # characters
+- 6d36af1 **(2020-05-20, Qusai Al Shidi)**: _C_: Fixed changelog
+- bb06e1c **(2020-05-20, Qusai Al Shidi)**: _Ctag: v2020.2_: v2020.2 changelog
 - c10ece8 **(2020-05-20, Qusai Al Shidi)**: _C_: v2020.2 commit
 - 9cb028f **(2020-05-20, Qusai Al Shidi)**: _C_: Fixed installation directions
 - 48200d7 **(2020-05-20, Qusai Al Shidi)**: _C_: Merge branch 'imf-f107' into 'master'
