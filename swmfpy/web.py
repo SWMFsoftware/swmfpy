@@ -227,7 +227,7 @@ def _urls_omni_hires(time_from, time_to):
     for date in rrule.rrule(rrule.MONTHLY,
                             dtstart=time_from,
                             until=dt.datetime(time_to.year,
-                                              time_to.month+1,
+                                              time_to.month,
                                               1)):
         suffix = 'omni_min'
         suffix += str(date.year) + str(date.month).zfill(2)
