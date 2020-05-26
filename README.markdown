@@ -16,14 +16,14 @@ Clone into the directory you want to use it.
 
 ```bash
 # Skip this if using it in SWMF directory.
-git clone https://gitlab.umich.edu/swmf_sofware/swmfpy.git /path/to/my/dir
+$ git clone https://gitlab.umich.edu/swmf_sofware/swmfpy.git /path/to/my/dir
 ```
 
 Then go to its directory and run [pip](https://pip.pypa.io/en/stable/) to install. Make sure to include `--user`.
 
 ```bash
-cd SWMF/share/Python/swmfpy  # or your clone directory
-pip install --user .
+$ cd SWMF/share/Python/swmfpy  # or your clone directory
+$ pip install --user .
 ```
 
 *Note*: Depending on your system [pip](https://pip.pypa.io/en/stable/) may be ran in several ways: `pip`, `pip3`, or `python3 -m pip`

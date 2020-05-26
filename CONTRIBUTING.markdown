@@ -9,7 +9,7 @@ Git etiquette
 If you're planning on adding a feature (new function or class) then create your own branch,
 
 ```bash
-git checkout -b my_new_feature
+$ git checkout -b my_new_feature
 ```
 
 and start commiting there to test and work on. We will follow a [trunk-based development model](https://youtu.be/ykZbBD-CmP8). This means we will rapidly merge branches once you have something stable and continue with master branch. So make sure to push something stable instead of being in your feature branch for too long. I will try to address your pull request ASAP.
@@ -22,7 +22,7 @@ Coding Style: PEP 8
 The style for your code must follow the [PEP 8](https://www.python.org/dev/peps/pep-0008/) style guide. It would be helpful to use a linter like [pylint](https://pylint.org) to check whether your code is complying before submitting.
 
 ```bash
-pylint somefile.py
+$ pylint somefile.py
 ```
 
 Coding Standard
