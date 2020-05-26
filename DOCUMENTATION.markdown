@@ -432,6 +432,7 @@ Note, if you have repeat commands this will replace all the repeats.
 **Examples**:
 
   ```python
+  change = {}
   change['#SOLARWINDFILE'] = [['T', 'UseSolarWindFile'],
   ['new_imf.dat', 'NameSolarWindFile']]
   # This will overwrite PARAM.in
