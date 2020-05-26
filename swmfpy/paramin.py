@@ -33,6 +33,7 @@ def replace_command(parameters, input_file, output_file='PARAM.in'):
 
     Examples:
         ```python
+        change = {}
         change['\043SOLARWINDFILE'] = [['T', 'UseSolarWindFile'],
                                     ['new_imf.dat', 'NameSolarWindFile']]
         # This will overwrite PARAM.in
@@ -63,11 +64,10 @@ def replace_command(parameters, input_file, output_file='PARAM.in'):
                     lines[line_num+param+1] = newline + '\n'
 
     # Write the PARAM.in file
-    if output_file is None:
-        return lines  # Break if None output_file (not default behaviour)
-    with open(output_file, 'w') as outfile:
-        for line in lines:
-            outfile.write(line)
+    if output_file is not None:
+        with open(output_file, 'w') as outfile:
+            for line in lines:
+                outfile.write(line)
 
     return lines
 
