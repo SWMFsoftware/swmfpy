@@ -11,13 +11,12 @@ These are automatically imported.
 
 ### Extra Modules
 
-These are not automatically imported. Might have extra dependancies.
-
-*None yet.*
+- `swmfpy.tools` Tools used in swmfpy. You might find these useful but it is
+  unecessary.
 """
 __author__ = 'Qusai Al Shidi'
 __license__ = 'MIT'
-__version__ = '2020.1'
+__version__ = '2020.4'
 __maintainer__ = 'Qusai Al Shidi'
 __email__ = 'qusai@umich.edu'
 
