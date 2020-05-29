@@ -56,6 +56,11 @@ period.
   see `swmfpy.io.write_imf_input()` and `swmfpy.web.get_omni_data()`
   
 
+**Returns**:
+
+- `(dict)` - Dictionary of omni data.
+  
+
 **Examples**:
 
   Using this function is simple:
