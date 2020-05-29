@@ -22,11 +22,11 @@ $ git clone https://gitlab.umich.edu/swmf_sofware/swmfpy.git /path/to/my/dir
 Then install with [pip](https://pip.pypa.io/en/stable/):
 
 ```bash
-$ pip install -U --user wheel  # Might be necessary
-$ pip install -U --user git+https://gitlab.umich.edu/swmf_software/swmfpy.git@master
+$ python3 -m pip install -U --user wheel  # Might be necessary
+$ python3 -m pip install -U --user git+https://gitlab.umich.edu/swmf_software/swmfpy.git@master
 ```
 
-*Note*: Depending on your system [pip](https://pip.pypa.io/en/stable/) may be ran in several ways: `pip`, `pip3`, or `python3 -m pip`
+*Note*: Depending on your system [pip](https://pip.pypa.io/en/stable/) may be ran in other ways: `python3 -m pip` or `python -m pip`
 
 Then import it into your python project. 
 
