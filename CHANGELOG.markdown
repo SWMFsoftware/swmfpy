@@ -1,5 +1,17 @@
-- fac5971 **(2020-05-26, Qusai Al Shidi)**: _CHEAD -> master, tag: v2020.3_: Fixed up README and made new version due to @tkeebler fix
-- 6f0f40d **(2020-05-26, Qusai Al Shidi)**: _Corigin/master, origin/HEAD_: Bash markdown now has $ sign for better readability
+- 873bcf5 **(2020-05-29, Qusai Al Shidi)**: _CHEAD -> master, tag: v2020.4, origin/master, origin/HEAD_: Version 2020.4 with bug fixes to retrieve time better from omni and also works with `share/Python/Scripts/prepare_geospace.py`
+- 6daa030 **(2020-05-29, Qusai Al Shidi)**: _C_: Running write_imf_from_omni now returns the omni data also
+- 9140d57 **(2020-05-29, Qusai Al Shidi)**: _C_: Better installation method
+- caad652 **(2020-05-29, Qusai Al Shidi)**: _C_: Writing IMF files fixed, will not write nans anymore
+- 1a0466a **(2020-05-29, Qusai Al Shidi)**: _C_: dateutil requirement is python-dateutil
+- 41ac2b6 **(2020-05-26, Qusai Al Shidi)**: _C_: code error in example of #replace_command() added make changelog script
+- 6e6cc3d **(2020-05-26, Qusai Al Shidi)**: _C_: Merge branch 'master' of gitlab.umich.edu:swmf_software/swmfpy
+- 07c093f **(2020-05-26, Qusai Al Shidi)**: _C_: Changelog for v2020.3
+- fac5971 **(2020-05-26, Qusai Al Shidi)**: _Ctag: v2020.3_: Fixed up README and made new version due to @tkeebler fix
+- c01c6bf **(2020-05-26, Qusai Al Shidi)**: _C_: Revert "Initial script commit looks like it's working"
+- 0e2d504 **(2020-05-26, Qusai Al Shidi)**: _C_: Initial script commit looks like it's working
+- c546d3c **(2020-05-26, Qusai Al Shidi)**: _C_: Merge branch 'fix_urls_omni_hires' into 'master'
+- d186762 **(2020-05-26, TKeebler)**: _C_: removed a +1 from _urls_omni_hires month to allow pulling December data (there is no month 13)
+- 6f0f40d **(2020-05-26, Qusai Al Shidi)**: _C_: Bash markdown now has $ sign for better readability
 - a7a0280 **(2020-05-20, Qusai Al Shidi)**: _C_: Fixed Documentation # characters
 - 6d36af1 **(2020-05-20, Qusai Al Shidi)**: _C_: Fixed changelog
 - bb06e1c **(2020-05-20, Qusai Al Shidi)**: _Ctag: v2020.2_: v2020.2 changelog
