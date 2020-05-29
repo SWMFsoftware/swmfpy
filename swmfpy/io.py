@@ -4,6 +4,7 @@ Here are tools to read and write files relating to SWMF.
 """
 
 import datetime as dt
+import numpy as np
 from .tools import _make_line
 
 
@@ -68,19 +69,25 @@ def write_imf_input(imf_data, filename='IMF.dat', **kwargs):
                 file_imf.write(_make_line(command)+'\n')
 
         # write dat file
-        def justified(str_list, width=7):
-            'Returns justified'
-            return [s.rjust(width) for s in str_list]
-        file_imf.write('\n'+' '.join(justified(columns_dat)))
+        file_imf.write('\n'+' '.join(_justified(columns_dat)))
         file_imf.write('\n#START\n')
         lines = []
         for index, _time in enumerate(imf_data[column_keys[0]]):
+            dirty = False  # Don't write line if it has NaN
             line = _time_repr(_time)
             for key in column_keys[1:]:
                 line += [str(round(imf_data[key][index], 2))]
-            line = ' '.join(justified(line))
-            lines += line + '\n'
+                if np.isnan(imf_data[key][index]):
+                    dirty = True
+            if not dirty:
+                line = ' '.join(_justified(line))
+                lines += line + '\n'
         file_imf.writelines(lines)
+
+
+def _justified(str_list, width=7):
+    'Returns justified list from string list'
+    return [s.rjust(width) for s in str_list]
 
 
 def read_wdc_ae(wdc_filename):

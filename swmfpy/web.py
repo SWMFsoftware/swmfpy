@@ -9,7 +9,7 @@ __author__ = 'Qusai Al Shidi'
 __email__ = 'qusai@umich.edu'
 
 import datetime as dt
-from ftplib import FTP, all_errors
+import ftplib
 import gzip
 from operator import itemgetter
 import shutil
@@ -208,7 +208,7 @@ def get_omni_data(time_from, time_to, **kwargs):
                 # Assign the data from after the time columns
                 for col_name, value in zip(omni['cols'],
                                            cols[omni['ntimecols']:]):
-                    if _check_bad_omni_num(value):
+                    if _bad_omni_num(value):
                         return_data[col_name] += [None]
                     else:
                         return_data[col_name] += [float(value)]
@@ -228,7 +228,7 @@ def _urls_omni_hires(time_from, time_to):
                             dtstart=time_from,
                             until=dt.datetime(time_to.year,
                                               time_to.month,
-                                              1)):
+                                              1)+dt.timedelta(32)):
         suffix = 'omni_min'
         suffix += str(date.year) + str(date.month).zfill(2)
         suffix += '.asc'
@@ -247,7 +247,7 @@ def _urls_omni_lores(time_from, time_to):
         yield prefix+suffix
 
 
-def _check_bad_omni_num(value_string):
+def _bad_omni_num(value_string):
     """Returns true if bad or false if not. Bad numbers usually just have 9s
        in omni.
     """
