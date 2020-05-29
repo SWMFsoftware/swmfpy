@@ -10,6 +10,7 @@ __email__ = 'qusai@umich.edu'
 
 import datetime as dt
 import ftplib
+from functools import lru_cache
 import gzip
 from operator import itemgetter
 import shutil
@@ -122,12 +123,19 @@ OMNI_LORES_COLS = (('Bartels rotation number', 'bartels'),
                    )
 
 
+@lru_cache(maxsize=4)
 def get_omni_data(time_from, time_to, **kwargs):
     """Retrieve omni solar wind data over http.
 
     This will download omni data from https://spdf.gsfc.nasa.gov/pub/data/omni
     and put it into a dictionary. If your data is large, then make a csv and
     use swmfpy.io.read_omni_data().
+
+    Note that calling this more than once with the same arguments will point to
+    your original dictionary that it created. This is to speed up code that
+    calls this multiple times as it requires internet access and download.
+    If you mutate your original try doing an omni_dict2 = omni_dict1.copy()
+    and mutate the other one.
 
     Args:
         time_from (datetime.datetime): The start time of the solar wind
@@ -251,10 +259,7 @@ def _bad_omni_num(value_string):
     """Returns true if bad or false if not. Bad numbers usually just have 9s
        in omni.
     """
-    for char in value_string:
-        if char not in ('9', '.'):
-            return False
-    return True
+    return all([char in ('9', '.') for char in value_string])
 
 
 def download_magnetogram_hmi(mag_time, hmi_map='hmi.B_720s', **kwargs):

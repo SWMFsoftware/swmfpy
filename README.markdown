@@ -22,6 +22,7 @@ $ git clone https://gitlab.umich.edu/swmf_sofware/swmfpy.git /path/to/my/dir
 Then install with [pip](https://pip.pypa.io/en/stable/):
 
 ```bash
+$ pip install -U --user wheel  # Might be necessary
 $ pip install -U --user git+https://gitlab.umich.edu/swmf_software/swmfpy.git@master
 ```
 

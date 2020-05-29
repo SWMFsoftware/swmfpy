@@ -32,9 +32,8 @@ These are automatically imported.
 
 ### Extra Modules
 
-These are not automatically imported. Might have extra dependancies.
-
-*None yet.*
+- `swmfpy.tools` Tools used in swmfpy. You might find these useful but it is
+  unecessary.
 
 <a name=".swmfpy.write_imf_from_omni"></a>
 #### write\_imf\_from\_omni
@@ -88,6 +87,7 @@ use these to preprocess before submitting jobs.
 #### get\_omni\_data
 
 ```python
+@lru_cache(maxsize=4)
 get_omni_data(time_from, time_to, **kwargs)
 ```
 
@@ -96,6 +96,12 @@ Retrieve omni solar wind data over http.
 This will download omni data from https://spdf.gsfc.nasa.gov/pub/data/omni
 and put it into a dictionary. If your data is large, then make a csv and
 use swmfpy.io.read_omni_data().
+
+Note that calling this more than once with the same arguments will point to
+your original dictionary that it created. This is to speed up code that
+calls this multiple times as it requires internet access and download.
+If you mutate your original try doing an omni_dict2 = omni_dict1.copy()
+and mutate the other one.
 
 **Arguments**:
 
