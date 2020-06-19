@@ -1,4 +1,12 @@
-- 873bcf5 **(2020-05-29, Qusai Al Shidi)**: _CHEAD -> master, tag: v2020.4, origin/master, origin/HEAD_: Version 2020.4 with bug fixes to retrieve time better from omni and also works with `share/Python/Scripts/prepare_geospace.py`
+- 08e8962 **(2020-06-19, Qusai Al Shidi)**: _CHEAD -> master_: Merge branch 'cdha/swmfpy-tecplottools'
+- 63a40aa **(2020-06-19, Qusai Al Shidi)**: _Corigin/cdha/swmfpy-tecplottools, cdha/swmfpy-tecplottools_: @cdha this is great and I made a few changes to keep in mind.
+- 8981fcd **(2020-06-19, Qusai Al Shidi)**: _Corigin/master, origin/HEAD_: Change the -U
+- d319627 **(2020-06-18, Camilla D. K. Harris)**: _C_: Added TECPLOT.markdown to include some explanations of using Tecplot with SWMF output.
+- f420b06 **(2020-06-18, Camilla D. K. Harris)**: _C_: Initial commit of tecplottools module for working with Tecplot and pytecplot.
+- c9a11f6 **(2020-05-29, Qusai Al Shidi)**: _C_: Use `python3 -m pip` since pip comes with python >=3.4
+- 4b4cfb5 **(2020-05-29, Qusai Al Shidi)**: _C_: Speed up of `get_omni_data`
+- 69033fc **(2020-05-29, Qusai Al Shidi)**: _C_: Update changelog
+- 873bcf5 **(2020-05-29, Qusai Al Shidi)**: _Ctag: v2020.4_: Version 2020.4 with bug fixes to retrieve time better from omni and also works with `share/Python/Scripts/prepare_geospace.py`
 - 6daa030 **(2020-05-29, Qusai Al Shidi)**: _C_: Running write_imf_from_omni now returns the omni data also
 - 9140d57 **(2020-05-29, Qusai Al Shidi)**: _C_: Better installation method
 - caad652 **(2020-05-29, Qusai Al Shidi)**: _C_: Writing IMF files fixed, will not write nans anymore

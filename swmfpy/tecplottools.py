@@ -45,7 +45,7 @@ def apply_equations(eqn_path: str, verbose: bool = False):
         ## session. Be sure that the port number matches the port the GUI is
         ## listening to. See TECPLOT.markdown for tips on connecting to a
         ## running session or running your script seperately.
-        #tecplot.session.connect(port=7600)
+        # tecplot.session.connect(port=7600)
 
         ## load a dataset
         dataset = tecplot.data.load_tecplot('./z=0_mhd_1_n00000000.plt')

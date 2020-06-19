@@ -18,7 +18,7 @@ These are automatically imported.
 """
 __author__ = 'Qusai Al Shidi'
 __license__ = 'MIT'
-__version__ = '2020.4'
+__version__ = '2020.5'
 __maintainer__ = 'Qusai Al Shidi'
 __email__ = 'qusai@umich.edu'
 
@@ -26,7 +26,6 @@ __email__ = 'qusai@umich.edu'
 import sys
 from . import paramin
 from . import io
-from . import tecplottools
 from . import web
 assert sys.version_info >= (3, 6), "swmfpy requires Python >=3.6. Sorry :(."
 
