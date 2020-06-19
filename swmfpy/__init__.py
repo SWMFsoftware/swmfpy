@@ -26,6 +26,7 @@ __email__ = 'qusai@umich.edu'
 import sys
 from . import paramin
 from . import io
+from . import tecplottools
 from . import web
 assert sys.version_info >= (3, 6), "swmfpy requires Python >=3.6. Sorry :(."
 

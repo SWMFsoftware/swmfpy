@@ -1,19 +1,18 @@
 #!/usr/bin/env python
-"""Tools for working with the Tecplot visualization software. Requires an
-active Tecplot license and the pytecplot python package. pytecplot ships with
-Tecplot 360 2017 R1 and later versions but it is recommended that you install
-the latest version with `pip install pytecplot`. See the pytecplot
-documentation for more details about installation
-(https://www.tecplot.com/docs/pytecplot/install.html). See also
-TECPLOT.markdown for tips targeted to SWMF users.
+"""Tools for working with the Tecplot visualization software.
+
+Requires an active Tecplot license and the pytecplot python package.
+pytecplot ships with Tecplot 360 2017 R1 and later versions
+but it is recommended that you install the latest version with
+`pip install pytecplot`.
+See the pytecplot documentation for more details about
+[installation](https://www.tecplot.com/docs/pytecplot/install.html).
+See also [TECPLOT](TECPLOT.markdown) for tips targeted to SWMF users.
 
 Some useful references:
-- Tecplot User's Manual
-  http://download.tecplot.com/360/current/360_users_manual.pdf
-- Tecplot Scripting Guide
-  http://download.tecplot.com/360/current/360_scripting_guide.pdf
-- Pytecplot documentation
-  https://www.tecplot.com/docs/pytecplot/index.html
+- [Tecplot User's Manual](download.tecplot.com/360/current/360_users_manual.pdf)
+- [Tecplot Scripting Guide](download.tecplot.com/360/current/360_scripting_guide.pdf)
+- [Pytecplot documentation](www.tecplot.com/docs/pytecplot/index.html)
 """
 __all__ = [
     'apply_equations'
@@ -24,20 +23,20 @@ __email__ = 'cdha@@umich.edu'
 import tecplot
 
 def apply_equations(eqn_path: str, verbose: bool = False):
-    """
-    Apply an equations file in the Tecplot macro format to the active Tecplot
-    dataset. Please reference the Tecplot User's Manual for more details on
-    equation files and syntax. It is recommended to use this function with eqn
-    files generated with the Tecplot GUI. See TECPLOT.markdown for tips on using
-    pytecplot.
+    """Apply an equations file in the Tecplot macro format to the active dataset
 
-    Arguments:
-        eqn_file_path: The path to the equation macro file (typically with
+    Please reference the Tecplot User's Manual for more details on
+    equation files and syntax. It is recommended to use this function with eqn
+    files generated with the Tecplot GUI.
+    See [TECPLOT](TECPLOT.markdown) for tips on using pytecplot.
+
+    Args:
+        eqn_file_path (str): The path to the equation macro file (typically with
             extension `.eqn`).
-        verbose: (Optional) Whether or not to print the equations as they are
+        verbose (bool): (Optional) Whether or not to print the equations as they are
             applied. Default behavior is silent.
 
-    Example:
+    Examples:
         ```python
         import tecplot
         import swmfpy.tecplottools as tpt
