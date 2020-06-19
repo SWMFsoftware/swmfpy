@@ -13,6 +13,8 @@ These are automatically imported.
 
 - `swmfpy.tools` Tools used in swmfpy. You might find these useful but it is
   unecessary.
+- `swmfpy.tecplottools` Tools for working with the Tecplot visualization
+  software. Requires a Tecplot license and the pytecplot python package.
 """
 __author__ = 'Qusai Al Shidi'
 __license__ = 'MIT'
@@ -24,6 +26,7 @@ __email__ = 'qusai@umich.edu'
 import sys
 from . import paramin
 from . import io
+from . import tecplottools
 from . import web
 assert sys.version_info >= (3, 6), "swmfpy requires Python >=3.6. Sorry :(."
 
