@@ -18,7 +18,7 @@ __all__ = [
     'apply_equations'
 ]
 __author__ = 'Camilla D. K. Harris'
-__email__ = 'cdha@@umich.edu'
+__email__ = 'cdha@umich.edu'
 
 import tecplot
 
