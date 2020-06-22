@@ -33,8 +33,8 @@ def apply_equations(eqn_path: str, verbose: bool = False):
     Args:
         eqn_file_path (str): The path to the equation macro file (typically with
             extension `.eqn`).
-        verbose (bool): (Optional) Whether or not to print the equations as they are
-            applied. Default behavior is silent.
+        verbose (bool): (Optional) Whether or not to print the equations as they
+            are applied. Default behavior is silent.
 
     Examples:
         ```python
@@ -68,10 +68,17 @@ def apply_equations(eqn_path: str, verbose: bool = False):
         print('Executing:')
     with open(eqn_path, 'r') as eqn_file:
         for line in eqn_file:
-            if line[0] == ' ':
-                eqnstr = line.split("'")[1]
-                tecplot.data.operate.execute_equation(eqnstr)
+            if '$!alterdata' in line.lower():
+                eqn_line = eqn_file.readline()
+                try:
+                    eqn_str = eqn_line.split("'")[1]
+                except IndexError:
+                    try:
+                        eqn_str = eqn_line.split("\"")[1]
+                    except:
+                        raise ValueError(f'Unable to read equation: {eqn_line}')
+                tecplot.data.operate.execute_equation(eqn_str)
                 if verbose:
-                    print(eqnstr)
+                    print(eqn_str)
     if verbose:
         print('Successfully applied equations.')
