@@ -20,6 +20,7 @@ __all__ = [
 __author__ = 'Camilla D. K. Harris'
 __email__ = 'cdha@umich.edu'
 
+import numpy as np
 import tecplot
 
 def apply_equations(eqn_path: str, verbose: bool = False):
@@ -82,3 +83,115 @@ def apply_equations(eqn_path: str, verbose: bool = False):
                     print(eqn_str)
     if verbose:
         print('Successfully applied equations.')
+
+
+def _shell_geometry(geometry_params):
+    """Returns a dict containing points for the described shell geometry.
+    """
+
+
+def _line_geometry(geometry_params):
+    """Returns a dict containing points for the described line geometry.
+    """
+
+
+def _rectprism_geometry(geometry_params):
+    """Returns a dict containing points for the described rectprism geometry.
+    """
+
+
+def _trajectory_geometry(geometry_params):
+    """Returns a dict containing points for the described trajectory geometry.
+    """
+
+
+def _save_hdf5():
+    """Save the aux data and a subset of the variables in hdf5 format.
+    """
+
+
+def _save_ascii():
+    """Save the aux data and a subset of the variables in plain-text format.
+    """
+
+
+def tecplot_interpolate(
+        tecplot_plt_file_path:str
+        ,geometry:str
+        ,write_as:str
+        ,filename:str=None
+        ,tecplot_equation_file_path:str=None
+        ,tecplot_variable_pattern:str=None
+        ,verbose:bool=False
+        ,**kwargs
+):
+    """Interpolates Tecplot binary data onto various geometries.
+
+    Args:
+        tecplot_plt_file_path (str): Path to the tecplot binary file.
+        geometry (str): Type of geometry for interpolation. Supported geometries
+            are 'shell', 'line', 'rectprism', or 'trajectory'.
+        write_as (str): Type of file to write to. Supported options are 'hdf5',
+            'ascii', 'tecplot_ascii', and 'tecplot_plt'.
+        filename (str): (Optional) Name of the file to write to. Defaults to a
+            concatenation of the tecplot file name and the geometry type.
+        tecplot_equation_file_path (str): (Optional) Path to an equation file to
+            be applied to the tecplot dataset before interpolation. Defaults to
+            no equations.
+        tecplot_variable_pattern (str): (Optional) Regex-style variable name
+            pattern used to save a subset of the variables. This option may be
+            used to decrease the size of the hdf5 output. Default behavior is to
+            save all variables.
+        verbose: (Optional) Print diagnostic information. Defaults to False.
+
+    Keyword Args:
+        center (array-like): Argument for the 'shell' geometry. Contains the X,
+            Y, and Z positions of the shell. Defaults to (0,0,0).
+        radius (float): Argument for the 'shell' geometry. Required.
+        npoints (array-like): Argument for the 'shell' geometry. Contains the
+            number of points in the azimuthal and polar directions to
+            interpolate onto. Defaults to (359,181).
+        r1 (array-like): Argument for the 'line' geometry. Contains the X, Y,
+            and Z positions of the point where the line starts. Required.
+        r2 (array-like): Argument for the 'line' geometry. Contains the X, Y,
+            and Z positions of the point where the line ends. Required.
+        npoints (int): Argument for the 'line' geometry. The number of points
+            along the line to interpolate onto. Required.
+        center (array-like): Argument for the 'rectprism' geometry. Contains the
+            X, Y, and Z positions of the center of the rectangular prism.
+            Defaults to (0,0,0).
+        halfwidth (array-like): Argument for the 'rectprism' geometry. Contains
+            the half widths of the rectangular prism in the X, Y, and Z
+            directions. Required.
+        npoints (array-like): Argument for the 'rectprism' geometry. Contains
+            the number of points in the X, Y, and Z directions to interpolate
+            onto. Required.
+        trajectory_data (str): Argument for the 'trajectory' geometry. The path
+            to the ASCII trajectory data file. Required.
+        trajectory_format (str): Argument for the 'trajectory' geometry. The
+            format of the trajectory data file. Supported formats are 'tecplot'
+            (data is a tecplot zone with 3D positional variables and 'time') and
+            'batsrus' (data is formatted as described for the #SATELLITE
+            command, see SWMF documentation). Required.
+
+    Examples:
+        ```tecplot_interpolate(
+            tecplot_plt_file_path='./path/to/data.plt'
+            ,geometry='shell'
+            ,write_as='tecplot_ascii'
+            ,center=[0.0, 0.0, 0.0]
+            ,radius=1.01
+        )
+
+        tecplot_interpolate(
+            tecplot_plt_file_path='./path/to/data.plt'
+            ,geometry='line'
+            ,write_as='tecplot_ascii'
+            ,tecplot_equation_file_path='./path/to/equations.eqn'
+            ,tecplot_variable_pattern='B.*|E.*'
+            ,r1=[1.0, 0.0, 0.0]
+            ,r2=[6.0, 0.0, 0.0]
+            ,npoints=101
+        )
+        ```
+    """
