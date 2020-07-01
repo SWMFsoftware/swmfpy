@@ -91,21 +91,42 @@ def apply_equations(eqn_path: str, verbose: bool = False):
 def _shell_geometry(geometry_params):
     """Returns a dict containing points for the described shell geometry.
     """
+    npoints = geometry_params['npoints'][0]*geometry_params['npoints'][1]
+    geometry_points = {
+        'npoints': npoints
+    }
+    return geometry_points
 
 
 def _line_geometry(geometry_params):
     """Returns a dict containing points for the described line geometry.
     """
+    geometry_points = {
+        'npoints': geometry_params['npoints']
+    }
+    return geometry_points
 
 
 def _rectprism_geometry(geometry_params):
     """Returns a dict containing points for the described rectprism geometry.
     """
+    npoints = (geometry_params['npoints'][0]
+               * geometry_params['npoints'][1]
+               * geometry_params['npoints'][2])
+    geometry_points = {
+        'npoints': npoints
+    }
+    return geometry_points
 
 
 def _trajectory_geometry(geometry_params):
     """Returns a dict containing points for the described trajectory geometry.
     """
+    if 'batsrus' in geometry_params['trajectory_format']:
+        
+    elif 'tecplot' in geometry_params['trajectory_format']:
+    geometry_points = {}
+    return geometry_points
 
 
 def _save_hdf5():
@@ -211,17 +232,26 @@ def tecplot_interpolate(
     if verbose:
         print('Adding defaults')
     if 'shell' in geometry_params['kind']:
-        geometry_params['center'] = geometry_params.get('center', (0.0,0.0,0.0))
-        geometry_params['npoints'] = geometry_params.get('npoints', (359,181))
+        geometry_params['center'] = geometry_params.get(
+            'center'
+            , (0.0, 0.0, 0.0)
+        )
+        geometry_params['npoints'] = geometry_params.get(
+            'npoints'
+            , (359, 181)
+        )
     elif 'rectprism' in geometry_params['kind']:
-        geometry_params['center'] = geometry_params.get('center', (0.0,0.0,0.0))
+        geometry_params['center'] = geometry_params.get(
+            'center'
+            , (0.0, 0.0, 0.0)
+        )
 
     ## check that we support the geometry
     geometry_param_names = {
-        'shell': ('radius',)
-        , 'line': ('r1', 'r2', 'npoints')
-        , 'rectprism': ('halfwidths', 'npoints')
-        , 'trajectory': ('trajectory_data', 'trajectory_format')
+        'shell': ('radius',),
+        'line': ('r1', 'r2', 'npoints'),
+        'rectprism': ('halfwidths', 'npoints'),
+        'trajectory': ('trajectory_data', 'trajectory_format')
     }
     if geometry_params['kind'] not in geometry_param_names:
         raise ValueError(f'Geometry {geometry_params["kind"]} not supported!')
@@ -297,12 +327,24 @@ def tecplot_interpolate(
     elif 'rectprism' in geometry_params['kind']:
         geometry_points = _rectprism_geometry(geometry_params)
     elif 'trajectory' in geometry_params['kind']:
-        geometry_points = _trajectory_geometry(geometry_params)
+        if 'batsrus' in geometry_params['trajectory_format']:
+            geometry_points = _trajectory_geometry(geometry_params)
 
     source_zone = list(batsrus.zones())
-    new_zone = batsrus.add_ordered_zone('geometry', geometry_points['npoints'])
-    for i, d in zip((0, 1, 2), ('X', 'Y', 'Z')):
-        new_zone.values(i)[:] = geometry_points[d][:]
+    if ('trajectory' in geometry_params['kind']
+        and 'tecplot' in geometry_params['trajectory_format']):
+        batsrus = tecplot.data.load_tecplot(
+            read_data_option=tecplot.ReadDataOption.Append
+        )
+        new_zone = batsrus.zones(-1)
+        new_zone.name = 'geometry'
+    else:
+        new_zone = batsrus.add_ordered_zone(
+            'geometry'
+            , geometry_points['npoints']
+        )
+        for i, d in zip((0, 1, 2), ('X', 'Y', 'Z')):
+            new_zone.values(i)[:] = geometry_points[d][:]
 
     ## interpolate variables on to the geometry
     if verbose:
