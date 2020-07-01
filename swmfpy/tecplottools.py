@@ -20,6 +20,9 @@ __all__ = [
 __author__ = 'Camilla D. K. Harris'
 __email__ = 'cdha@umich.edu'
 
+import os
+import re
+
 import numpy as np
 import tecplot
 
@@ -110,20 +113,20 @@ def _save_hdf5():
     """
 
 
-def _save_ascii():
+def _save_csv():
     """Save the aux data and a subset of the variables in plain-text format.
     """
 
 
 def tecplot_interpolate(
-        tecplot_plt_file_path:str
-        ,geometry:str
-        ,write_as:str
-        ,filename:str=None
-        ,tecplot_equation_file_path:str=None
-        ,tecplot_variable_pattern:str=None
-        ,verbose:bool=False
-        ,**kwargs
+        tecplot_plt_file_path: str
+        , geometry: str
+        , write_as: str
+        , filename: str = None
+        , tecplot_equation_file_path: str = None
+        , tecplot_variable_pattern: str = None
+        , verbose: bool = False
+        , **kwargs
 ):
     """Interpolates Tecplot binary data onto various geometries.
 
@@ -132,7 +135,7 @@ def tecplot_interpolate(
         geometry (str): Type of geometry for interpolation. Supported geometries
             are 'shell', 'line', 'rectprism', or 'trajectory'.
         write_as (str): Type of file to write to. Supported options are 'hdf5',
-            'ascii', 'tecplot_ascii', and 'tecplot_plt'.
+            'csv', 'tecplot_ascii', and 'tecplot_plt'.
         filename (str): (Optional) Name of the file to write to. Defaults to a
             concatenation of the tecplot file name and the geometry type.
         tecplot_equation_file_path (str): (Optional) Path to an equation file to
@@ -160,7 +163,7 @@ def tecplot_interpolate(
         center (array-like): Argument for the 'rectprism' geometry. Contains the
             X, Y, and Z positions of the center of the rectangular prism.
             Defaults to (0,0,0).
-        halfwidth (array-like): Argument for the 'rectprism' geometry. Contains
+        halfwidths (array-like): Argument for the 'rectprism' geometry. Contains
             the half widths of the rectangular prism in the X, Y, and Z
             directions. Required.
         npoints (array-like): Argument for the 'rectprism' geometry. Contains
@@ -208,16 +211,17 @@ def tecplot_interpolate(
     if verbose:
         print('Adding defaults')
     if 'shell' in geometry_params['kind']:
-        geometry_params['center'] = geometry_params.get('center',(0.0,0.0,0.0))
-        geometry_params['npolar'] = geometry_params.get('npolar',181)
-        geometry_params['nazimuth'] = geometry_params.get('nazimuth',359)
+        geometry_params['center'] = geometry_params.get('center', (0.0,0.0,0.0))
+        geometry_params['npoints'] = geometry_params.get('npoints', (359,181))
+    elif 'rectprism' in geometry_params['kind']:
+        geometry_params['center'] = geometry_params.get('center', (0.0,0.0,0.0))
 
     ## check that we support the geometry
     geometry_param_names = {
-        'shell':('radius',)
-        ,'line':('r1','r2','npoints')
-        ,'rectprism':('center','halfwidth','npoints')
-        ,'trajectory':('trajectory_data','trajectory_format')
+        'shell': ('radius',)
+        , 'line': ('r1', 'r2', 'npoints')
+        , 'rectprism': ('halfwidths', 'npoints')
+        , 'trajectory': ('trajectory_data', 'trajectory_format')
     }
     if geometry_params['kind'] not in geometry_param_names:
         raise ValueError(f'Geometry {geometry_params["kind"]} not supported!')
@@ -232,10 +236,9 @@ def tecplot_interpolate(
     ## check that we support the file type to save as
     file_types = (
         'hdf5'
-        ,'pandas_ascii'
-        ,'pandas_hdf5'
-        ,'tecplot_ascii'
-        ,'tecplot_plt'
+        , 'csv'
+        , 'tecplot_ascii'
+        , 'tecplot_plt'
     )
     if write_as not in file_types:
         raise ValueError(f'File type {write_as} not supported!')
@@ -243,15 +246,15 @@ def tecplot_interpolate(
     ## describe the interpolation we're about to do on the data
     if verbose:
         print('Geometry to be interpolated:')
-        for key,value in geometry_params.items():
+        for key, value in geometry_params.items():
             print(f'\t{key}: {value.__repr__()}')
 
     ## check whether we are using equations
     ## check that the equations file is there
-    use_equations = not (tecplot_equation_file_path is None)
+    use_equations = not tecplot_equation_file_path is None
     if use_equations:
-        f = open(tecplot_equation_file_path,'r')
-        f.close()
+        equations_file = open(tecplot_equation_file_path, 'r')
+        equations_file.close()
         if verbose:
             print('Applying equations from file:')
             print(tecplot_equation_file_path)
@@ -267,7 +270,7 @@ def tecplot_interpolate(
     if not os.path.exists(tecplot_plt_file_path):
         raise FileNotFoundError(
             f'Tecplot file does not exist: {tecplot_plt_file_path}')
-        
+
     ## load the tecplot data
     if verbose:
         print('Loading tecplot data')
@@ -281,26 +284,26 @@ def tecplot_interpolate(
     ## apply equations
     if verbose:
         print('Applying equations to data')
-    tecplot_apply_equations(tecplot_equation_file_path)
+    apply_equations(tecplot_equation_file_path)
     if verbose:
         print('Variables after equations:')
         print(batsrus.variable_names)
 
     ## create geometry zone
     if 'shell' in geometry_params['kind']:
-        geometry_points = shell_geometry(geometry_params)
+        geometry_points = _shell_geometry(geometry_params)
     elif 'line' in geometry_params['kind']:
-        geometry_points = line_geometry(geometry_params)
+        geometry_points = _line_geometry(geometry_params)
     elif 'rectprism' in geometry_params['kind']:
-        geometry_points = rectprism_geometry(geometry_params)
+        geometry_points = _rectprism_geometry(geometry_params)
     elif 'trajectory' in geometry_params['kind']:
-        geometry_points = trajectory_geometry(geometry_params)
+        geometry_points = _trajectory_geometry(geometry_params)
 
     source_zone = list(batsrus.zones())
-    new_zone = batsrus.add_ordered_zone('geometry',geometry_points['npoints'])
-    for i,d in zip((0,1,2),('X','Y','Z')):
+    new_zone = batsrus.add_ordered_zone('geometry', geometry_points['npoints'])
+    for i, d in zip((0, 1, 2), ('X', 'Y', 'Z')):
         new_zone.values(i)[:] = geometry_points[d][:]
-        
+
     ## interpolate variables on to the geometry
     if verbose:
         print('Interpolating variables:')
@@ -310,8 +313,8 @@ def tecplot_interpolate(
             print(var.name)
     tecplot.data.operate.interpolate_linear(
         destination_zone=new_zone
-        ,source_zones=source_zone
-        ,variables=variables
+        , source_zones=source_zone
+        , variables=variables
     )
     ## add variables for shell and trajectory cases
     if 'shell' in  geometry_params['kind']:
@@ -326,7 +329,7 @@ def tecplot_interpolate(
     ## add auxiliary data
     new_zone.aux_data.update(geometry_params)
     if ('trajectory' in geometry_params['kind']
-        and 'pandas' in geometry_params['trajectory_format']):
+            and 'pandas' in geometry_params['trajectory_format']):
         new_zone.aux_data.update(
             {'trajectory_data': type(geometry_params['trajectory_data'])}
         )
@@ -334,24 +337,22 @@ def tecplot_interpolate(
     ## construct default filename
     if filename == None:
         filename = tecplot_plt_file_path[:-4] + f'_{geometry_params["kind"]}'
-    
+
     ## save zone
     if verbose:
         print(f'Writing {filename}')
     if 'hdf5' in write_as:
-        save_hdf5()
-    elif 'pandas_ascii' in write_as:
-        save_pandas_ascii(filename,batsrus,variables)
-    elif 'pandas_hdf5' in write_as:
-        save_pandas_hdf5()
+        _save_hdf5()
+    elif 'csv' in write_as:
+        _save_csv()
     elif 'tecplot_ascii' in write_as:
         tecplot.data.save_tecplot_ascii(
             filename
-            ,zones=new_zone
-            ,use_point_format='True'
+            , zones=new_zone
+            , use_point_format='True'
         )
     elif 'tecplot_plt' in write_as:
         tecplot.data.save_tecplot_plt(
             filename
-            ,zones=new_zone
+            , zones=new_zone
         )
