@@ -195,3 +195,163 @@ def tecplot_interpolate(
         )
         ```
     """
+    if verbose:
+        print('Collecting parameters')
+
+    ## collect the geometry parameters
+    geometry_params = {
+        'kind':geometry
+    }
+    geometry_params.update(kwargs)
+
+    ## assign defaults for shell
+    if verbose:
+        print('Adding defaults')
+    if 'shell' in geometry_params['kind']:
+        geometry_params['center'] = geometry_params.get('center',(0.0,0.0,0.0))
+        geometry_params['npolar'] = geometry_params.get('npolar',181)
+        geometry_params['nazimuth'] = geometry_params.get('nazimuth',359)
+
+    ## check that we support the geometry
+    geometry_param_names = {
+        'shell':('radius',)
+        ,'line':('r1','r2','npoints')
+        ,'rectprism':('center','halfwidth','npoints')
+        ,'trajectory':('trajectory_data','trajectory_format')
+    }
+    if geometry_params['kind'] not in geometry_param_names:
+        raise ValueError(f'Geometry {geometry_params["kind"]} not supported!')
+
+    ## check that we've gotten the right /required/ geometry arguments
+    for param in geometry_param_names[geometry_params['kind']]:
+        if param not in geometry_params:
+            raise TypeError(
+                f'Geometry {geometry_params["kind"]} '
+                f'requires argument {param}!')
+
+    ## check that we support the file type to save as
+    file_types = (
+        'hdf5'
+        ,'pandas_ascii'
+        ,'pandas_hdf5'
+        ,'tecplot_ascii'
+        ,'tecplot_plt'
+    )
+    if write_as not in file_types:
+        raise ValueError(f'File type {write_as} not supported!')
+
+    ## describe the interpolation we're about to do on the data
+    if verbose:
+        print('Geometry to be interpolated:')
+        for key,value in geometry_params.items():
+            print(f'\t{key}: {value.__repr__()}')
+
+    ## check whether we are using equations
+    ## check that the equations file is there
+    use_equations = not (tecplot_equation_file_path is None)
+    if use_equations:
+        f = open(tecplot_equation_file_path,'r')
+        f.close()
+        if verbose:
+            print('Applying equations from file:')
+            print(tecplot_equation_file_path)
+    else:
+        if verbose:
+            print('Not applying any equations')
+
+    ## check patterns
+    if not (tecplot_variable_pattern is None) and verbose:
+        print(f'Applying pattern {tecplot_variable_pattern} to variables')
+
+    ## check that the tecplot file is there
+    if not os.path.exists(tecplot_plt_file_path):
+        raise FileNotFoundError(
+            f'Tecplot file does not exist: {tecplot_plt_file_path}')
+        
+    ## load the tecplot data
+    if verbose:
+        print('Loading tecplot data')
+    batsrus = tecplot.data.load_tecplot(tecplot_plt_file_path)
+
+    ## describe the loaded tecplot data
+    if verbose:
+        print('Loaded tecplot data with variables:')
+        print(batsrus.variable_names)
+
+    ## apply equations
+    if verbose:
+        print('Applying equations to data')
+    tecplot_apply_equations(tecplot_equation_file_path)
+    if verbose:
+        print('Variables after equations:')
+        print(batsrus.variable_names)
+
+    ## create geometry zone
+    if 'shell' in geometry_params['kind']:
+        geometry_points = shell_geometry(geometry_params)
+    elif 'line' in geometry_params['kind']:
+        geometry_points = line_geometry(geometry_params)
+    elif 'rectprism' in geometry_params['kind']:
+        geometry_points = rectprism_geometry(geometry_params)
+    elif 'trajectory' in geometry_params['kind']:
+        geometry_points = trajectory_geometry(geometry_params)
+
+    source_zone = list(batsrus.zones())
+    new_zone = batsrus.add_ordered_zone('geometry',geometry_points['npoints'])
+    for i,d in zip((0,1,2),('X','Y','Z')):
+        new_zone.values(i)[:] = geometry_points[d][:]
+        
+    ## interpolate variables on to the geometry
+    if verbose:
+        print('Interpolating variables:')
+    variables = list(batsrus.variables(re.compile(tecplot_variable_pattern)))
+    if verbose:
+        for var in variables:
+            print(var.name)
+    tecplot.data.operate.interpolate_linear(
+        destination_zone=new_zone
+        ,source_zones=source_zone
+        ,variables=variables
+    )
+    ## add variables for shell and trajectory cases
+    if 'shell' in  geometry_params['kind']:
+        batsrus.add_variable('polar')
+        new_zone.values('polar')[:] = geometry_points['polar']
+        batsrus.add_variable('azimuthal')
+        new_zone.values('azimuthal')[:] = geometry_points['azimuthal']
+    if 'trajectory' in geometry_params['kind']:
+        batsrus.add_variable('time')
+        new_zone.values('time')[:] = geometry_points['time']
+
+    ## add auxiliary data
+    new_zone.aux_data.update(geometry_params)
+    if ('trajectory' in geometry_params['kind']
+        and 'pandas' in geometry_params['trajectory_format']):
+        new_zone.aux_data.update(
+            {'trajectory_data': type(geometry_params['trajectory_data'])}
+        )
+
+    ## construct default filename
+    if filename == None:
+        filename = tecplot_plt_file_path[:-4] + f'_{geometry_params["kind"]}'
+    
+    ## save zone
+    if verbose:
+        print(f'Writing {filename}')
+    if 'hdf5' in write_as:
+        save_hdf5()
+    elif 'pandas_ascii' in write_as:
+        save_pandas_ascii(filename,batsrus,variables)
+    elif 'pandas_hdf5' in write_as:
+        save_pandas_hdf5()
+    elif 'tecplot_ascii' in write_as:
+        tecplot.data.save_tecplot_ascii(
+            filename
+            ,zones=new_zone
+            ,use_point_format='True'
+        )
+    elif 'tecplot_plt' in write_as:
+        tecplot.data.save_tecplot_plt(
+            filename
+            ,zones=new_zone
+        )
