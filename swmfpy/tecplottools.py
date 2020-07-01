@@ -121,11 +121,23 @@ def _rectprism_geometry(geometry_params):
 
 def _trajectory_geometry(geometry_params):
     """Returns a dict containing points for the described trajectory geometry.
+
+    Assumes format of trajectory file after SWMF SATELLITE command.
     """
-    if 'batsrus' in geometry_params['trajectory_format']:
-        
-    elif 'tecplot' in geometry_params['trajectory_format']:
-    geometry_points = {}
+    do_read = False
+    trajectory_data = []
+    with open('r', geometry_params['trajectory_file']) as trajectory_file:
+        for line in trajectory_file:
+            if do_read:
+                if len(line.split()) == 10:
+                    trajectory_data.append(line.split())
+                else:
+                    do_read = False
+            elif '#START' in line:
+                do_read = True
+    geometry_points = {
+        'npoints': len(trajectory_data)
+    }
     return geometry_points
 
 
@@ -332,9 +344,10 @@ def tecplot_interpolate(
 
     source_zone = list(batsrus.zones())
     if ('trajectory' in geometry_params['kind']
-        and 'tecplot' in geometry_params['trajectory_format']):
+            and 'tecplot' in geometry_params['trajectory_format']):
         batsrus = tecplot.data.load_tecplot(
-            read_data_option=tecplot.ReadDataOption.Append
+            filenames=geometry_params['trajectory_file']
+            , read_data_option=tecplot.constant.ReadDataOption.Append
         )
         new_zone = batsrus.zones(-1)
         new_zone.name = 'geometry'
@@ -343,8 +356,8 @@ def tecplot_interpolate(
             'geometry'
             , geometry_points['npoints']
         )
-        for i, d in zip((0, 1, 2), ('X', 'Y', 'Z')):
-            new_zone.values(i)[:] = geometry_points[d][:]
+        for i, direction in zip((0, 1, 2), ('X', 'Y', 'Z')):
+            new_zone.values(i)[:] = geometry_points[direction][:]
 
     ## interpolate variables on to the geometry
     if verbose:
@@ -377,7 +390,7 @@ def tecplot_interpolate(
         )
 
     ## construct default filename
-    if filename == None:
+    if filename is None:
         filename = tecplot_plt_file_path[:-4] + f'_{geometry_params["kind"]}'
 
     ## save zone
