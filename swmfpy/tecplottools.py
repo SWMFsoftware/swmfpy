@@ -136,7 +136,22 @@ def _trajectory_geometry(geometry_params):
             elif '#START' in line:
                 do_read = True
     geometry_points = {
-        'npoints': len(trajectory_data)
+        'npoints': len(trajectory_data),
+        'X': [float(trajectory_point[7])
+              for trajectory_point in trajectory_data],
+        'Y': [float(trajectory_point[8])
+              for trajectory_point in trajectory_data],
+        'Z': [float(trajectory_point[9])
+              for trajectory_point in trajectory_data],
+        'time': [np.datetime64(
+            f'{trajectory_point[0]}'
+            f'-{trajectory_point[1]}'
+            f'-{trajectory_point[2]}'
+            f'T{trajectory_point[3]}'
+            f':{trajectory_point[4]}'
+            f':{trajectory_point[5]}'
+            f'.{trajectory_point[6]}')
+                 for trajectory_point in trajectory_data]
     }
     return geometry_points
 
