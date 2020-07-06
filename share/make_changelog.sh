@@ -1,4 +1,18 @@
 #!/usr/bin/env bash
 # Script to make the changelogs
 
-git log --oneline --pretty='format:- %h **(%as, %an)**: _C%D_: %s' > CHANGELOG.markdown
+echo 'Changelog:' > CHANGELOG.markdown
+echo '==========' >> CHANGELOG.markdown
+echo '' >> CHANGELOG.markdown
+
+echo '' >> CHANGELOG.markdown
+echo 'Contributors:' >> CHANGELOG.markdown
+echo '-------------' >> CHANGELOG.markdown
+echo '' >> CHANGELOG.markdown
+git shortlog -n -s >> CHANGELOG.markdown
+
+echo '' >> CHANGELOG.markdown
+echo 'Changes:' >> CHANGELOG.markdown
+echo '--------' >> CHANGELOG.markdown
+echo '' >> CHANGELOG.markdown
+git log --oneline --pretty='format:- %h **(%as, %an)**: _C:%D:_ %s' >> CHANGELOG.markdown

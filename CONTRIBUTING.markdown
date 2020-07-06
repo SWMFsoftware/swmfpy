@@ -8,7 +8,7 @@ Git etiquette
 
 If you're planning on adding a feature (new function or class) then create your own branch,
 
-```bash
+```shell
 $ git checkout -b my_new_feature
 ```
 
@@ -21,7 +21,7 @@ Coding Style: PEP 8
 
 The style for your code must follow the [PEP 8](https://www.python.org/dev/peps/pep-0008/) style guide. It would be helpful to use a linter like [pylint](https://pylint.org) to check whether your code is complying before submitting.
 
-```bash
+```shell
 $ pylint somefile.py
 ```
 
