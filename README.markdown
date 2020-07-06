@@ -12,14 +12,9 @@ Installation
 
 Clone into the directory you want to use it.
 
-*Note*: swmfpy also is part of the SWMF and gets cloned into `SWMF/share/Python`. However, if you would like to [develop](CONTRIBUTING.markdown) for swmfpy or have a local copy do the following:
+*Note*: swmfpy also is part of the SWMF and gets cloned into `SWMF/share/Python`. However, if you would like to [develop](CONTRIBUTING.markdown) for swmfpy make a clone and work that way and make a merge request.
 
-```shell
-# Skip this if using it in SWMF directory.
-$ git clone https://gitlab.umich.edu/swmf_sofware/swmfpy.git /path/to/my/dir
-```
-
-Then install with [pip](https://pip.pypa.io/en/stable/):
+Install with [pip](https://pip.pypa.io/en/stable/):
 
 ```shell
 $ python3 -m pip install --user wheel  # Might be necessary
