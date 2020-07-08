@@ -1,5 +1,25 @@
-Contributing
-============
+Contributing Issues
+===================
+
+To submit an [issue](https://gitlab.umich.edu/swmf_software/swmfpy/issues) please make sure to be very specific on the trouble you are having. If your issue is a bug make sure to paste this in your text and add to it as necessary:
+
+- Problem:
+- Error text:
+- How to reproduce the error:
+- Computer specs:
+
+Once you fill out those you are ready to [submit an issue](https://gitlab.umich.edu/swmf_software/swmfpy/issues).
+
+If your issue is a task or feature request, fill this out:
+
+- Feature or task:
+- Benefits:
+- Where to start:
+
+If you fill out those you are ready to [submit an issue](https://gitlab.umich.edu/swmf_software/swmfpy/issues).
+
+Contributing Code
+=================
 
 Before submitting pull requests please make sure your code complies with the following.
 
@@ -8,7 +28,7 @@ Git etiquette
 
 If you're planning on adding a feature (new function or class) then create your own branch,
 
-```bash
+```shell
 $ git checkout -b my_new_feature
 ```
 
@@ -21,7 +41,7 @@ Coding Style: PEP 8
 
 The style for your code must follow the [PEP 8](https://www.python.org/dev/peps/pep-0008/) style guide. It would be helpful to use a linter like [pylint](https://pylint.org) to check whether your code is complying before submitting.
 
-```bash
+```shell
 $ pylint somefile.py
 ```
 
@@ -59,19 +79,11 @@ def my_new_func(some_args):
 Dependencies
 ------------
 
-If your code has dependencies that is large and uncommon (e.g. SpacePy) then please import it in the function and be explicit about the dependencies. For example you may create a function:
+If your code has dependencies that is large and uncommon (e.g. `tecplot`) then please import it in a new module.
 
-```python
-def func_with_dependency():
-	"""Func does this.
+Then your functions will be in `swmfpy.tecplot` which has its own namespace.
 
-	Depends on spacepy. Try `pip install -U spacepy`
-	"""
-	import spacepy
-	# Function body
-```
-
-Then your functions will be in swmfpy.spacepy which has its own namespace.
+If it's a well known easy to find software like, for example, `spacepy` then we can discuss in a merge request whether swmfpy should depend on such module. Usually the answer is yes as `pip` does its job well :).
 
 Modules
 -------
