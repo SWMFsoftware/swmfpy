@@ -88,7 +88,7 @@ def apply_equations(eqn_path: str, verbose: bool = False) -> None:
         print('Successfully applied equations.')
 
 
-def _shell_geometry(geometry_params:dict) -> dict:
+def _shell_geometry(geometry_params: dict) -> dict:
     """Returns a dict containing points for the described shell geometry.
     """
     npoints = geometry_params['npoints'][0]*geometry_params['npoints'][1]
@@ -98,7 +98,7 @@ def _shell_geometry(geometry_params:dict) -> dict:
     return geometry_points
 
 
-def _line_geometry(geometry_params:dict) -> dict:
+def _line_geometry(geometry_params: dict) -> dict:
     """Returns a dict containing points for the described line geometry.
     """
     geometry_points = {
@@ -119,7 +119,7 @@ def _line_geometry(geometry_params:dict) -> dict:
     return geometry_points
 
 
-def _rectprism_geometry(geometry_params:dict) -> dict:
+def _rectprism_geometry(geometry_params: dict) -> dict:
     """Returns a dict containing points for the described rectprism geometry.
     """
     npoints = (geometry_params['npoints'][0]
@@ -131,7 +131,7 @@ def _rectprism_geometry(geometry_params:dict) -> dict:
     return geometry_points
 
 
-def _trajectory_geometry(geometry_params:dict) -> dict:
+def _trajectory_geometry(geometry_params: dict) -> dict:
     """Returns a dict containing points for the described trajectory geometry.
 
     Assumes format of trajectory file after SWMF SATELLITE command.
@@ -147,6 +147,13 @@ def _trajectory_geometry(geometry_params:dict) -> dict:
                     do_read = False
             elif '#START' in line:
                 do_read = True
+    try:
+        assert len(trajectory_data) >= 1
+    except:
+        raise ValueError(
+            'No points could be read from the trajectory file. Consult the '
+            'SWMF documentation for advice on trajectory format.'
+        )
     geometry_points = {
         'npoints': len(trajectory_data),
         'X': [float(trajectory_point[7])
