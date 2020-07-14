@@ -102,7 +102,19 @@ def _line_geometry(geometry_params:dict) -> dict:
     """Returns a dict containing points for the described line geometry.
     """
     geometry_points = {
-        'npoints': geometry_params['npoints']
+        'npoints': geometry_params['npoints'],
+        'X': np.linspace(
+            geometry_params['r1'][0],
+            geometry_params['r2'][0],
+            geometry_params['npoints']),
+        'Y': np.linspace(
+            geometry_params['r1'][1],
+            geometry_params['r2'][1],
+            geometry_params['npoints']),
+        'Z': np.linspace(
+            geometry_params['r1'][2],
+            geometry_params['r2'][2],
+            geometry_params['npoints'])
     }
     return geometry_points
 
@@ -377,6 +389,7 @@ def tecplot_interpolate(
     ## interpolate variables on to the geometry
     if verbose:
         print('Interpolating variables:')
+    positions = list(batsrus.variables('*[[]R[]]'))
     variables = list(batsrus.variables(re.compile(tecplot_variable_pattern)))
     if verbose:
         for var in variables:
@@ -409,20 +422,25 @@ def tecplot_interpolate(
         filename = tecplot_plt_file_path[:-4] + f'_{geometry_params["kind"]}'
 
     ## save zone
-    if verbose:
-        print(f'Writing {filename}')
     if 'hdf5' in write_as:
+        filename += '.h5'
         _save_hdf5()
     elif 'csv' in write_as:
+        filename += '.csv'
         _save_csv()
     elif 'tecplot_ascii' in write_as:
+        filename += '.dat'
         tecplot.data.save_tecplot_ascii(
             filename
             , zones=new_zone
-            , use_point_format='True'
+            , variables=positions + variables
+            , use_point_format=True
         )
     elif 'tecplot_plt' in write_as:
+        filename += '.plt'
         tecplot.data.save_tecplot_plt(
             filename
             , zones=new_zone
         )
+    if verbose:
+        print(f'Wrote {filename}')
