@@ -26,7 +26,7 @@ import re
 import numpy as np
 import tecplot
 
-def apply_equations(eqn_path: str, verbose: bool = False):
+def apply_equations(eqn_path: str, verbose: bool = False) -> None:
     """Apply an equations file in the Tecplot macro format to the active dataset
 
     Please reference the Tecplot User's Manual for more details on
@@ -88,7 +88,7 @@ def apply_equations(eqn_path: str, verbose: bool = False):
         print('Successfully applied equations.')
 
 
-def _shell_geometry(geometry_params):
+def _shell_geometry(geometry_params:dict) -> dict:
     """Returns a dict containing points for the described shell geometry.
     """
     npoints = geometry_params['npoints'][0]*geometry_params['npoints'][1]
@@ -98,7 +98,7 @@ def _shell_geometry(geometry_params):
     return geometry_points
 
 
-def _line_geometry(geometry_params):
+def _line_geometry(geometry_params:dict) -> dict:
     """Returns a dict containing points for the described line geometry.
     """
     geometry_points = {
@@ -107,7 +107,7 @@ def _line_geometry(geometry_params):
     return geometry_points
 
 
-def _rectprism_geometry(geometry_params):
+def _rectprism_geometry(geometry_params:dict) -> dict:
     """Returns a dict containing points for the described rectprism geometry.
     """
     npoints = (geometry_params['npoints'][0]
@@ -119,7 +119,7 @@ def _rectprism_geometry(geometry_params):
     return geometry_points
 
 
-def _trajectory_geometry(geometry_params):
+def _trajectory_geometry(geometry_params:dict) -> dict:
     """Returns a dict containing points for the described trajectory geometry.
 
     Assumes format of trajectory file after SWMF SATELLITE command.
@@ -156,12 +156,12 @@ def _trajectory_geometry(geometry_params):
     return geometry_points
 
 
-def _save_hdf5():
+def _save_hdf5() -> None:
     """Save the aux data and a subset of the variables in hdf5 format.
     """
 
 
-def _save_csv():
+def _save_csv() -> None:
     """Save the aux data and a subset of the variables in plain-text format.
     """
 
@@ -175,7 +175,7 @@ def tecplot_interpolate(
         , tecplot_variable_pattern: str = None
         , verbose: bool = False
         , **kwargs
-):
+) -> None:
     """Interpolates Tecplot binary data onto various geometries.
 
     Args:
