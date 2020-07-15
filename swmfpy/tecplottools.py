@@ -125,8 +125,23 @@ def _rectprism_geometry(geometry_params: dict) -> dict:
     npoints = (geometry_params['npoints'][0]
                * geometry_params['npoints'][1]
                * geometry_params['npoints'][2])
+    vals = []
+    for dim in range(3):
+        minval = (geometry_params['center'][dim]
+                  - geometry_params['halfwidths'][dim])
+        maxval = (geometry_params['center'][dim]
+                  + geometry_params['halfwidths'][dim])
+        vals.append(np.linspace(
+            minval,
+            maxval,
+            geometry_params['npoints'][dim]
+        ))
+    xvals, yvals, zvals = np.meshgrid(vals[0], vals[1], vals[2])
     geometry_points = {
-        'npoints': npoints
+        'npoints': npoints,
+        'X': xvals.flatten(),
+        'Y': yvals.flatten(),
+        'Z': zvals.flatten(),
     }
     return geometry_points
 
@@ -425,18 +440,23 @@ def tecplot_interpolate(
         )
 
     ## construct default filename
+    no_file_name = False
     if filename is None:
+        no_file_name = True
         filename = tecplot_plt_file_path[:-4] + f'_{geometry_params["kind"]}'
 
     ## save zone
     if 'hdf5' in write_as:
-        filename += '.h5'
+        if no_file_name:
+            filename += '.h5'
         _save_hdf5()
     elif 'csv' in write_as:
-        filename += '.csv'
+        if no_file_name:
+            filename += '.csv'
         _save_csv()
     elif 'tecplot_ascii' in write_as:
-        filename += '.dat'
+        if no_file_name:
+            filename += '.dat'
         tecplot.data.save_tecplot_ascii(
             filename
             , zones=new_zone
@@ -444,7 +464,8 @@ def tecplot_interpolate(
             , use_point_format=True
         )
     elif 'tecplot_plt' in write_as:
-        filename += '.plt'
+        if no_file_name:
+            filename += '.plt'
         tecplot.data.save_tecplot_plt(
             filename
             , zones=new_zone
