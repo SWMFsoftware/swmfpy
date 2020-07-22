@@ -94,9 +94,12 @@ def _shell_geometry(geometry_params: dict) -> dict:
     """
     nlon = geometry_params['npoints'][0] # 360
     nlat = geometry_params['npoints'][1] # 179
-    lons = np.linspace(0, 360, nlon + 1, endpoint=False)
-    dlat = 180/(nlat - 1)
+    lons = np.linspace(0, 360, nlon, endpoint=False)
+    dlat = 180/(nlat + 1)
     lats = np.linspace(-90.0+dlat, 90.0-dlat, nlat)
+    print(f'lons: {lons}')
+    print(f'lats: {lats}')
+
     latvals, lonvals = np.meshgrid(lats, lons)
     phvals = np.deg2rad(-1*lonvals + 90)
     thvals = np.deg2rad(90 - latvals)
@@ -105,6 +108,7 @@ def _shell_geometry(geometry_params: dict) -> dict:
     yvals = rhovals * np.sin(phvals) + geometry_params['center'][1]
     zvals = (geometry_params['radius'] * np.cos(thvals)
              + geometry_params['center'][2])
+
     geometry_points = {
         'npoints': nlon * nlat,
         'latitude': latvals.flatten(),
@@ -442,13 +446,15 @@ def tecplot_interpolate(
     )
     ## add variables for shell and trajectory cases
     if 'shell' in  geometry_params['kind']:
-        batsrus.add_variable('polar')
-        new_zone.values('polar')[:] = geometry_points['polar']
-        batsrus.add_variable('azimuthal')
-        new_zone.values('azimuthal')[:] = geometry_points['azimuthal']
+        batsrus.add_variable('latitude [deg]')
+        new_zone.values('latitude [[]deg[]]')[:] = geometry_points['latitude']
+        batsrus.add_variable('longitude [deg]')
+        new_zone.values('longitude [[]deg[]]')[:] = geometry_points['longitude']
+        variables = variables + list(batsrus.variables('*itude [[]deg[]]'))
     if 'trajectory' in geometry_params['kind']:
         batsrus.add_variable('time')
         new_zone.values('time')[:] = geometry_points['time']
+        variables = variables + list(batsrus.variable('time'))
 
     ## add auxiliary data
     new_zone.aux_data.update(geometry_params)
