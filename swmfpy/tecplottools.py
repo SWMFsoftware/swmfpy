@@ -15,7 +15,8 @@ Some useful references:
 - [Pytecplot documentation](www.tecplot.com/docs/pytecplot/index.html)
 """
 __all__ = [
-    'apply_equations'
+    'apply_equations',
+    'tecplot_interpolate'
 ]
 __author__ = 'Camilla D. K. Harris'
 __email__ = 'cdha@umich.edu'
@@ -91,9 +92,26 @@ def apply_equations(eqn_path: str, verbose: bool = False) -> None:
 def _shell_geometry(geometry_params: dict) -> dict:
     """Returns a dict containing points for the described shell geometry.
     """
-    npoints = geometry_params['npoints'][0]*geometry_params['npoints'][1]
+    nlon = geometry_params['npoints'][0] # 360
+    nlat = geometry_params['npoints'][1] # 179
+    lons = np.linspace(0, 360, nlon + 1, endpoint=False)
+    dlat = 180/(nlat - 1)
+    lats = np.linspace(-90.0+dlat, 90.0-dlat, nlat)
+    latvals, lonvals = np.meshgrid(lats, lons)
+    phvals = np.deg2rad(-1*lonvals + 90)
+    thvals = np.deg2rad(90 - latvals)
+    rhovals = geometry_params['radius'] * np.sin(thvals)
+    xvals = rhovals * np.cos(phvals) + geometry_params['center'][0]
+    yvals = rhovals * np.sin(phvals) + geometry_params['center'][1]
+    zvals = (geometry_params['radius'] * np.cos(thvals)
+             + geometry_params['center'][2])
     geometry_points = {
-        'npoints': npoints
+        'npoints': nlon * nlat,
+        'latitude': latvals.flatten(),
+        'longitude': lonvals.flatten(),
+        'X': xvals.flatten(),
+        'Y': yvals.flatten(),
+        'Z': zvals.flatten()
     }
     return geometry_points
 
@@ -235,7 +253,8 @@ def tecplot_interpolate(
         radius (float): Argument for the 'shell' geometry. Required.
         npoints (array-like): Argument for the 'shell' geometry. Contains the
             number of points in the azimuthal and polar directions to
-            interpolate onto. Defaults to (359,181).
+            interpolate onto, excluding the north and south polar points.
+            Defaults to (360,179).
         r1 (array-like): Argument for the 'line' geometry. Contains the X, Y,
             and Z positions of the point where the line starts. Required.
         r2 (array-like): Argument for the 'line' geometry. Contains the X, Y,
