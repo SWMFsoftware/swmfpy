@@ -214,12 +214,12 @@ def _trajectory_geometry(geometry_params: dict) -> dict:
     return geometry_points
 
 
-def _save_hdf5(filename, geometry_params, batsrus, new_zone, variables) -> None:
+def _save_hdf5(filename, geometry_params, new_zone, variables) -> None:
     """Save the aux data and a subset of the variables in hdf5 format.
     """
 
 
-def _save_csv(filename, geometry_params, batsrus, new_zone, variables) -> None:
+def _save_csv(filename, geometry_params, new_zone, variables) -> None:
     """Save the aux data and a subset of the variables in plain-text format.
     """
     aux_data = geometry_params.__repr__() + '\n'
@@ -495,7 +495,6 @@ def tecplot_interpolate(
         _save_hdf5(
             filename,
             geometry_params,
-            batsrus,
             new_zone,
             positions + variables
         )
@@ -505,7 +504,6 @@ def tecplot_interpolate(
         _save_csv(
             filename,
             geometry_params,
-            batsrus,
             new_zone,
             positions + variables
         )
