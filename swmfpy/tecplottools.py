@@ -175,7 +175,7 @@ def _trajectory_geometry(geometry_params: dict) -> dict:
     """
     do_read = False
     trajectory_data = []
-    with open('r', geometry_params['trajectory_file']) as trajectory_file:
+    with open(geometry_params['trajectory_data'], 'r') as trajectory_file:
         for line in trajectory_file:
             if do_read:
                 if len(line.split()) == 10:
@@ -199,7 +199,7 @@ def _trajectory_geometry(geometry_params: dict) -> dict:
               for trajectory_point in trajectory_data],
         'Z': [float(trajectory_point[9])
               for trajectory_point in trajectory_data],
-        'time': [np.datetime64(
+        'time': [((np.datetime64(
             f'{trajectory_point[0]}'
             f'-{trajectory_point[1]}'
             f'-{trajectory_point[2]}'
@@ -207,6 +207,8 @@ def _trajectory_geometry(geometry_params: dict) -> dict:
             f':{trajectory_point[4]}'
             f':{trajectory_point[5]}'
             f'.{trajectory_point[6]}')
+                   - np.datetime64('1970-01-01T00:00:00Z'))
+                  / np.timedelta64(1, 's'))
                  for trajectory_point in trajectory_data]
     }
     return geometry_points
@@ -418,10 +420,10 @@ def tecplot_interpolate(
     if ('trajectory' in geometry_params['kind']
             and 'tecplot' in geometry_params['trajectory_format']):
         batsrus = tecplot.data.load_tecplot(
-            filenames=geometry_params['trajectory_file']
+            filenames=geometry_params['trajectory_data']
             , read_data_option=tecplot.constant.ReadDataOption.Append
         )
-        new_zone = batsrus.zones(-1)
+        new_zone = batsrus.zone(-1)
         new_zone.name = 'geometry'
     else:
         new_zone = batsrus.add_ordered_zone(
@@ -453,8 +455,9 @@ def tecplot_interpolate(
         variables = variables + list(batsrus.variables('*itude [[]deg[]]'))
     if 'trajectory' in geometry_params['kind']:
         batsrus.add_variable('time')
-        new_zone.values('time')[:] = geometry_points['time']
-        variables = variables + list(batsrus.variable('time'))
+        if 'batsrus' in geometry_params['trajectory_format']:
+            new_zone.values('time')[:] = geometry_points['time']
+        variables = variables + [batsrus.variable('time')]
 
     ## add auxiliary data
     new_zone.aux_data.update(geometry_params)
