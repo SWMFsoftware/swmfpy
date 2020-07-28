@@ -24,6 +24,7 @@ __email__ = 'cdha@umich.edu'
 import os
 import re
 
+import h5py
 import numpy as np
 import tecplot
 
@@ -217,6 +218,15 @@ def _trajectory_geometry(geometry_params: dict) -> dict:
 def _save_hdf5(filename, geometry_params, new_zone, variables) -> None:
     """Save the aux data and a subset of the variables in hdf5 format.
     """
+    column_names = [var.name for var in variables]
+    tp_data = []
+    for var in variables:
+        tp_data.append(new_zone.values(var)[:])
+    tp_data_np = np.array(tp_data).transpose()
+    with h5py.File(filename, 'w-') as h5_file:
+        h5_file['data'] = tp_data_np
+        h5_file['data'].attrs.update(geometry_params)
+        h5_file['data'].attrs['names'] = column_names
 
 
 def _save_csv(filename, geometry_params, new_zone, variables) -> None:
