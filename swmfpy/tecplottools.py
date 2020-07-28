@@ -16,6 +16,7 @@ Some useful references:
 """
 __all__ = [
     'apply_equations',
+    'bracketify',
     'write_zone',
     'interpolate_zone_to_geometry'
 ]
