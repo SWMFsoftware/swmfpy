@@ -497,6 +497,7 @@ def tecplot_interpolate(
         tecplot.data.save_tecplot_plt(
             filename
             , zones=new_zone
+            , variables=positions + variables
         )
     if verbose:
         print(f'Wrote {filename}')
