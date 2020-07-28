@@ -249,6 +249,69 @@ def _save_csv(filename, geometry_params, new_zone, variables) -> None:
     )
 
 
+def write_zone(
+        tecplot_zone
+        , write_as: str
+        , filename: str
+        , variables=None
+        , verbose: bool = False
+) -> None:
+    """Writes a tecplot zone to various formats.
+
+    Args:
+        tecplot_zone (): The zone to save.
+        write_as (str): Type of file to write to. Supported options are 'hdf5',
+            'csv', 'tecplot_ascii', and 'tecplot_plt'.
+        filename (str): Name of the file to write to.
+        variables (): (Optional) Specify a subset of the dataset variables to
+            save. This option may decrease the size of the output. Default
+            behavior is to save all variables.
+        verbose: (Optional) Print diagnostic information. Defaults to False.
+    """
+    if verbose:
+        print('Saving variables:')
+        for var in variables:
+            print(var.name)
+    aux_data = tecplot_zone.aux_data.as_dict()
+    if verbose:
+        print('Attaching auxiliary data:')
+        print(aux_data.__repr__)
+    ## save zone
+    if verbose:
+        print('Saving as:')
+    if 'hdf5' in write_as:
+        if verbose:
+            print('hdf5')
+        _save_hdf5(
+            filename,
+            aux_data,
+            tecplot_zone,
+            variables
+        )
+    elif 'csv' in write_as:
+        _save_csv(
+            filename,
+            aux_data,
+            tecplot_zone,
+            variables
+        )
+    elif 'tecplot_ascii' in write_as:
+        tecplot.data.save_tecplot_ascii(
+            filename
+            , zones=tecplot_zone
+            , variables=variables
+            , use_point_format=True
+        )
+    elif 'tecplot_plt' in write_as:
+        tecplot.data.save_tecplot_plt(
+            filename
+            , zones=tecplot_zone
+            , variables=variables
+        )
+    if verbose:
+        print(f'Wrote {filename}')
+
+
 def tecplot_interpolate(
         tecplot_plt_file_path: str
         , geometry: str
