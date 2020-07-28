@@ -214,14 +214,29 @@ def _trajectory_geometry(geometry_params: dict) -> dict:
     return geometry_points
 
 
-def _save_hdf5() -> None:
+def _save_hdf5(filename, geometry_params, batsrus, new_zone, variables) -> None:
     """Save the aux data and a subset of the variables in hdf5 format.
     """
 
 
-def _save_csv() -> None:
+def _save_csv(filename, geometry_params, batsrus, new_zone, variables) -> None:
     """Save the aux data and a subset of the variables in plain-text format.
     """
+    aux_data = geometry_params.__repr__() + '\n'
+    column_names = variables[0].name.__repr__()
+    for var in variables[1:]:
+        column_names += ' ' + var.name.__repr__()
+    tp_data = []
+    for var in variables:
+        tp_data.append(new_zone.values(var)[:])
+    tp_data_np = np.array(tp_data).transpose()
+    np.savetxt(
+        filename,
+        tp_data_np,
+        delimiter=' ',
+        header=aux_data + column_names,
+        comments=''
+    )
 
 
 def tecplot_interpolate(
@@ -477,11 +492,23 @@ def tecplot_interpolate(
     if 'hdf5' in write_as:
         if no_file_name:
             filename += '.h5'
-        _save_hdf5()
+        _save_hdf5(
+            filename,
+            geometry_params,
+            batsrus,
+            new_zone,
+            positions + variables
+        )
     elif 'csv' in write_as:
         if no_file_name:
             filename += '.csv'
-        _save_csv()
+        _save_csv(
+            filename,
+            geometry_params,
+            batsrus,
+            new_zone,
+            positions + variables
+        )
     elif 'tecplot_ascii' in write_as:
         if no_file_name:
             filename += '.dat'
