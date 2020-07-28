@@ -16,78 +16,15 @@ Some useful references:
 """
 __all__ = [
     'apply_equations',
-    'tecplot_interpolate'
+    'write_zone',
+    'interpolate_zone_to_geometry'
 ]
 __author__ = 'Camilla D. K. Harris'
 __email__ = 'cdha@umich.edu'
 
-import os
-import re
-
 import h5py
 import numpy as np
 import tecplot
-
-def apply_equations(eqn_path: str, verbose: bool = False) -> None:
-    """Apply an equations file in the Tecplot macro format to the active dataset
-
-    Please reference the Tecplot User's Manual for more details on
-    equation files and syntax. It is recommended to use this function with eqn
-    files generated with the Tecplot GUI.
-    See [TECPLOT](TECPLOT.markdown) for tips on using pytecplot.
-
-    Args:
-        eqn_file_path (str): The path to the equation macro file (typically with
-            extension `.eqn`).
-        verbose (bool): (Optional) Whether or not to print the equations as they
-            are applied. Default behavior is silent.
-
-    Examples:
-        ```python
-        import tecplot
-        import swmfpy.tecplottools as tpt
-
-        ## Uncomment this line if you are connecting to a running tecplot
-        ## session. Be sure that the port number matches the port the GUI is
-        ## listening to. See TECPLOT.markdown for tips on connecting to a
-        ## running session or running your script seperately.
-        # tecplot.session.connect(port=7600)
-
-        ## load a dataset
-        dataset = tecplot.data.load_tecplot('./z=0_mhd_1_n00000000.plt')
-
-        ## apply an equations file
-        tpt.apply_equations('./gse_to_ephio.eqn', verbose= True)
-
-        ## apply a frame style
-        frame = tecplot.active_frame()
-        frame.load_stylesheet('./density.sty')
-
-        ## annotate with the zone name
-        frame.add_text('&(ZONENAME[ACTIVEOFFSET=1])', position= (5, 95))
-
-        ## save the image
-        tecplot.export.save_png('./density.png', width= 1200, supersample= 8)
-        ```
-    """
-    if verbose:
-        print('Executing:')
-    with open(eqn_path, 'r') as eqn_file:
-        for line in eqn_file:
-            if '$!alterdata' in line.lower():
-                eqn_line = eqn_file.readline()
-                try:
-                    eqn_str = eqn_line.split("'")[1]
-                except IndexError:
-                    try:
-                        eqn_str = eqn_line.split("\"")[1]
-                    except:
-                        raise ValueError(f'Unable to read equation: {eqn_line}')
-                tecplot.data.operate.execute_equation(eqn_str)
-                if verbose:
-                    print(eqn_str)
-    if verbose:
-        print('Successfully applied equations.')
 
 
 def _shell_geometry(geometry_params: dict) -> dict:
@@ -249,6 +186,95 @@ def _save_csv(filename, geometry_params, new_zone, variables) -> None:
     )
 
 
+def _add_variable_value(dataset, variable_name: str, zone, values):
+    """Adds and populates a new variable to a zone in a dataset."""
+    dataset.add_variable(variable_name)
+    zone.values(bracketify(variable_name))[:] = values
+
+
+def apply_equations(eqn_path: str, verbose: bool = False) -> None:
+    """Apply an equations file in the Tecplot macro format to the active dataset
+
+    Please reference the Tecplot User's Manual for more details on
+    equation files and syntax. It is recommended to use this function with eqn
+    files generated with the Tecplot GUI.
+    See [TECPLOT](TECPLOT.markdown) for tips on using pytecplot.
+
+    Args:
+        eqn_file_path (str): The path to the equation macro file (typically with
+            extension `.eqn`).
+        verbose (bool): (Optional) Whether or not to print the equations as they
+            are applied. Default behavior is silent.
+
+    Examples:
+        ```python
+        import tecplot
+        import swmfpy.tecplottools as tpt
+
+        ## Uncomment this line if you are connecting to a running tecplot
+        ## session. Be sure that the port number matches the port the GUI is
+        ## listening to. See TECPLOT.markdown for tips on connecting to a
+        ## running session or running your script seperately.
+        # tecplot.session.connect(port=7600)
+
+        ## load a dataset
+        dataset = tecplot.data.load_tecplot('./z=0_mhd_1_n00000000.plt')
+
+        ## apply an equations file
+        tpt.apply_equations('./gse_to_ephio.eqn', verbose= True)
+
+        ## apply a frame style
+        frame = tecplot.active_frame()
+        frame.load_stylesheet('./density.sty')
+
+        ## annotate with the zone name
+        frame.add_text('&(ZONENAME[ACTIVEOFFSET=1])', position= (5, 95))
+
+        ## save the image
+        tecplot.export.save_png('./density.png', width= 1200, supersample= 8)
+        ```
+    """
+    if verbose:
+        print('Executing:')
+    with open(eqn_path, 'r') as eqn_file:
+        for line in eqn_file:
+            if '$!alterdata' in line.lower():
+                eqn_line = eqn_file.readline()
+                try:
+                    eqn_str = eqn_line.split("'")[1]
+                except IndexError:
+                    try:
+                        eqn_str = eqn_line.split("\"")[1]
+                    except:
+                        raise ValueError(f'Unable to read equation: {eqn_line}')
+                tecplot.data.operate.execute_equation(eqn_str)
+                if verbose:
+                    print(eqn_str)
+    if verbose:
+        print('Successfully applied equations.')
+
+
+def bracketify(variable_name: str) -> str:
+    """Surrounds square brackets with more brackets.
+
+    This is helpful for accessing Tecplot variables.
+
+    Examples:
+        In a dataset which contains the variable 'X [R]',
+        ```print(dataset.variable_names)
+        >>> ['X [R]', ... ]```
+        The following will fail:
+        ```print(dataset.variable('X [R]').name)
+        >>> TecplotPatternMatchWarning: no variables found matching: "X [R]" For
+        a literal match, the meta-characters: * ? [ ] must be wrapped in square-
+        brackets. For example, "[?]" matches the character "?"...```
+        However,
+        ```print(dataset.variable(tpt.bracketify('X [R]')).name)```
+        will succeed.
+    """
+    return variable_name.translate(str.maketrans({'[':'[[]', ']':'[]]'}))
+
+
 def write_zone(
         tecplot_zone
         , write_as: str
@@ -275,7 +301,7 @@ def write_zone(
     aux_data = tecplot_zone.aux_data.as_dict()
     if verbose:
         print('Attaching auxiliary data:')
-        print(aux_data.__repr__)
+        print(aux_data.__repr__())
     ## save zone
     if verbose:
         print('Saving as:')
@@ -308,37 +334,30 @@ def write_zone(
             , zones=tecplot_zone
             , variables=variables
         )
+    else:
+        raise ValueError(f'File type {write_as} not supported!')
     if verbose:
         print(f'Wrote {filename}')
 
 
-def tecplot_interpolate(
-        tecplot_plt_file_path: str
+def interpolate_zone_to_geometry(
+        dataset
+        , source_zone
         , geometry: str
-        , write_as: str
-        , filename: str = None
-        , tecplot_equation_file_path: str = None
-        , tecplot_variable_pattern: str = None
+        , variables: list = None
         , verbose: bool = False
         , **kwargs
-) -> None:
+):
     """Interpolates Tecplot binary data onto various geometries.
 
     Args:
-        tecplot_plt_file_path (str): Path to the tecplot binary file.
+        dataset: The loaded Tecplot dataset.
+        source_zone: The Tecplot zone to interpolate onto the geometry.
         geometry (str): Type of geometry for interpolation. Supported geometries
-            are 'shell', 'line', 'rectprism', or 'trajectory'.
-        write_as (str): Type of file to write to. Supported options are 'hdf5',
-            'csv', 'tecplot_ascii', and 'tecplot_plt'.
-        filename (str): (Optional) Name of the file to write to. Defaults to a
-            concatenation of the tecplot file name and the geometry type.
-        tecplot_equation_file_path (str): (Optional) Path to an equation file to
-            be applied to the tecplot dataset before interpolation. Defaults to
-            no equations.
-        tecplot_variable_pattern (str): (Optional) Regex-style variable name
-            pattern used to save a subset of the variables. This option may be
-            used to decrease the size of the hdf5 output. Default behavior is to
-            save all variables.
+            are 'shell', 'line', 'rectprism', or 'trajectory'. See below for the
+            required keyword arguments for each geometry.
+        variables (list): (Optional) Subset of variables to interpolate. Default
+            behavior is to interpolate all variables.
         verbose: (Optional) Print diagnostic information. Defaults to False.
 
     Keyword Args:
@@ -371,41 +390,20 @@ def tecplot_interpolate(
             (data is a tecplot zone with 3D positional variables and 'time') and
             'batsrus' (data is formatted as described for the #SATELLITE
             command, see SWMF documentation). Required.
-
-    Examples:
-        ```tecplot_interpolate(
-            tecplot_plt_file_path='./path/to/data.plt'
-            ,geometry='shell'
-            ,write_as='tecplot_ascii'
-            ,center=[0.0, 0.0, 0.0]
-            ,radius=1.01
-        )
-
-        tecplot_interpolate(
-            tecplot_plt_file_path='./path/to/data.plt'
-            ,geometry='line'
-            ,write_as='tecplot_ascii'
-            ,tecplot_equation_file_path='./path/to/equations.eqn'
-            ,tecplot_variable_pattern='B.*|E.*'
-            ,r1=[1.0, 0.0, 0.0]
-            ,r2=[6.0, 0.0, 0.0]
-            ,npoints=101
-        )
-        ```
     """
     if verbose:
         print('Collecting parameters')
 
     ## collect the geometry parameters
     geometry_params = {
-        'kind':geometry
+        'geometry':geometry
     }
     geometry_params.update(kwargs)
 
-    ## assign defaults for shell
     if verbose:
         print('Adding defaults')
-    if 'shell' in geometry_params['kind']:
+    ## assign defaults for shell and rectprism
+    if 'shell' in geometry_params['geometry']:
         geometry_params['center'] = geometry_params.get(
             'center'
             , (0.0, 0.0, 0.0)
@@ -414,7 +412,7 @@ def tecplot_interpolate(
             'npoints'
             , (359, 181)
         )
-    elif 'rectprism' in geometry_params['kind']:
+    elif 'rectprism' in geometry_params['geometry']:
         geometry_params['center'] = geometry_params.get(
             'center'
             , (0.0, 0.0, 0.0)
@@ -427,25 +425,15 @@ def tecplot_interpolate(
         'rectprism': ('halfwidths', 'npoints'),
         'trajectory': ('trajectory_data', 'trajectory_format')
     }
-    if geometry_params['kind'] not in geometry_param_names:
-        raise ValueError(f'Geometry {geometry_params["kind"]} not supported!')
-
+    if geometry_params['geometry'] not in geometry_param_names:
+        raise ValueError(f'Geometry {geometry_params["geometry"]} '
+                         'not supported!')
     ## check that we've gotten the right /required/ geometry arguments
-    for param in geometry_param_names[geometry_params['kind']]:
+    for param in geometry_param_names[geometry_params['geometry']]:
         if param not in geometry_params:
             raise TypeError(
-                f'Geometry {geometry_params["kind"]} '
+                f'Geometry {geometry_params["geometry"]} '
                 f'requires argument {param}!')
-
-    ## check that we support the file type to save as
-    file_types = (
-        'hdf5'
-        , 'csv'
-        , 'tecplot_ascii'
-        , 'tecplot_plt'
-    )
-    if write_as not in file_types:
-        raise ValueError(f'File type {write_as} not supported!')
 
     ## describe the interpolation we're about to do on the data
     if verbose:
@@ -453,149 +441,76 @@ def tecplot_interpolate(
         for key, value in geometry_params.items():
             print(f'\t{key}: {value.__repr__()}')
 
-    ## check whether we are using equations
-    ## check that the equations file is there
-    use_equations = not tecplot_equation_file_path is None
-    if use_equations:
-        equations_file = open(tecplot_equation_file_path, 'r')
-        equations_file.close()
-        if verbose:
-            print('Applying equations from file:')
-            print(tecplot_equation_file_path)
-    else:
-        if verbose:
-            print('Not applying any equations')
-
-    ## check patterns
-    if not (tecplot_variable_pattern is None) and verbose:
-        print(f'Applying pattern {tecplot_variable_pattern} to variables')
-
-    ## check that the tecplot file is there
-    if not os.path.exists(tecplot_plt_file_path):
-        raise FileNotFoundError(
-            f'Tecplot file does not exist: {tecplot_plt_file_path}')
-
-    ## load the tecplot data
-    if verbose:
-        print('Loading tecplot data')
-    batsrus = tecplot.data.load_tecplot(tecplot_plt_file_path)
-
     ## describe the loaded tecplot data
     if verbose:
         print('Loaded tecplot data with variables:')
-        print(batsrus.variable_names)
-
-    ## apply equations
-    if verbose:
-        print('Applying equations to data')
-    apply_equations(tecplot_equation_file_path)
-    if verbose:
-        print('Variables after equations:')
-        print(batsrus.variable_names)
+        print(dataset.variable_names)
 
     ## create geometry zone
-    if 'shell' in geometry_params['kind']:
+    if 'shell' in geometry_params['geometry']:
         geometry_points = _shell_geometry(geometry_params)
-    elif 'line' in geometry_params['kind']:
+    elif 'line' in geometry_params['geometry']:
         geometry_points = _line_geometry(geometry_params)
-    elif 'rectprism' in geometry_params['kind']:
+    elif 'rectprism' in geometry_params['geometry']:
         geometry_points = _rectprism_geometry(geometry_params)
-    elif 'trajectory' in geometry_params['kind']:
+    elif 'trajectory' in geometry_params['geometry']:
         if 'batsrus' in geometry_params['trajectory_format']:
             geometry_points = _trajectory_geometry(geometry_params)
 
-    source_zone = list(batsrus.zones())
-    if ('trajectory' in geometry_params['kind']
+    if ('trajectory' in geometry_params['geometry']
             and 'tecplot' in geometry_params['trajectory_format']):
-        batsrus = tecplot.data.load_tecplot(
+        dataset = tecplot.data.load_tecplot(
             filenames=geometry_params['trajectory_data']
             , read_data_option=tecplot.constant.ReadDataOption.Append
         )
-        new_zone = batsrus.zone(-1)
-        new_zone.name = 'geometry'
+        dataset.zone(-1).name = 'geometry'
     else:
-        new_zone = batsrus.add_ordered_zone(
+        dataset.add_ordered_zone(
             'geometry'
             , geometry_points['npoints']
         )
         for i, direction in zip((0, 1, 2), ('X', 'Y', 'Z')):
-            new_zone.values(i)[:] = geometry_points[direction][:]
+            dataset.zone('geometry').values(i)[:] = \
+                geometry_points[direction][:]
 
     ## interpolate variables on to the geometry
     if verbose:
         print('Interpolating variables:')
-    positions = list(batsrus.variables('*[[]R[]]'))
-    variables = list(batsrus.variables(re.compile(tecplot_variable_pattern)))
-    if verbose:
         for var in variables:
             print(var.name)
+    ## dataset.variables('...') will return a generator of variables.
+    ## This call will break if `variables` is not recast as a list before
+    ## passing it to the function. Why?????
     tecplot.data.operate.interpolate_linear(
-        destination_zone=new_zone
-        , source_zones=source_zone
-        , variables=variables
+        destination_zone=dataset.zone('geometry'),
+        source_zones=source_zone,
+        variables=variables
     )
+
     ## add variables for shell and trajectory cases
-    if 'shell' in  geometry_params['kind']:
-        batsrus.add_variable('latitude [deg]')
-        new_zone.values('latitude [[]deg[]]')[:] = geometry_points['latitude']
-        batsrus.add_variable('longitude [deg]')
-        new_zone.values('longitude [[]deg[]]')[:] = geometry_points['longitude']
-        variables = variables + list(batsrus.variables('*itude [[]deg[]]'))
-    if 'trajectory' in geometry_params['kind']:
-        batsrus.add_variable('time')
-        if 'batsrus' in geometry_params['trajectory_format']:
-            new_zone.values('time')[:] = geometry_points['time']
-        variables = variables + [batsrus.variable('time')]
-
-    ## add auxiliary data
-    new_zone.aux_data.update(geometry_params)
-    if ('trajectory' in geometry_params['kind']
-            and 'pandas' in geometry_params['trajectory_format']):
-        new_zone.aux_data.update(
-            {'trajectory_data': type(geometry_params['trajectory_data'])}
+    if 'shell' in  geometry_params['geometry']:
+        _add_variable_value(
+            dataset,
+            'latitude [deg]',
+            dataset.zone('geometry'),
+            geometry_points['latitude']
+        )
+        _add_variable_value(
+            dataset,
+            'longitude [deg]',
+            dataset.zone('geometry'),
+            geometry_points['longitude']
+        )
+    if ('trajectory' in geometry_params['geometry']
+            and 'batsrus' in geometry_params['trajectory_format']):
+        _add_variable_value(
+            dataset,
+            'time',
+            dataset.zone('geometry'),
+            geometry_points['time']
         )
 
-    ## construct default filename
-    no_file_name = False
-    if filename is None:
-        no_file_name = True
-        filename = tecplot_plt_file_path[:-4] + f'_{geometry_params["kind"]}'
+        ## add auxiliary data
+    dataset.zone('geometry').aux_data.update(geometry_params)
 
-    ## save zone
-    if 'hdf5' in write_as:
-        if no_file_name:
-            filename += '.h5'
-        _save_hdf5(
-            filename,
-            geometry_params,
-            new_zone,
-            positions + variables
-        )
-    elif 'csv' in write_as:
-        if no_file_name:
-            filename += '.csv'
-        _save_csv(
-            filename,
-            geometry_params,
-            new_zone,
-            positions + variables
-        )
-    elif 'tecplot_ascii' in write_as:
-        if no_file_name:
-            filename += '.dat'
-        tecplot.data.save_tecplot_ascii(
-            filename
-            , zones=new_zone
-            , variables=positions + variables
-            , use_point_format=True
-        )
-    elif 'tecplot_plt' in write_as:
-        if no_file_name:
-            filename += '.plt'
-        tecplot.data.save_tecplot_plt(
-            filename
-            , zones=new_zone
-            , variables=positions + variables
-        )
-    if verbose:
-        print(f'Wrote {filename}')
+    return dataset.zone('geometry')
