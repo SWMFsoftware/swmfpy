@@ -18,6 +18,7 @@ import urllib
 from dateutil import rrule
 import drms
 import numpy as np
+import os
 from sunpy.coordinates.sun import carrington_rotation_number
 from .tools import _nearest
 
@@ -480,18 +481,23 @@ def download_magnetogram_adapt(time, map_type='fixed', **kwargs):
         raise FileNotFoundError('Could not find a file that matches'
                                 + 'the pattern.')
 
+    directory = kwargs.get('download_dir', './')
+    if directory[-1] != '/':
+        directory += '/'
+
     for filename in filenames:
-        # open the file locally
-        directory = kwargs.get('download_dir', './')
-        if directory[-1] != '/':
-            directory += '/'
-        with open(directory + filename, 'wb') as fhandle:
-            # try to download the magnetogram
-            try:
-                ftp.retrbinary('RETR ' + filename, fhandle.write)
-            except ftplib.all_errors:
-                ftp.quit()
-                raise FileNotFoundError('Cannot download ', filename)
+        # Only try to download if the file does not exist
+        if os.path.isfile(directory+filename) == False:
+            # open the file locally
+            with open(directory + filename, 'wb') as fhandle:
+                # try to download the magnetogram
+                try:
+                    ftp.retrbinary('RETR ' + filename, fhandle.write)
+                except ftplib.all_errors:
+                    ftp.quit()
+                    raise FileNotFoundError('Cannot download ', filename)
+        else:
+            print(filename + ' already exists, skipping downloading')
 
         # unzip the file
         if '.gz' in filename:
