@@ -94,10 +94,10 @@ How to cite
 You can cite this software on LaTeX like this:
 
 ```latex
-@software{hadoop,
+@software{swmfpy,
   author = {{Qusai Al Shidi}},
   title = {swmfpy},
-  url = {https://hadoop.apache.org},
+  url = {https://gitlab.umich.edu/swmf_software/swmfpy},
   version = {2020.5},
   date = {2020-06-19},
 }
