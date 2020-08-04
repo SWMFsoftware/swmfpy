@@ -173,7 +173,7 @@ def _save_csv(filename, geometry_params, new_zone, variables) -> None:
     aux_data = geometry_params.__repr__() + '\n'
     column_names = variables[0].name.__repr__()
     for var in variables[1:]:
-        column_names += ' ' + var.name.__repr__()
+        column_names += ',' + var.name.__repr__()
     tp_data = []
     for var in variables:
         tp_data.append(new_zone.values(var)[:])
@@ -181,7 +181,7 @@ def _save_csv(filename, geometry_params, new_zone, variables) -> None:
     np.savetxt(
         filename,
         tp_data_np,
-        delimiter=' ',
+        delimiter=',',
         header=aux_data + column_names,
         comments=''
     )
