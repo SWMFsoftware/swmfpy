@@ -55,7 +55,7 @@ Next install the software. This will take a long time as you will be compiling `
 $ source ~/.venv/bin/activate
 $ python3 -m pip install --user wheel -vvv
 $ python3 -m pip install --user cython -vvv
-$ python3 -m pip install --user swmfpy -vvv
+$ python3 -m pip install --user git+https://gitlab.umich.edu/swmf_software/swmfpy.git@master
 ```
 
 If you are using `tmux` or `GNU Screen` on a supercomputer you can safely detach your session and power off your computer and come back another time.
