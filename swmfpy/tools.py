@@ -9,6 +9,15 @@ import datetime as dt
 
 
 def carrington_rotation_number(the_time='now'):
+    """Returns the carrington rotation
+
+    Args:
+        the_time (datetime.datetime/str): The time to convert to carrington
+                                          rotation.
+
+    Returns:
+        (int): Carrington Rotation
+    """
     if the_time == 'now':
         return carrington_rotation_number(dt.datetime.now())
     if isinstance(the_time, str):

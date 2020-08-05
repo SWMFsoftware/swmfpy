@@ -267,12 +267,6 @@ def download_magnetogram_hmi(mag_time, hmi_map='hmi.B_720s', **kwargs):
     This will download vector magnetogram FITS files from
     Joint Science Operations Center (JSOC) near a certain hour.
 
-    This unfortunately depends on sunpy and drms, if you don't have it try,
-
-    ```bash
-    pip install -U --user sunpy drms
-    ```
-
     Args:
         mag_time (datetime.datetime): Time after which to find
                                       vector magnetograms.

@@ -5,15 +5,24 @@ Changelog:
 Contributors:
 -------------
 
-   131	Qusai Al Shidi
+   137	Qusai Al Shidi
      2	Camilla D. K. Harris
-     1	Gabor Toth
+     2	Gabor Toth
+     1	Camilla Dodge Koslowsky Harris
      1	TKeebler
 
 Changes:
 --------
 
-- 05ac345 **(2020-06-19, Qusai Al Shidi)**: _C:HEAD -> master, origin/master, origin/HEAD:_ merged amendment :s
+- 23c6e26 **(2020-08-05, Gabor Toth)**: _C:HEAD -> carrington_rotation:_ Carrington Rotation function added and sunpy dependency removed
+- 8e18ac8 **(2020-08-04, Qusai Al Shidi)**: _C:origin/master, origin/HEAD, master:_ Fixed LaTeX citation string
+- 8211554 **(2020-08-04, Qusai Al Shidi)**: _C::_ Fixed install swmfpy line
+- f1724e7 **(2020-08-04, Qusai Al Shidi)**: _C::_ Added instructions for python venv and also snippets to contributing page.
+- d0a8308 **(2020-07-06, Qusai Al Shidi)**: _C:pybatstools:_ Fixed up `CONTRIBUTING.markdown` to be better and added issues guidelines
+- 9549026 **(2020-07-06, Qusai Al Shidi)**: _C::_ Should be `shell` and not `bash` for markdown language alias
+- 178dd8e **(2020-06-22, Qusai Al Shidi)**: _C::_ Merge branch 'tecplot-doc-update' into 'master'
+- facad25 **(2020-06-22, Camilla Dodge Koslowsky Harris)**: _C::_ Tecplot documentation update
+- 05ac345 **(2020-06-19, Qusai Al Shidi)**: _C::_ merged amendment :s
 - 8d04c39 **(2020-06-19, Qusai Al Shidi)**: _C::_ optional requires `tecplot`
 - 3e676fa **(2020-06-19, Qusai Al Shidi)**: _C::_ optional requires `tecplot`
 - 991a3a2 **(2020-06-19, Qusai Al Shidi)**: _C:tag: v2020.5:_ v2020.5 commit
