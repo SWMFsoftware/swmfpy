@@ -5,6 +5,16 @@
 __author__ = 'Qusai Al Shidi'
 __email__ = 'qusai@umich.edu'
 
+import datetime as dt
+
+
+def carrington_rotation_number(the_time='now'):
+    if the_time == 'now':
+        return carrington_rotation_number(dt.datetime.now())
+    if isinstance(the_time, str):
+        return carrington_rotation_number(dt.datetime.fromisoformat(the_time))
+    return int((the_time.toordinal() - 676715.2247)/27.2753)
+
 
 def _import_error_string(library):
     return (

@@ -18,8 +18,7 @@ import urllib
 from dateutil import rrule
 import drms
 import numpy as np
-from sunpy.coordinates.sun import carrington_rotation_number
-from .tools import _nearest
+from .tools import _nearest, carrington_rotation_number
 
 # Global defines
 # This is straight from the format guide on spdf with nicer names as second col
@@ -363,8 +362,8 @@ def _get_urls_hmi_b_synoptic_small(client, mag_time):
             suffix url of magnetogram
     """
 
-    cr_number = int(round(carrington_rotation_number(mag_time)))
-    query_string = f'hmi.b_synoptic_small[{int(round(cr_number))}]'
+    cr_number = carrington_rotation_number(mag_time)
+    query_string = f'hmi.b_synoptic_small[{cr_number}]'
     components = ['Bp', 'Bt', 'Br']
     data = client.query(query_string, seg=components)
     # Generator to find the nearest time
