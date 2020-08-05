@@ -16,7 +16,6 @@ from operator import itemgetter
 import shutil
 import urllib
 from dateutil import rrule
-import drms
 import numpy as np
 from .tools import _nearest, carrington_rotation_number
 
@@ -307,6 +306,7 @@ def download_magnetogram_hmi(mag_time, hmi_map='hmi.B_720s', **kwargs):
                                  download_dir='mydir')
         ```
     """
+    import drms
 
     get_urls = {
         'hmi.B_720s': _get_urls_hmi_b720,
@@ -355,6 +355,7 @@ def _get_urls_hmi_b_synoptic_small(client, mag_time):
         generator that yields (datetime.datetime, str): Time of magnetogram,
             suffix url of magnetogram
     """
+    import drms
 
     cr_number = carrington_rotation_number(mag_time)
     query_string = f'hmi.b_synoptic_small[{cr_number}]'
@@ -377,6 +378,7 @@ def _get_urls_hmi_b720(client, mag_time):
         generator that yields (datetime.datetime, str): Time of magnetogram,
             suffix url of magnetogram
     """
+    import drms
     query_string = 'hmi.B_720s'
     query_string += f'[{mag_time.year}.'
     query_string += f'{str(mag_time.month).zfill(2)}.'
