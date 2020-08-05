@@ -18,8 +18,7 @@ import urllib
 from dateutil import rrule
 import drms
 import numpy as np
-from sunpy.coordinates.sun import carrington_rotation_number
-from .tools import _nearest
+from .tools import _nearest, carrington_rotation_number
 
 # Global defines
 # This is straight from the format guide on spdf with nicer names as second col
@@ -268,12 +267,6 @@ def download_magnetogram_hmi(mag_time, hmi_map='hmi.B_720s', **kwargs):
     This will download vector magnetogram FITS files from
     Joint Science Operations Center (JSOC) near a certain hour.
 
-    This unfortunately depends on sunpy and drms, if you don't have it try,
-
-    ```bash
-    pip install -U --user sunpy drms
-    ```
-
     Args:
         mag_time (datetime.datetime): Time after which to find
                                       vector magnetograms.
@@ -363,8 +356,8 @@ def _get_urls_hmi_b_synoptic_small(client, mag_time):
             suffix url of magnetogram
     """
 
-    cr_number = int(round(carrington_rotation_number(mag_time)))
-    query_string = f'hmi.b_synoptic_small[{int(round(cr_number))}]'
+    cr_number = carrington_rotation_number(mag_time)
+    query_string = f'hmi.b_synoptic_small[{cr_number}]'
     components = ['Bp', 'Bt', 'Br']
     data = client.query(query_string, seg=components)
     # Generator to find the nearest time
