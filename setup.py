@@ -13,7 +13,7 @@ with open('requirements.txt') as fh_requirements:
 
 setuptools.setup(
     name='swmfpy',
-    version='2020.5',
+    version='2020.6',
     author='Qusai Al Shidi',
     author_email='qusai@umich.edu',
     description='''A collection of tools for the Space Weather Modelling
@@ -31,5 +31,6 @@ setuptools.setup(
     python_requires='>=3.6',
     extras_require={
         "tecplottools": "tecplot",
+        "hmi": "drms",
         },
     )

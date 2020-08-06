@@ -13,14 +13,13 @@ import ftplib
 from functools import lru_cache
 import gzip
 from operator import itemgetter
+import os.path
 import shutil
 import urllib
+import urllib.request
 from dateutil import rrule
-import drms
 import numpy as np
-import os
-from sunpy.coordinates.sun import carrington_rotation_number
-from .tools import _nearest
+from .tools import _nearest, carrington_rotation_number
 
 # Global defines
 # This is straight from the format guide on spdf with nicer names as second col
@@ -269,12 +268,6 @@ def download_magnetogram_hmi(mag_time, hmi_map='hmi.B_720s', **kwargs):
     This will download vector magnetogram FITS files from
     Joint Science Operations Center (JSOC) near a certain hour.
 
-    This unfortunately depends on sunpy and drms, if you don't have it try,
-
-    ```bash
-    pip install -U --user sunpy drms
-    ```
-
     Args:
         mag_time (datetime.datetime): Time after which to find
                                       vector magnetograms.
@@ -315,6 +308,7 @@ def download_magnetogram_hmi(mag_time, hmi_map='hmi.B_720s', **kwargs):
                                  download_dir='mydir')
         ```
     """
+    import drms
 
     get_urls = {
         'hmi.B_720s': _get_urls_hmi_b720,
@@ -363,9 +357,10 @@ def _get_urls_hmi_b_synoptic_small(client, mag_time):
         generator that yields (datetime.datetime, str): Time of magnetogram,
             suffix url of magnetogram
     """
+    import drms
 
-    cr_number = int(round(carrington_rotation_number(mag_time)))
-    query_string = f'hmi.b_synoptic_small[{int(round(cr_number))}]'
+    cr_number = carrington_rotation_number(mag_time)
+    query_string = f'hmi.b_synoptic_small[{cr_number}]'
     components = ['Bp', 'Bt', 'Br']
     data = client.query(query_string, seg=components)
     # Generator to find the nearest time
@@ -385,6 +380,7 @@ def _get_urls_hmi_b720(client, mag_time):
         generator that yields (datetime.datetime, str): Time of magnetogram,
             suffix url of magnetogram
     """
+    import drms
     query_string = 'hmi.B_720s'
     query_string += f'[{mag_time.year}.'
     query_string += f'{str(mag_time.month).zfill(2)}.'
@@ -487,7 +483,9 @@ def download_magnetogram_adapt(time, map_type='fixed', **kwargs):
 
     for filename in filenames:
         # Only try to download if the file does not exist
-        if os.path.isfile(directory+filename) == False:
+        if os.path.isfile(directory+filename) == True:
+            raise RuntimeWarning(f'{filename} exists, not downloading')
+        else:
             # open the file locally
             with open(directory + filename, 'wb') as fhandle:
                 # try to download the magnetogram
@@ -496,8 +494,6 @@ def download_magnetogram_adapt(time, map_type='fixed', **kwargs):
                 except ftplib.all_errors:
                     ftp.quit()
                     raise FileNotFoundError('Cannot download ', filename)
-        else:
-            print(filename + ' already exists, skipping downloading')
 
         # unzip the file
         if '.gz' in filename:
