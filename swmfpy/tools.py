@@ -6,6 +6,24 @@ __author__ = 'Qusai Al Shidi'
 __email__ = 'qusai@umich.edu'
 
 import datetime as dt
+import numpy as np
+
+
+def interp_nans(x_vals, y_vals):
+    """Returns a numpy array with NaNs interpolated.
+
+    Args:
+        x_vals (np.array):
+            x values to interpolate.
+        y_vals (np.array):
+            y values including NaNs.
+
+    Returns:
+        (np.array): numpy array with NaNs interpolated.
+    """
+
+    nonans = np.nonzero(np.isnan(y_vals) == 0)
+    return np.interp(x_vals, x_vals[nonans], y_vals[nonans])
 
 
 def carrington_rotation_number(the_time='now'):
