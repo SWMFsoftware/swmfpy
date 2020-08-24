@@ -17,6 +17,7 @@ import os.path
 import shutil
 import urllib
 import urllib.request
+import warnings
 from dateutil import rrule
 import numpy as np
 from .tools import _nearest, carrington_rotation_number
@@ -484,7 +485,8 @@ def download_magnetogram_adapt(time, map_type='fixed', **kwargs):
     for filename in filenames:
         # Only try to download if the file does not exist
         if os.path.isfile(directory+filename) == True:
-            raise RuntimeWarning(f'{filename} exists, not downloading')
+            warnings.warn(f'{filename} exists, not downloading',
+                          RuntimeWarning)
         else:
             # open the file locally
             with open(directory + filename, 'wb') as fhandle:
