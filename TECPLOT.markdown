@@ -1,7 +1,3 @@
-author: Camilla D. K. Harris
-
-email: cdha@umich.edu
-
 Visualization of SWMF output with Tecplot
 =========================================
 To be completed.
