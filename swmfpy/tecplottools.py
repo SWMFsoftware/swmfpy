@@ -260,6 +260,10 @@ def bracketify(variable_name: str) -> str:
 
     This is helpful for accessing Tecplot variables.
 
+    Args:
+        variable_name (str): A string which may contain the meta-characters * ?
+        [ or ].
+
     Examples:
         In a dataset which contains the variable 'X [R]',
         ```print(dataset.variable_names)
@@ -273,7 +277,13 @@ def bracketify(variable_name: str) -> str:
         ```print(dataset.variable(tpt.bracketify('X [R]')).name)```
         will succeed.
     """
-    return variable_name.translate(str.maketrans({'[':'[[]', ']':'[]]'}))
+    translation = {
+        '[':'[[]',
+        ']':'[]]',
+        '*':'[*]',
+        '?':'[?]'
+    }
+    return variable_name.translate(str.maketrans(translation))
 
 
 def write_zone(
