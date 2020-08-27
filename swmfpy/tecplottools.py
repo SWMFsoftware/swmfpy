@@ -36,8 +36,6 @@ def _shell_geometry(geometry_params: dict) -> dict:
     lons = np.linspace(0, 360, nlon, endpoint=False)
     dlat = 180/(nlat + 1)
     lats = np.linspace(-90.0+dlat, 90.0-dlat, nlat)
-    print(f'lons: {lons}')
-    print(f'lats: {lats}')
 
     latvals, lonvals = np.meshgrid(lats, lons)
     phvals = np.deg2rad(-1*lonvals + 90)
@@ -256,7 +254,7 @@ def apply_equations(eqn_path: str, verbose: bool = False) -> None:
 
 
 def bracketify(variable_name: str) -> str:
-    """Surrounds square brackets with more brackets.
+    """Surrounds square brackets with more brackets in a string.
 
     This is helpful for accessing Tecplot variables.
 
@@ -306,6 +304,40 @@ def write_zone(
             save. This option may decrease the size of the output. Default
             behavior is to save all variables.
         verbose: (Optional) Print diagnostic information. Defaults to False.
+
+    Examples:
+        ```python
+        import tecplot
+        import swmfpy.tecplottools as tpt
+
+        ## load a dataset and configure the layout
+        dataset = tecplot.data.load_tecplot(
+            '3d__mhd_1_n00000100.plt')
+        frame = tecplot.active_frame()
+        frame.plot_type = tecplot.constant.PlotType.Cartesian3D
+        plot = frame.plot()
+
+        ## set the vector variables
+        plot.vector.u_variable = dataset.variable(4)
+        plot.vector.v_variable = dataset.variable(5)
+        plot.vector.w_variable = dataset.variable(6)
+
+        ## seed and extract a streamtrace
+        plot.streamtraces.add(
+            seed_point=(1.5, 1.0, 0.0),
+            stream_type=tecplot.constant.Streamtrace.VolumeLine
+        )
+        streamtrace_zones = plot.streamtraces.extract()
+        new_zone = next(streamtrace_zones)
+
+        ## write the new zone to hdf5 format
+        tpt.write_zone(
+            tecplot_dataset=dataset,
+            tecplot_zone=new_zone,
+            write_as='hdf5',
+            filename='streamtrace.h5'
+        )
+        ```
     """
     if verbose and variables:
         print('Saving variables:')
@@ -407,6 +439,63 @@ def interpolate_zone_to_geometry(
             (data is a tecplot zone with 3D positional variables and 'time') and
             'batsrus' (data is formatted as described for the #SATELLITE
             command, see SWMF documentation). Required.
+
+    Examples:
+        ```python
+        import tecplot
+        import swmfpy.tecplottools as tpt
+
+        tecplot.session.connect(port=7600)
+
+        ## Load a dataset and configure the layout.
+        dataset = tecplot.data.load_tecplot('3d__mhd_1_n00000100.plt')
+
+        ## Create a new zone with the specified geometry
+        ## and interpolate data onto it.
+
+        ## geometry: shell
+        tpt.interpolate_zone_to_geometry(
+            dataset=dataset,
+            source_zone=dataset.zone(0),
+            geometry='shell',
+            radius=1.5,
+            npoints=(4,3)
+        )
+
+        ## geometry: line
+        tpt.interpolate_zone_to_geometry(
+            dataset=dataset,
+            source_zone=dataset.zone(0),
+            geometry='line',
+            r1=[1.0, 0.0, 0.0],
+            r2=[3.0, 0.0, 0.0],
+            npoints=100
+        )
+
+        ## geometry: rectangular prism
+        new_zone = tpt.interpolate_zone_to_geometry(
+            dataset=dataset,
+            source_zone=dataset.zone(0),
+            geometry='rectprism',
+            center=[0.0, 0.0, 0.0],
+            halfwidths=[2.0, 2.0, 2.0],
+            npoints=[5, 5, 5]
+        )
+
+        ## geometry: spacecraft trajectory as specified for the
+        ## BATSRUS #SATELLITE command
+        tpt.interpolate_zone_to_geometry(
+            dataset=dataset,
+            source_zone=dataset.zone(0),
+            geometry='trajectory',
+            trajectory_format='batsrus',
+            trajectory_data='./test_data/satellite_e4.dat'
+        )
+
+        ## The new zones are labeled with the name of the geometry and can be
+        ## manipulated in the Tecplot GUI.
+        ```
+
     """
     if verbose:
         print('Collecting parameters')
@@ -480,14 +569,14 @@ def interpolate_zone_to_geometry(
             filenames=geometry_params['trajectory_data']
             , read_data_option=tecplot.constant.ReadDataOption.Append
         )
-        dataset.zone(-1).name = 'geometry'
+        dataset.zone(-1).name = geometry_params['geometry']
     else:
         dataset.add_ordered_zone(
-            'geometry'
+            geometry_params['geometry']
             , geometry_points['npoints']
         )
         for i, direction in zip((0, 1, 2), ('X', 'Y', 'Z')):
-            dataset.zone('geometry').values(i)[:] = \
+            dataset.zone(geometry_params['geometry']).values(i)[:] = \
                 geometry_points[direction][:]
 
     ## interpolate variables on to the geometry
@@ -499,7 +588,7 @@ def interpolate_zone_to_geometry(
     ## This call will break if `variables` is not recast as a list before
     ## passing it to the function. Why?????
     tecplot.data.operate.interpolate_linear(
-        destination_zone=dataset.zone('geometry'),
+        destination_zone=dataset.zone(geometry_params['geometry']),
         source_zones=source_zone,
         variables=variables
     )
@@ -509,13 +598,13 @@ def interpolate_zone_to_geometry(
         _add_variable_value(
             dataset,
             'latitude [deg]',
-            dataset.zone('geometry'),
+            dataset.zone(geometry_params['geometry']),
             geometry_points['latitude']
         )
         _add_variable_value(
             dataset,
             'longitude [deg]',
-            dataset.zone('geometry'),
+            dataset.zone(geometry_params['geometry']),
             geometry_points['longitude']
         )
     if ('trajectory' in geometry_params['geometry']
@@ -523,11 +612,12 @@ def interpolate_zone_to_geometry(
         _add_variable_value(
             dataset,
             'time',
-            dataset.zone('geometry'),
+            dataset.zone(geometry_params['geometry']),
             geometry_points['time']
         )
+        geometry_params['time_seconds_since'] = '1970-01-01T00:00:00Z'
 
-        ## add auxiliary data
-    dataset.zone('geometry').aux_data.update(geometry_params)
+    ## add auxiliary data
+    dataset.zone(geometry_params['geometry']).aux_data.update(geometry_params)
 
-    return dataset.zone('geometry')
+    return dataset.zone(geometry_params['geometry'])
