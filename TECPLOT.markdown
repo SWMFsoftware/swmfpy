@@ -69,6 +69,50 @@ terminal like so:
 runpytecplot python my_pytecplot_script.py
 ```
 
+Examples using the tecplottools module
+--------------------------------------
+Load a 3d dataset, apply an equations file, interpolate the data onto an
+arbitrary geometry, and save the data from the new zone:
+```python
+import re
+import tecplot
+import swmfpy.tecplottools as tpt
+
+## Load the data
+dataset = tecplot.data.load_tecplot(
+    '3d__mhd_1_n00000100.plt'
+)
+
+## Apply equations
+tpt.apply_equations('gse_to_ephio.eqn')
+
+## Select the variables to interpolate from the 3D simulation data onto a
+## regular rectangular prissm with equally-spaced points
+variables_to_interpolate = list(dataset.variables(re.compile('B.*')))
+new_zone = tpt.interpolate_zone_to_geometry(
+    dataset,
+    dataset.zone(0),
+    geometry='rectprism',
+    variables=variables_to_interpolate,
+    verbose=True,
+    center=[0.0, 0.0, 0.0],
+    halfwidths=[2.0, 2.0, 2.0],
+    npoints=[5, 5, 5]
+)
+
+## Select the variables to save in the hdf5 format, which is compatible with
+## common scientific programs such as MATLAB.
+variables_to_save = list(dataset.variables(re.compile('X.*|Y.*|Z.*|B.*')))
+tpt.write_zone(
+    tecplot_dataset=dataset,
+    tecplot_zone=new_zone,
+    write_as='hdf5',
+    filename='3d__mhd_1_n00000100_rectprism.h5',
+    variables=variables_to_save,
+    verbose=True
+)
+```
+
 The SZL file format
 ------------------
 Tecplot can show and manipulate data that is stored on a remote machine such as
