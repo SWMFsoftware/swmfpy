@@ -18,7 +18,7 @@ These are automatically imported.
 """
 __author__ = 'Qusai Al Shidi'
 __license__ = 'MIT'
-__version__ = '2020.5'
+__version__ = '2020.6'
 __maintainer__ = 'Qusai Al Shidi'
 __email__ = 'qusai@umich.edu'
 

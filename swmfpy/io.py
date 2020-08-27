@@ -4,6 +4,7 @@ Here are tools to read and write files relating to SWMF.
 """
 
 import datetime as dt
+import warnings
 import numpy as np
 from .tools import _make_line
 
@@ -287,7 +288,13 @@ def read_gm_log(filename, colnames=None, dtypes=None, index_time=True):
                     if dtypes:
                         data = dtypes[col](data)
                     else:
-                        data = float(data)
+                        try:
+                            data = float(data)
+                        except ValueError as err:
+                            data = np.nan
+                            warnings.warn('Value error and no manual dtype set'
+                                          + ' changing to NaN',
+                                          RuntimeWarning)
                     return_data[colnames[col]].append(data)
 
         # datetime index

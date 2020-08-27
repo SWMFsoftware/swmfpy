@@ -76,6 +76,12 @@ def my_new_func(some_args):
     # function body
 ```
 
+There are helpful snippets for these:
+
+- function $91
+- class $92
+- file $93
+
 Dependencies
 ------------
 

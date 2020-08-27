@@ -15,6 +15,8 @@
   * [replace\_command](#.swmfpy.paramin.replace_command)
   * [read\_command](#.swmfpy.paramin.read_command)
 * [swmfpy.tools](#.swmfpy.tools)
+  * [interp\_nans](#.swmfpy.tools.interp_nans)
+  * [carrington\_rotation\_number](#.swmfpy.tools.carrington_rotation_number)
 * [swmfpy.tecplottools](#.swmfpy.tecplottools)
   * [apply\_equations](#.swmfpy.tecplottools.apply_equations)
 
@@ -156,13 +158,6 @@ Downloads HMI vector magnetogram fits files.
 
 This will download vector magnetogram FITS files from
 Joint Science Operations Center (JSOC) near a certain hour.
-
-This unfortunately depends on sunpy and drms, if you don't have it try,
-
-
-```bash
-pip install -U --user sunpy drms
-```
 
 **Arguments**:
 
@@ -505,6 +500,46 @@ values for the parameters.
 
 Tools to be used in swmfpy functions and classes. Some of the functions are
 *hidden functions*.
+
+<a name=".swmfpy.tools.interp_nans"></a>
+#### interp\_nans
+
+```python
+interp_nans(x_vals, y_vals)
+```
+
+Returns a numpy array with NaNs interpolated.
+
+**Arguments**:
+
+  x_vals (np.array):
+  x values to interpolate.
+  y_vals (np.array):
+  y values including NaNs.
+  
+
+**Returns**:
+
+- `(np.array)` - numpy array with NaNs interpolated.
+
+<a name=".swmfpy.tools.carrington_rotation_number"></a>
+#### carrington\_rotation\_number
+
+```python
+carrington_rotation_number(the_time='now')
+```
+
+Returns the carrington rotation
+
+**Arguments**:
+
+- `the_time` _datetime.datetime/str_ - The time to convert to carrington
+  rotation.
+  
+
+**Returns**:
+
+- `(int)` - Carrington Rotation
 
 <a name=".swmfpy.tecplottools"></a>
 ## swmfpy.tecplottools
