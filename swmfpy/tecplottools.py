@@ -351,11 +351,8 @@ def write_zone(
     if verbose:
         print('Attaching auxiliary data:')
         print(aux_data.__repr__())
-        print('Saving as:')
     ## save zone
     if 'hdf5' in write_as:
-        if verbose:
-            print('hdf5')
         if not variables:
             variables = list(tecplot_dataset.variables())
         _save_hdf5(
@@ -430,6 +427,25 @@ def _check_geometry_requirements(
             raise TypeError(
                 f'Geometry {geometry_params["geometry"]} '
                 f'requires argument {param}!')
+
+
+def _get_geometry_points(
+        geometry_params: dict
+):
+    """Select the right function to calculate the geometry points."""
+    if 'shell' in geometry_params['geometry']:
+        geometry_points = _shell_geometry(geometry_params)
+    elif 'line' in geometry_params['geometry']:
+        geometry_points = _line_geometry(geometry_params)
+    elif 'rectprism' in geometry_params['geometry']:
+        geometry_points = _rectprism_geometry(geometry_params)
+    elif ('trajectory' in geometry_params['geometry']
+          and 'batsrus' in geometry_params['trajectory_format']):
+        geometry_points = _trajectory_geometry(geometry_params)
+    else:
+        geometry_points = None
+    return geometry_points
+
 
 def interpolate_zone_to_geometry(
         dataset
@@ -587,28 +603,24 @@ def interpolate_zone_to_geometry(
         print(dataset.variable_names)
 
     ## create geometry zone
-    if 'shell' in geometry_params['geometry']:
-        geometry_points = _shell_geometry(geometry_params)
-    elif 'line' in geometry_params['geometry']:
-        geometry_points = _line_geometry(geometry_params)
-    elif 'rectprism' in geometry_params['geometry']:
-        geometry_points = _rectprism_geometry(geometry_params)
-    elif 'trajectory' in geometry_params['geometry']:
-        if 'batsrus' in geometry_params['trajectory_format']:
-            geometry_points = _trajectory_geometry(geometry_params)
-            dataset.add_ordered_zone(
-                geometry_params['geometry']
-                , geometry_points['npoints']
-            )
-            for i, direction in zip((0, 1, 2), ('X', 'Y', 'Z')):
-                dataset.zone(geometry_params['geometry']).values(i)[:] = \
-                     geometry_points[direction][:]
-        elif 'tecplot' in geometry_params['trajectory_format']:
-            dataset = tecplot.data.load_tecplot(
-                filenames=geometry_params['trajectory_data']
-                , read_data_option=tecplot.constant.ReadDataOption.Append
-            )
-            dataset.zone(-1).name = geometry_params['geometry']
+    geometry_points = _get_geometry_points(
+        geometry_params
+    )
+    if ('trajectory' in geometry_params['geometry']
+            and 'tecplot' in geometry_params['trajectory_format']):
+        dataset = tecplot.data.load_tecplot(
+            filenames=geometry_params['trajectory_data']
+            , read_data_option=tecplot.constant.ReadDataOption.Append
+        )
+        dataset.zone(-1).name = geometry_params['geometry']
+    else:
+        dataset.add_ordered_zone(
+            geometry_params['geometry']
+            , geometry_points['npoints']
+        )
+        for i, direction in zip((0, 1, 2), ('X', 'Y', 'Z')):
+            dataset.zone(geometry_params['geometry']).values(i)[:] = \
+                 geometry_points[direction][:]
 
     ## interpolate variables on to the geometry
     if verbose and variables:
