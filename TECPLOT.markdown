@@ -83,7 +83,7 @@ dataset = tecplot.data.load_tecplot(
 tpt.apply_equations('gse_to_ephio.eqn')
 
 ## Select the variables to interpolate from the 3D simulation data onto a
-## regular rectangular prissm with equally-spaced points
+## regular rectangular prism with equally-spaced points
 variables_to_interpolate = list(dataset.variables(re.compile('B.*')))
 new_zone = tpt.interpolate_zone_to_geometry(
     dataset,
