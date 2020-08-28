@@ -17,8 +17,8 @@ These are automatically imported.
   software. Requires a Tecplot license and the pytecplot python package.
 """
 __author__ = 'Qusai Al Shidi'
-__license__ = 'MIT'
-__version__ = '2020.6'
+__license__ = 'LGPLv3'
+__version__ = '2020.7'
 __maintainer__ = 'Qusai Al Shidi'
 __email__ = 'qusai@umich.edu'
 
