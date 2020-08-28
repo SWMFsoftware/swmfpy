@@ -28,6 +28,11 @@ import numpy as np
 import tecplot
 
 
+def _get_variable_names(variables):
+    """For getting the names of a group of Tecplot variables"""
+    return [var.name for var in variables]
+
+
 def _shell_geometry(geometry_params: dict) -> dict:
     """Returns a dict containing points for the described shell geometry.
     """
@@ -154,7 +159,7 @@ def _trajectory_geometry(geometry_params: dict) -> dict:
 def _save_hdf5(filename, geometry_params, new_zone, variables) -> None:
     """Save the aux data and a subset of the variables in hdf5 format.
     """
-    column_names = [var.name for var in variables]
+    column_names = _get_variable_names(variables)
     tp_data = []
     for var in variables:
         tp_data.append(new_zone.values(var)[:])
@@ -341,15 +346,13 @@ def write_zone(
     """
     if verbose and variables:
         print('Saving variables:')
-        for var in variables:
-            print(var.name)
+        print(_get_variable_names(variables).__repr__())
     aux_data = tecplot_zone.aux_data.as_dict()
     if verbose:
         print('Attaching auxiliary data:')
         print(aux_data.__repr__())
-    ## save zone
-    if verbose:
         print('Saving as:')
+    ## save zone
     if 'hdf5' in write_as:
         if verbose:
             print('hdf5')
@@ -388,6 +391,45 @@ def write_zone(
     if verbose:
         print(f'Wrote {filename}')
 
+
+def _assign_geometry_defaults(
+        geometry: str,
+        default_params: dict,
+        geometry_params: dict
+):
+    """Checks parameters with defaults and assigns them.
+
+    If the parameters are already set nothing will change.
+
+    Args:
+        geometry (str): String identifying the geometry to look for.
+        default_params (dict): Dictionary of the default parameters.
+        geomatry_params (dict): Dictionary in which to look for and set
+            parameters.
+    """
+    if geometry in geometry_params['geometry']:
+        for key, value in default_params.items():
+            geometry_params[key] = geometry_params.get(
+                key,
+                value
+            )
+    return geometry_params
+
+
+def _check_geometry_requirements(
+        geometry_requirements: dict,
+        geometry_params: dict
+):
+    """Checks that the required kwargs for the given geometry have been set.
+    """
+    if geometry_params['geometry'] not in geometry_requirements:
+        raise ValueError(f'Geometry {geometry_params["geometry"]} '
+                         'not supported!')
+    for param in geometry_requirements[geometry_params['geometry']]:
+        if param not in geometry_params:
+            raise TypeError(
+                f'Geometry {geometry_params["geometry"]} '
+                f'requires argument {param}!')
 
 def interpolate_zone_to_geometry(
         dataset
@@ -508,47 +550,39 @@ def interpolate_zone_to_geometry(
 
     if verbose:
         print('Adding defaults')
-    ## assign defaults for shell and rectprism
-    if 'shell' in geometry_params['geometry']:
-        geometry_params['center'] = geometry_params.get(
-            'center'
-            , (0.0, 0.0, 0.0)
-        )
-        geometry_params['npoints'] = geometry_params.get(
-            'npoints'
-            , (359, 181)
-        )
-    elif 'rectprism' in geometry_params['geometry']:
-        geometry_params['center'] = geometry_params.get(
-            'center'
-            , (0.0, 0.0, 0.0)
-        )
+    geometry_params = _assign_geometry_defaults(
+        'shell',
+        {
+            'center':(0.0, 0.0, 0.0),
+            'npoints':(359, 181)
+        },
+        geometry_params
+    )
+    geometry_params = _assign_geometry_defaults(
+        'rectprism',
+        {
+            'center':(0.0, 0.0, 0.0),
+        },
+        geometry_params
+    )
 
-    ## check that we support the geometry
-    geometry_param_names = {
-        'shell': ('radius',),
-        'line': ('r1', 'r2', 'npoints'),
-        'rectprism': ('halfwidths', 'npoints'),
-        'trajectory': ('trajectory_data', 'trajectory_format')
-    }
-    if geometry_params['geometry'] not in geometry_param_names:
-        raise ValueError(f'Geometry {geometry_params["geometry"]} '
-                         'not supported!')
-    ## check that we've gotten the right /required/ geometry arguments
-    for param in geometry_param_names[geometry_params['geometry']]:
-        if param not in geometry_params:
-            raise TypeError(
-                f'Geometry {geometry_params["geometry"]} '
-                f'requires argument {param}!')
+    _check_geometry_requirements(
+        {
+            'shell': ('radius',),
+            'line': ('r1', 'r2', 'npoints'),
+            'rectprism': ('halfwidths', 'npoints'),
+            'trajectory': ('trajectory_data', 'trajectory_format')
+        },
+        geometry_params
+    )
 
-    ## describe the interpolation we're about to do on the data
     if verbose:
+        ## describe the interpolation we're about to do on the data
         print('Geometry to be interpolated:')
         for key, value in geometry_params.items():
             print(f'\t{key}: {value.__repr__()}')
 
-    ## describe the loaded tecplot data
-    if verbose:
+        ## describe the loaded tecplot data
         print('Loaded tecplot data with variables:')
         print(dataset.variable_names)
 
@@ -562,28 +596,25 @@ def interpolate_zone_to_geometry(
     elif 'trajectory' in geometry_params['geometry']:
         if 'batsrus' in geometry_params['trajectory_format']:
             geometry_points = _trajectory_geometry(geometry_params)
-
-    if ('trajectory' in geometry_params['geometry']
-            and 'tecplot' in geometry_params['trajectory_format']):
-        dataset = tecplot.data.load_tecplot(
-            filenames=geometry_params['trajectory_data']
-            , read_data_option=tecplot.constant.ReadDataOption.Append
-        )
-        dataset.zone(-1).name = geometry_params['geometry']
-    else:
-        dataset.add_ordered_zone(
-            geometry_params['geometry']
-            , geometry_points['npoints']
-        )
-        for i, direction in zip((0, 1, 2), ('X', 'Y', 'Z')):
-            dataset.zone(geometry_params['geometry']).values(i)[:] = \
-                geometry_points[direction][:]
+            dataset.add_ordered_zone(
+                geometry_params['geometry']
+                , geometry_points['npoints']
+            )
+            for i, direction in zip((0, 1, 2), ('X', 'Y', 'Z')):
+                dataset.zone(geometry_params['geometry']).values(i)[:] = \
+                     geometry_points[direction][:]
+        elif 'tecplot' in geometry_params['trajectory_format']:
+            dataset = tecplot.data.load_tecplot(
+                filenames=geometry_params['trajectory_data']
+                , read_data_option=tecplot.constant.ReadDataOption.Append
+            )
+            dataset.zone(-1).name = geometry_params['geometry']
 
     ## interpolate variables on to the geometry
     if verbose and variables:
         print('Interpolating variables:')
-        for var in variables:
-            print(var.name)
+        print(_get_variable_names(variables).__repr__())
+
     ## dataset.variables('...') will return a generator of variables.
     ## This call will break if `variables` is not recast as a list before
     ## passing it to the function. Why?????
