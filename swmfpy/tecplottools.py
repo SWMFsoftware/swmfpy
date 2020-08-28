@@ -205,9 +205,11 @@ def apply_equations(eqn_path: str, verbose: bool = False) -> None:
     See [TECPLOT](TECPLOT.markdown) for tips on using pytecplot.
 
     Args:
-        eqn_file_path (str): The path to the equation macro file (typically with
-            extension `.eqn`).
-        verbose (bool): (Optional) Whether or not to print the equations as they
+        eqn_file_path (str):
+            The path to the equation macro file
+            (typically with extension `.eqn`).
+        verbose (bool):
+            (Optional) Whether or not to print the equations as they
             are applied. Default behavior is silent.
 
     Examples:
@@ -264,8 +266,8 @@ def bracketify(variable_name: str) -> str:
     This is helpful for accessing Tecplot variables.
 
     Args:
-        variable_name (str): A string which may contain the meta-characters * ?
-        [ or ].
+        variable_name (str):
+            A string which may contain the meta-characters * ?  [ or ].
 
     Examples:
         In a dataset which contains the variable 'X [R]',
@@ -300,15 +302,21 @@ def write_zone(
     """Writes a tecplot zone to various formats.
 
     Args:
-        tecplot_dataset (): The dataset to save.
-        tecplot_zone (): The zone to save.
-        write_as (str): Type of file to write to. Supported options are 'hdf5',
+        tecplot_dataset (tecplot.data.dataset.Dataset):
+            The dataset to save.
+        tecplot_zone (tecplot.data.dataset.Zone):
+            The zone to save.
+        write_as (str):
+            Type of file to write to. Supported options are 'hdf5',
             'csv', 'tecplot_ascii', and 'tecplot_plt'.
-        filename (str): Name of the file to write to.
-        variables (): (Optional) Specify a subset of the dataset variables to
+        filename (str):
+            Name of the file to write to.
+        variables (list(tecplot.data.dataset.Variable)):
+            (Optional) Specify a subset of the dataset variables to
             save. This option may decrease the size of the output. Default
             behavior is to save all variables.
-        verbose: (Optional) Print diagnostic information. Defaults to False.
+        verbose:
+            (Optional) Print diagnostic information. Defaults to False.
 
     Examples:
         ```python
@@ -399,10 +407,12 @@ def _assign_geometry_defaults(
     If the parameters are already set nothing will change.
 
     Args:
-        geometry (str): String identifying the geometry to look for.
-        default_params (dict): Dictionary of the default parameters.
-        geomatry_params (dict): Dictionary in which to look for and set
-            parameters.
+        geometry (str):
+            String identifying the geometry to look for.
+        default_params (dict):
+            Dictionary of the default parameters.
+        geomatry_params (dict):
+            Dictionary in which to look for and set parameters.
     """
     if geometry in geometry_params['geometry']:
         for key, value in default_params.items():
@@ -458,16 +468,21 @@ def interpolate_zone_to_geometry(
     """Interpolates Tecplot binary data onto various geometries.
 
     Args:
-        dataset: The loaded Tecplot dataset.
-        source_zone: The Tecplot zone to interpolate onto the geometry.
-        geometry (str): Type of geometry for interpolation. Supported geometries
+        dataset:
+            The loaded Tecplot dataset.
+        source_zone:
+            The Tecplot zone to interpolate onto the geometry.
+        geometry (str):
+            Type of geometry for interpolation. Supported geometries
             are 'shell', 'line', 'rectprism', or 'trajectory'. See below for the
             required keyword arguments for each geometry.
-        variables (list): (Optional) Subset of variables to interpolate. Default
+        variables (list):
+            (Optional) Subset of variables to interpolate. Default
             behavior is to interpolate all variables.
-        verbose: (Optional) Print diagnostic information. Defaults to False.
+        verbose:
+            (Optional) Print diagnostic information. Defaults to False.
 
-    Keyword Args:
+    **kwargs:
         center (array-like): Argument for the 'shell' geometry. Contains the X,
             Y, and Z positions of the shell. Defaults to (0,0,0).
         radius (float): Argument for the 'shell' geometry. Required.
