@@ -11,6 +11,8 @@ These are automatically imported.
 
 ### Extra Modules
 
+These must be imported manually.
+
 - `swmfpy.tools` Tools used in swmfpy. You might find these useful but it is
   unecessary.
 - `swmfpy.tecplottools` Tools for working with the Tecplot visualization

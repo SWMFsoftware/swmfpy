@@ -1,27 +1,30 @@
 # Table of Contents
 
-* [swmfpy](#.swmfpy)
-  * [write\_imf\_from\_omni](#.swmfpy.write_imf_from_omni)
-* [swmfpy.web](#.swmfpy.web)
-  * [get\_omni\_data](#.swmfpy.web.get_omni_data)
-  * [download\_magnetogram\_hmi](#.swmfpy.web.download_magnetogram_hmi)
-  * [download\_magnetogram\_adapt](#.swmfpy.web.download_magnetogram_adapt)
-* [swmfpy.io](#.swmfpy.io)
-  * [write\_imf\_input](#.swmfpy.io.write_imf_input)
-  * [read\_wdc\_ae](#.swmfpy.io.read_wdc_ae)
-  * [read\_wdc\_asy\_sym](#.swmfpy.io.read_wdc_asy_sym)
-  * [read\_gm\_log](#.swmfpy.io.read_gm_log)
-* [swmfpy.paramin](#.swmfpy.paramin)
-  * [replace\_command](#.swmfpy.paramin.replace_command)
-  * [read\_command](#.swmfpy.paramin.read_command)
-* [swmfpy.tools](#.swmfpy.tools)
-  * [interp\_nans](#.swmfpy.tools.interp_nans)
-  * [carrington\_rotation\_number](#.swmfpy.tools.carrington_rotation_number)
-* [swmfpy.tecplottools](#.swmfpy.tecplottools)
-  * [apply\_equations](#.swmfpy.tecplottools.apply_equations)
+* [swmfpy](#swmfpy)
+  * [write\_imf\_from\_omni](#swmfpy.write_imf_from_omni)
+* [swmfpy.web](#swmfpy.web)
+  * [get\_omni\_data](#swmfpy.web.get_omni_data)
+  * [download\_magnetogram\_hmi](#swmfpy.web.download_magnetogram_hmi)
+  * [download\_magnetogram\_adapt](#swmfpy.web.download_magnetogram_adapt)
+* [swmfpy.io](#swmfpy.io)
+  * [write\_imf\_input](#swmfpy.io.write_imf_input)
+  * [read\_wdc\_ae](#swmfpy.io.read_wdc_ae)
+  * [read\_wdc\_asy\_sym](#swmfpy.io.read_wdc_asy_sym)
+  * [read\_gm\_log](#swmfpy.io.read_gm_log)
+* [swmfpy.paramin](#swmfpy.paramin)
+  * [replace\_command](#swmfpy.paramin.replace_command)
+  * [read\_command](#swmfpy.paramin.read_command)
+* [swmfpy.tools](#swmfpy.tools)
+  * [interp\_nans](#swmfpy.tools.interp_nans)
+  * [carrington\_rotation\_number](#swmfpy.tools.carrington_rotation_number)
+* [swmfpy.tecplottools](#swmfpy.tecplottools)
+  * [apply\_equations](#swmfpy.tecplottools.apply_equations)
+  * [bracketify](#swmfpy.tecplottools.bracketify)
+  * [write\_zone](#swmfpy.tecplottools.write_zone)
+  * [interpolate\_zone\_to\_geometry](#swmfpy.tecplottools.interpolate_zone_to_geometry)
 
-<a name=".swmfpy"></a>
-## swmfpy
+<a name="swmfpy"></a>
+# swmfpy
 
 A collection of tools to read, write, visualize with the
 Space Weather Modeling Framework (SWMF).
@@ -36,12 +39,14 @@ These are automatically imported.
 
 ### Extra Modules
 
+These must be imported manually.
+
 - `swmfpy.tools` Tools used in swmfpy. You might find these useful but it is
   unecessary.
 - `swmfpy.tecplottools` Tools for working with the Tecplot visualization
   software. Requires a Tecplot license and the pytecplot python package.
 
-<a name=".swmfpy.write_imf_from_omni"></a>
+<a name="swmfpy.write_imf_from_omni"></a>
 #### write\_imf\_from\_omni
 
 ```python
@@ -79,8 +84,8 @@ period.
   swmfpy.write_imf_input(*times, filename='run/IMF.dat')
   ```
 
-<a name=".swmfpy.web"></a>
-## swmfpy.web
+<a name="swmfpy.web"></a>
+# swmfpy.web
 
 ### Tools to download/upload data on the web
 
@@ -89,7 +94,7 @@ this module mostly requires an internet connection. Which on some
 supercomputers would be turned off during a job run. In scripts, make sure to
 use these to preprocess before submitting jobs.
 
-<a name=".swmfpy.web.get_omni_data"></a>
+<a name="swmfpy.web.get_omni_data"></a>
 #### get\_omni\_data
 
 ```python
@@ -147,7 +152,7 @@ and mutate the other one.
   resolution='low')
   ```
 
-<a name=".swmfpy.web.download_magnetogram_hmi"></a>
+<a name="swmfpy.web.download_magnetogram_hmi"></a>
 #### download\_magnetogram\_hmi
 
 ```python
@@ -206,7 +211,7 @@ Joint Science Operations Center (JSOC) near a certain hour.
   download_dir='mydir')
   ```
 
-<a name=".swmfpy.web.download_magnetogram_adapt"></a>
+<a name="swmfpy.web.download_magnetogram_adapt"></a>
 #### download\_magnetogram\_adapt
 
 ```python
@@ -257,14 +262,14 @@ pattern: adapt4[0,1]3*yyyymmddhh
   download_dir='./mymaps/')
   ```
 
-<a name=".swmfpy.io"></a>
-## swmfpy.io
+<a name="swmfpy.io"></a>
+# swmfpy.io
 
 ### Input/Output tools
 
 Here are tools to read and write files relating to SWMF.
 
-<a name=".swmfpy.io.write_imf_input"></a>
+<a name="swmfpy.io.write_imf_input"></a>
 #### write\_imf\_input
 
 ```python
@@ -305,7 +310,7 @@ imf_data = dict(times, bx, by, bz, vx, vy, vz, density, temperature)
   write_imf_input(imf_data, filename='run/IMF.dat')
   ```
 
-<a name=".swmfpy.io.read_wdc_ae"></a>
+<a name="swmfpy.io.read_wdc_ae"></a>
 #### read\_wdc\_ae
 
 ```python
@@ -327,7 +332,7 @@ text file into a dictionary of lists.
 - `datetime.datetime` - 'times'
 - `int` - 'values'
 
-<a name=".swmfpy.io.read_wdc_asy_sym"></a>
+<a name="swmfpy.io.read_wdc_asy_sym"></a>
 #### read\_wdc\_asy\_sym
 
 ```python
@@ -364,7 +369,7 @@ and puts it into a dictionary.
   
   Important to note if there is bad data it will be filled as None.
 
-<a name=".swmfpy.io.read_gm_log"></a>
+<a name="swmfpy.io.read_gm_log"></a>
 #### read\_gm\_log
 
 ```python
@@ -402,14 +407,14 @@ from the GM model log.
   plt.plot(geo['times', geo['AL'])
   ```
 
-<a name=".swmfpy.paramin"></a>
-## swmfpy.paramin
+<a name="swmfpy.paramin"></a>
+# swmfpy.paramin
 
 ### Editing PARAM.in files
 
 These tools are to help script the editing and reading of PARAM.in files.
 
-<a name=".swmfpy.paramin.replace_command"></a>
+<a name="swmfpy.paramin.replace_command"></a>
 #### replace\_command
 
 ```python
@@ -449,7 +454,7 @@ Note, if you have repeat commands this will replace all the repeats.
   swmfpy.paramin.replace('PARAM.in.template', change)
   ```
 
-<a name=".swmfpy.paramin.read_command"></a>
+<a name="swmfpy.paramin.read_command"></a>
 #### read\_command
 
 ```python
@@ -495,13 +500,13 @@ values for the parameters.
   this, try using the `num_of_values` keyword. This is helpful if your
   PARAM.in is comment heavy.
 
-<a name=".swmfpy.tools"></a>
-## swmfpy.tools
+<a name="swmfpy.tools"></a>
+# swmfpy.tools
 
 Tools to be used in swmfpy functions and classes. Some of the functions are
 *hidden functions*.
 
-<a name=".swmfpy.tools.interp_nans"></a>
+<a name="swmfpy.tools.interp_nans"></a>
 #### interp\_nans
 
 ```python
@@ -522,7 +527,7 @@ Returns a numpy array with NaNs interpolated.
 
 - `(np.array)` - numpy array with NaNs interpolated.
 
-<a name=".swmfpy.tools.carrington_rotation_number"></a>
+<a name="swmfpy.tools.carrington_rotation_number"></a>
 #### carrington\_rotation\_number
 
 ```python
@@ -541,8 +546,8 @@ Returns the carrington rotation
 
 - `(int)` - Carrington Rotation
 
-<a name=".swmfpy.tecplottools"></a>
-## swmfpy.tecplottools
+<a name="swmfpy.tecplottools"></a>
+# swmfpy.tecplottools
 
 Tools for working with the Tecplot visualization software.
 
@@ -559,11 +564,11 @@ Some useful references:
 - [Tecplot Scripting Guide](download.tecplot.com/360/current/360_scripting_guide.pdf)
 - [Pytecplot documentation](www.tecplot.com/docs/pytecplot/index.html)
 
-<a name=".swmfpy.tecplottools.apply_equations"></a>
+<a name="swmfpy.tecplottools.apply_equations"></a>
 #### apply\_equations
 
 ```python
-apply_equations(eqn_path: str, verbose: bool = False)
+apply_equations(eqn_path: str, verbose: bool = False) -> None
 ```
 
 Apply an equations file in the Tecplot macro format to the active dataset
@@ -575,10 +580,12 @@ See [TECPLOT](TECPLOT.markdown) for tips on using pytecplot.
 
 **Arguments**:
 
-- `eqn_file_path` _str_ - The path to the equation macro file (typically with
-  extension `.eqn`).
-- `verbose` _bool_ - (Optional) Whether or not to print the equations as they are
-  applied. Default behavior is silent.
+  eqn_file_path (str):
+  The path to the equation macro file
+  (typically with extension `.eqn`).
+  verbose (bool):
+  (Optional) Whether or not to print the equations as they
+  are applied. Default behavior is silent.
   
 
 **Examples**:
@@ -608,5 +615,213 @@ See [TECPLOT](TECPLOT.markdown) for tips on using pytecplot.
   
   ## save the image
   tecplot.export.save_png('./density.png', width= 1200, supersample= 8)
+  ```
+
+<a name="swmfpy.tecplottools.bracketify"></a>
+#### bracketify
+
+```python
+bracketify(variable_name: str) -> str
+```
+
+Surrounds square brackets with more brackets in a string.
+
+This is helpful for accessing Tecplot variables.
+
+**Arguments**:
+
+  variable_name (str):
+  A string which may contain the meta-characters * ?  [ or ].
+  
+
+**Examples**:
+
+  In a dataset which contains the variable 'X [R]',
+  ```print(dataset.variable_names)
+  >>> ['X [R]', ... ]```
+  The following will fail:
+  ```print(dataset.variable('X [R]').name)
+  >>> TecplotPatternMatchWarning: no variables found matching: "X [R]" For
+  a literal match, the meta-characters: * ? [ ] must be wrapped in square-
+  brackets. For example, "[?]" matches the character "?"...```
+  However,
+  ```print(dataset.variable(tpt.bracketify('X [R]')).name)```
+  will succeed.
+
+<a name="swmfpy.tecplottools.write_zone"></a>
+#### write\_zone
+
+```python
+write_zone(tecplot_dataset, tecplot_zone, write_as: str, filename: str, variables=None, verbose: bool = False) -> None
+```
+
+Writes a tecplot zone to various formats.
+
+**Arguments**:
+
+  tecplot_dataset (tecplot.data.dataset.Dataset):
+  The dataset to save.
+  tecplot_zone (tecplot.data.dataset.Zone):
+  The zone to save.
+  write_as (str):
+  Type of file to write to. Supported options are 'hdf5',
+  'csv', 'tecplot_ascii', and 'tecplot_plt'.
+  filename (str):
+  Name of the file to write to.
+  variables (list(tecplot.data.dataset.Variable)):
+  (Optional) Specify a subset of the dataset variables to
+  save. This option may decrease the size of the output. Default
+  behavior is to save all variables.
+  verbose:
+  (Optional) Print diagnostic information. Defaults to False.
+  
+
+**Examples**:
+
+  ```python
+  import tecplot
+  import swmfpy.tecplottools as tpt
+  
+  ## load a dataset and configure the layout
+  dataset = tecplot.data.load_tecplot(
+  '3d__mhd_1_n00000100.plt')
+  frame = tecplot.active_frame()
+  frame.plot_type = tecplot.constant.PlotType.Cartesian3D
+  plot = frame.plot()
+  
+  ## set the vector variables
+  plot.vector.u_variable = dataset.variable(4)
+  plot.vector.v_variable = dataset.variable(5)
+  plot.vector.w_variable = dataset.variable(6)
+  
+  ## seed and extract a streamtrace
+  plot.streamtraces.add(
+  seed_point=(1.5, 1.0, 0.0),
+  stream_type=tecplot.constant.Streamtrace.VolumeLine
+  )
+  streamtrace_zones = plot.streamtraces.extract()
+  new_zone = next(streamtrace_zones)
+  
+  ## write the new zone to hdf5 format
+  tpt.write_zone(
+  tecplot_dataset=dataset,
+  tecplot_zone=new_zone,
+  write_as='hdf5',
+  filename='streamtrace.h5'
+  )
+  ```
+
+<a name="swmfpy.tecplottools.interpolate_zone_to_geometry"></a>
+#### interpolate\_zone\_to\_geometry
+
+```python
+interpolate_zone_to_geometry(dataset, source_zone, geometry: str, variables: list = None, verbose: bool = False, **kwargs)
+```
+
+Interpolates Tecplot binary data onto various geometries.
+
+**Arguments**:
+
+  dataset:
+  The loaded Tecplot dataset.
+  source_zone:
+  The Tecplot zone to interpolate onto the geometry.
+  geometry (str):
+  Type of geometry for interpolation. Supported geometries
+  are 'shell', 'line', 'rectprism', or 'trajectory'. See below for the
+  required keyword arguments for each geometry.
+  variables (list):
+  (Optional) Subset of variables to interpolate. Default
+  behavior is to interpolate all variables.
+  verbose:
+  (Optional) Print diagnostic information. Defaults to False.
+  
+  **kwargs:
+- `center` _array-like_ - Argument for the 'shell' geometry. Contains the X,
+  Y, and Z positions of the shell. Defaults to (0,0,0).
+- `radius` _float_ - Argument for the 'shell' geometry. Required.
+- `npoints` _array-like_ - Argument for the 'shell' geometry. Contains the
+  number of points in the azimuthal and polar directions to
+  interpolate onto, excluding the north and south polar points.
+  Defaults to (360,179).
+- `r1` _array-like_ - Argument for the 'line' geometry. Contains the X, Y,
+  and Z positions of the point where the line starts. Required.
+- `r2` _array-like_ - Argument for the 'line' geometry. Contains the X, Y,
+  and Z positions of the point where the line ends. Required.
+- `npoints` _int_ - Argument for the 'line' geometry. The number of points
+  along the line to interpolate onto. Required.
+- `center` _array-like_ - Argument for the 'rectprism' geometry. Contains the
+  X, Y, and Z positions of the center of the rectangular prism.
+  Defaults to (0,0,0).
+- `halfwidths` _array-like_ - Argument for the 'rectprism' geometry. Contains
+  the half widths of the rectangular prism in the X, Y, and Z
+  directions. Required.
+- `npoints` _array-like_ - Argument for the 'rectprism' geometry. Contains
+  the number of points in the X, Y, and Z directions to interpolate
+  onto. Required.
+- `trajectory_data` _str_ - Argument for the 'trajectory' geometry. The path
+  to the ASCII trajectory data file. Required.
+- `trajectory_format` _str_ - Argument for the 'trajectory' geometry. The
+  format of the trajectory data file. Supported formats are 'tecplot'
+  (data is a tecplot zone with 3D positional variables and 'time') and
+  'batsrus' (data is formatted as described for the `SATELLITE`
+  command, see SWMF documentation). Required.
+  
+
+**Examples**:
+
+  ```python
+  import tecplot
+  import swmfpy.tecplottools as tpt
+  
+  tecplot.session.connect(port=7600)
+  
+  ## Load a dataset and configure the layout.
+  dataset = tecplot.data.load_tecplot('3d__mhd_1_n00000100.plt')
+  
+  ## Create a new zone with the specified geometry
+  ## and interpolate data onto it.
+  
+  ## geometry: shell
+  tpt.interpolate_zone_to_geometry(
+  dataset=dataset,
+  source_zone=dataset.zone(0),
+  geometry='shell',
+  radius=1.5,
+  npoints=(4,3)
+  )
+  
+  ## geometry: line
+  tpt.interpolate_zone_to_geometry(
+  dataset=dataset,
+  source_zone=dataset.zone(0),
+  geometry='line',
+  r1=[1.0, 0.0, 0.0],
+  r2=[3.0, 0.0, 0.0],
+  npoints=100
+  )
+  
+  ## geometry: rectangular prism
+  new_zone = tpt.interpolate_zone_to_geometry(
+  dataset=dataset,
+  source_zone=dataset.zone(0),
+  geometry='rectprism',
+  center=[0.0, 0.0, 0.0],
+  halfwidths=[2.0, 2.0, 2.0],
+  npoints=[5, 5, 5]
+  )
+  
+  ## geometry: spacecraft trajectory as specified for the
+  ## BATSRUS `SATELLITE` command
+  tpt.interpolate_zone_to_geometry(
+  dataset=dataset,
+  source_zone=dataset.zone(0),
+  geometry='trajectory',
+  trajectory_format='batsrus',
+  trajectory_data='./test_data/satellite_e4.dat'
+  )
+  
+  ## The new zones are labeled with the name of the geometry and can be
+  ## manipulated in the Tecplot GUI.
   ```
 
