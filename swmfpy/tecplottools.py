@@ -279,7 +279,7 @@ def bracketify(variable_name: str) -> str:
         ```python
         print(dataset.variable('X [R]').name)
         # TecplotPatternMatchWarning: no variables found matching: "X [R]" For
-        a literal match, the meta-characters: * ? [ ] must be wrapped in square-
+        # a literal match, the meta-characters: * ? [ ] must be wrapped in square-
         # For example, "[?]" matches the character "?"...
         ```
         However,
