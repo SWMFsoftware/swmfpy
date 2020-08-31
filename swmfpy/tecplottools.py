@@ -271,15 +271,21 @@ def bracketify(variable_name: str) -> str:
 
     Examples:
         In a dataset which contains the variable 'X [R]',
-        ```print(dataset.variable_names)
-        >>> ['X [R]', ... ]```
+        ```python
+        print(dataset.variable_names)
+        # ['X [R]', ... ]
+        ```
         The following will fail:
-        ```print(dataset.variable('X [R]').name)
-        >>> TecplotPatternMatchWarning: no variables found matching: "X [R]" For
+        ```python
+        print(dataset.variable('X [R]').name)
+        # TecplotPatternMatchWarning: no variables found matching: "X [R]" For
         a literal match, the meta-characters: * ? [ ] must be wrapped in square-
-        brackets. For example, "[?]" matches the character "?"...```
+        # For example, "[?]" matches the character "?"...
+        ```
         However,
-        ```print(dataset.variable(tpt.bracketify('X [R]')).name)```
+        ```python
+        print(dataset.variable(tpt.bracketify('X [R]')).name)
+        ```
         will succeed.
     """
     translation = {
