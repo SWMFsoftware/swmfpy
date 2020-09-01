@@ -571,7 +571,7 @@ Some useful references:
 apply_equations(eqn_path: str, verbose: bool = False) -> None
 ```
 
-Apply an equations file in the Tecplot macro format to the active dataset
+Apply a Tecplot-formatted equations file to the active dataset.
 
 Please reference the Tecplot User's Manual for more details on
 equation files and syntax. It is recommended to use this function with eqn
@@ -580,11 +580,9 @@ See [TECPLOT](TECPLOT.markdown) for tips on using pytecplot.
 
 **Arguments**:
 
-  eqn_file_path (str):
-  The path to the equation macro file
-  (typically with extension `.eqn`).
-  verbose (bool):
-  (Optional) Whether or not to print the equations as they
+- `eqn_file_path` _str_ - The path to the equation macro file (typically with
+  extension `.eqn`).
+- `verbose` _bool_ - (Optional) Whether or not to print the equations as they
   are applied. Default behavior is silent.
   
 
@@ -630,8 +628,8 @@ This is helpful for accessing Tecplot variables.
 
 **Arguments**:
 
-  variable_name (str):
-  A string which may contain the meta-characters * ?  [ or ].
+- `variable_name` _str_ - A string which may contain the meta-characters * ?
+  [ or ].
   
 
 **Examples**:
@@ -645,8 +643,8 @@ This is helpful for accessing Tecplot variables.
   ```python
   print(dataset.variable('X [R]').name)
   # TecplotPatternMatchWarning: no variables found matching: "X [R]" For
-  # a literal match, the meta-characters: * ? [ ] must be wrapped in square-
-  # For example, "[?]" matches the character "?"...
+  # a literal match, the meta-characters: * ? [ ] must be wrapped in
+  # square-brackets. For example, "[?]" matches the character "?"...
   ```
   However,
   ```python
@@ -665,21 +663,15 @@ Writes a tecplot zone to various formats.
 
 **Arguments**:
 
-  tecplot_dataset (tecplot.data.dataset.Dataset):
-  The dataset to save.
-  tecplot_zone (tecplot.data.dataset.Zone):
-  The zone to save.
-  write_as (str):
-  Type of file to write to. Supported options are 'hdf5',
-  'csv', 'tecplot_ascii', and 'tecplot_plt'.
-  filename (str):
-  Name of the file to write to.
-  variables (list(tecplot.data.dataset.Variable)):
-  (Optional) Specify a subset of the dataset variables to
-  save. This option may decrease the size of the output. Default
+- `tecplot_dataset` _tecplot.data.Dataset_ - The dataset to save.
+- `tecplot_zone` _tecplot.data.zone_ - The zone to save.
+- `write_as` _str_ - Type of file to write to. Supported options are `hdf5`,
+  `csv`, `tecplot_ascii`, and `tecplot_plt`.
+- `filename` _str_ - Name of the file to write to.
+- `variables` _list_ - (Optional) Specify a subset of the dataset variables
+  to save. This option may decrease the size of the output. Default
   behavior is to save all variables.
-  verbose:
-  (Optional) Print diagnostic information. Defaults to False.
+- `verbose` - (Optional) Print diagnostic information. Defaults to False.
   
 
 **Examples**:
@@ -726,52 +718,49 @@ interpolate_zone_to_geometry(dataset, source_zone, geometry: str, variables: lis
 
 Interpolates Tecplot binary data onto various geometries.
 
+Returns a tecplot zone object.
+
 **Arguments**:
 
-  dataset:
-  The loaded Tecplot dataset.
-  source_zone:
-  The Tecplot zone to interpolate onto the geometry.
-  geometry (str):
-  Type of geometry for interpolation. Supported geometries
-  are 'shell', 'line', 'rectprism', or 'trajectory'. See below for the
+- `dataset` _tecplot.data.Dataset_ - The loaded Tecplot dataset.
+- `source_zone` _tecplot.data.zone_ - The Tecplot zone to interpolate onto
+  the geometry.
+- `geometry` _str_ - Type of geometry for interpolation. Supported geometries
+  are `shell`, `line`, `rectprism`, or `trajectory`. See below for the
   required keyword arguments for each geometry.
-  variables (list):
-  (Optional) Subset of variables to interpolate. Default
+- `variables` _list_ - (Optional) Subset of variables to interpolate. Default
   behavior is to interpolate all variables.
-  verbose:
-  (Optional) Print diagnostic information. Defaults to False.
-  
-  **kwargs:
-- `center` _array-like_ - Argument for the 'shell' geometry. Contains the X,
-  Y, and Z positions of the shell. Defaults to (0,0,0).
-- `radius` _float_ - Argument for the 'shell' geometry. Required.
-- `npoints` _array-like_ - Argument for the 'shell' geometry. Contains the
-  number of points in the azimuthal and polar directions to
-  interpolate onto, excluding the north and south polar points.
-  Defaults to (360,179).
-- `r1` _array-like_ - Argument for the 'line' geometry. Contains the X, Y,
-  and Z positions of the point where the line starts. Required.
-- `r2` _array-like_ - Argument for the 'line' geometry. Contains the X, Y,
-  and Z positions of the point where the line ends. Required.
-- `npoints` _int_ - Argument for the 'line' geometry. The number of points
-  along the line to interpolate onto. Required.
-- `center` _array-like_ - Argument for the 'rectprism' geometry. Contains the
-  X, Y, and Z positions of the center of the rectangular prism.
+- `verbose` _bool_ - (Optional) Print diagnostic information. Defaults to
+  False.
+- `**center` _array-like_ - Argument for the `shell` geometry. Contains the
+  X, Y, and Z positions of the shell. Defaults to (0,0,0).
+- `**radius` _float_ - Required argument for the `shell` geometry.
+- `**npoints` _array-like_ - Argument for the `shell` geometry. Contains the
+  number of points in the azimuthal and polar directions to interpolate
+  onto, excluding the north and south polar points. Defaults to
+  (360, 179).
+- `**r1` _array-like_ - Required argument for the `line` geometry. Contains
+  the X, Y, and Z positions of the point where the line starts.
+- `**r2` _array-like_ - Required argument for the `line` geometry. Contains
+  the X, Y, and Z positions of the point where the line ends.
+- `**npoints` _int_ - Required argument for the `line` geometry. The number
+  of points along the line to interpolate onto.
+- `**center` _array-like_ - Argument for the `rectprism` geometry. Contains
+  the X, Y, and Z positions of the center of the rectangular prism.
   Defaults to (0,0,0).
-- `halfwidths` _array-like_ - Argument for the 'rectprism' geometry. Contains
-  the half widths of the rectangular prism in the X, Y, and Z
-  directions. Required.
-- `npoints` _array-like_ - Argument for the 'rectprism' geometry. Contains
-  the number of points in the X, Y, and Z directions to interpolate
-  onto. Required.
-- `trajectory_data` _str_ - Argument for the 'trajectory' geometry. The path
-  to the ASCII trajectory data file. Required.
-- `trajectory_format` _str_ - Argument for the 'trajectory' geometry. The
-  format of the trajectory data file. Supported formats are 'tecplot'
-  (data is a tecplot zone with 3D positional variables and 'time') and
-  'batsrus' (data is formatted as described for the `SATELLITE`
-  command, see SWMF documentation). Required.
+- `**halfwidths` _array-like_ - Required argument for the `rectprism`
+  geometry. Contains the half widths of the rectangular prism in the X,
+  Y, and Z directions.
+- `**npoints` _array-like_ - Required argument for the `rectprism` geometry.
+  Contains the number of points in the X, Y, and Z directions to
+  interpolate onto.
+- `**trajectory_data` _str_ - Required argument for the `trajectory`
+  geometry. The path to the ASCII trajectory data file.
+- `**trajectory_format` _str_ - Required argument for the `trajectory`
+  geometry. The format of the trajectory data file. Supported formats
+  are `tecplot` (data is a tecplot zone with 3D positional variables)
+  and `batsrus` (data is formatted as described for the `SATELLITE`
+  command, see SWMF documentation).
   
 
 **Examples**:
@@ -818,13 +807,13 @@ Interpolates Tecplot binary data onto various geometries.
   )
   
   ## geometry: spacecraft trajectory as specified for the
-  ## BATSRUS `SATELLITE` command
+  ## BATSRUS SATELLITE command
   tpt.interpolate_zone_to_geometry(
   dataset=dataset,
   source_zone=dataset.zone(0),
   geometry='trajectory',
   trajectory_format='batsrus',
-  trajectory_data='./test_data/satellite_e4.dat'
+  trajectory_data='satellite_e4.dat'
   )
   
   ## The new zones are labeled with the name of the geometry and can be
