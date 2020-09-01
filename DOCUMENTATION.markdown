@@ -730,11 +730,11 @@ Interpolates Tecplot binary data onto various geometries.
 - `variables` _list_ - (Optional) Subset of variables to interpolate. Default
   behavior is to interpolate all variables.
 - `verbose` - (Optional) Print diagnostic information. Defaults to False.
+- `**center` _array-like_ - Argument for the `shell` geometry. Contains the
+  X, Y, and Z positions of the shell. Defaults to
+  (0,0,0).
   
   **kwargs:
-- `center` _array-like_ - Argument for the `shell` geometry. Contains the X,
-  Y, and Z positions of the shell. Defaults to
-  (0,0,0).
 - `radius` _float_ - Argument for the `shell` geometry. Required.
 - `npoints` _array-like_ - Argument for the `shell` geometry. Contains the
   number of points in the azimuthal and polar

@@ -469,11 +469,11 @@ def interpolate_zone_to_geometry(
         variables (list): (Optional) Subset of variables to interpolate. Default
                                      behavior is to interpolate all variables.
         verbose: (Optional) Print diagnostic information. Defaults to False.
+        **center (array-like): Argument for the `shell` geometry. Contains the
+                               X, Y, and Z positions of the shell. Defaults to
+                               (0,0,0).
 
     **kwargs:
-        center (array-like): Argument for the `shell` geometry. Contains the X,
-                             Y, and Z positions of the shell. Defaults to
-                             (0,0,0).
         radius (float): Argument for the `shell` geometry. Required.
         npoints (array-like): Argument for the `shell` geometry. Contains the
                               number of points in the azimuthal and polar
