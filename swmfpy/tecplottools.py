@@ -560,7 +560,7 @@ def interpolate_zone_to_geometry(
             source_zone=dataset.zone(0),
             geometry='trajectory',
             trajectory_format='batsrus',
-            trajectory_data='./test_data/satellite_e4.dat'
+            trajectory_data='satellite_e4.dat'
         )
 
         ## The new zones are labeled with the name of the geometry and can be
