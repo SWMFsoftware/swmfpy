@@ -28,14 +28,13 @@ import numpy as np
 import tecplot
 
 
-def _get_variable_names(variables):
-    """For getting the names of a group of Tecplot variables"""
+def _get_variable_names(variables) -> list:
+    """For getting the names of a group of Tecplot variables."""
     return [var.name for var in variables]
 
 
 def _shell_geometry(geometry_params: dict) -> dict:
-    """Returns a dict containing points for the described shell geometry.
-    """
+    """Returns a dict containing points for the described shell geometry."""
     nlon = geometry_params['npoints'][0] # 360
     nlat = geometry_params['npoints'][1] # 179
     lons = np.linspace(0, 360, nlon, endpoint=False)
@@ -63,8 +62,7 @@ def _shell_geometry(geometry_params: dict) -> dict:
 
 
 def _line_geometry(geometry_params: dict) -> dict:
-    """Returns a dict containing points for the described line geometry.
-    """
+    """Returns a dict containing points for the described line geometry."""
     geometry_points = {
         'npoints': geometry_params['npoints'],
         'X': np.linspace(
@@ -84,8 +82,7 @@ def _line_geometry(geometry_params: dict) -> dict:
 
 
 def _rectprism_geometry(geometry_params: dict) -> dict:
-    """Returns a dict containing points for the described rectprism geometry.
-    """
+    """Returns a dict containing points for the described rectprism geometry."""
     npoints = (geometry_params['npoints'][0]
                * geometry_params['npoints'][1]
                * geometry_params['npoints'][2])
@@ -157,8 +154,7 @@ def _trajectory_geometry(geometry_params: dict) -> dict:
 
 
 def _save_hdf5(filename, geometry_params, new_zone, variables) -> None:
-    """Save the aux data and a subset of the variables in hdf5 format.
-    """
+    """Save the aux data and a subset of the variables in hdf5 format."""
     column_names = _get_variable_names(variables)
     tp_data = []
     for var in variables:
@@ -171,8 +167,7 @@ def _save_hdf5(filename, geometry_params, new_zone, variables) -> None:
 
 
 def _save_csv(filename, geometry_params, new_zone, variables) -> None:
-    """Save the aux data and a subset of the variables in plain-text format.
-    """
+    """Save the aux data and a subset of the variables in plain-text format."""
     aux_data = geometry_params.__repr__() + '\n'
     column_names = variables[0].name.__repr__()
     for var in variables[1:]:
@@ -197,7 +192,7 @@ def _add_variable_value(dataset, variable_name: str, zone, values):
 
 
 def apply_equations(eqn_path: str, verbose: bool = False) -> None:
-    """Apply an equations file in the Tecplot macro format to the active dataset
+    """Apply a Tecplot-formatted equations file to the active dataset.
 
     Please reference the Tecplot User's Manual for more details on
     equation files and syntax. It is recommended to use this function with eqn
@@ -205,12 +200,10 @@ def apply_equations(eqn_path: str, verbose: bool = False) -> None:
     See [TECPLOT](TECPLOT.markdown) for tips on using pytecplot.
 
     Args:
-        eqn_file_path (str):
-            The path to the equation macro file
-            (typically with extension `.eqn`).
-        verbose (bool):
-            (Optional) Whether or not to print the equations as they
-            are applied. Default behavior is silent.
+        eqn_file_path (str): The path to the equation macro file (typically with
+                             extension `.eqn`).
+        verbose (bool): (Optional) Whether or not to print the equations as they
+                                   are applied. Default behavior is silent.
 
     Examples:
         ```python
@@ -266,8 +259,8 @@ def bracketify(variable_name: str) -> str:
     This is helpful for accessing Tecplot variables.
 
     Args:
-        variable_name (str):
-            A string which may contain the meta-characters * ?  [ or ].
+        variable_name (str): A string which may contain the meta-characters * ?
+                             [ or ].
 
     Examples:
         In a dataset which contains the variable 'X [R]',
@@ -279,8 +272,8 @@ def bracketify(variable_name: str) -> str:
         ```python
         print(dataset.variable('X [R]').name)
         # TecplotPatternMatchWarning: no variables found matching: "X [R]" For
-        # a literal match, the meta-characters: * ? [ ] must be wrapped in square-
-        # For example, "[?]" matches the character "?"...
+        # a literal match, the meta-characters: * ? [ ] must be wrapped in 
+        # square-brackets. For example, "[?]" matches the character "?"...
         ```
         However,
         ```python
@@ -308,21 +301,16 @@ def write_zone(
     """Writes a tecplot zone to various formats.
 
     Args:
-        tecplot_dataset (tecplot.data.dataset.Dataset):
-            The dataset to save.
-        tecplot_zone (tecplot.data.dataset.Zone):
-            The zone to save.
-        write_as (str):
-            Type of file to write to. Supported options are 'hdf5',
-            'csv', 'tecplot_ascii', and 'tecplot_plt'.
-        filename (str):
-            Name of the file to write to.
-        variables (list(tecplot.data.dataset.Variable)):
-            (Optional) Specify a subset of the dataset variables to
-            save. This option may decrease the size of the output. Default
-            behavior is to save all variables.
-        verbose:
-            (Optional) Print diagnostic information. Defaults to False.
+        tecplot_dataset (tecplot.data.dataset.Dataset): The dataset to save.
+        tecplot_zone (tecplot.data.dataset.Zone): The zone to save.
+        write_as (str): Type of file to write to. Supported options are `hdf5`,
+                        `csv`, `tecplot_ascii`, and `tecplot_plt`.
+        filename (str): Name of the file to write to.
+        variables : (Optional) Specify a subset of the dataset variables to
+                               save. This option may decrease the size of the
+                               output. Default behavior is to save all
+                               variables.
+        verbose: (Optional) Print diagnostic information. Defaults to False.
 
     Examples:
         ```python
@@ -413,12 +401,10 @@ def _assign_geometry_defaults(
     If the parameters are already set nothing will change.
 
     Args:
-        geometry (str):
-            String identifying the geometry to look for.
-        default_params (dict):
-            Dictionary of the default parameters.
-        geomatry_params (dict):
-            Dictionary in which to look for and set parameters.
+        geometry (str): String identifying the geometry to look for.
+        default_params (dict): Dictionary of the default parameters.
+        geomatry_params (dict): Dictionary in which to look for and set
+                                parameters.
     """
     if geometry in geometry_params['geometry']:
         for key, value in default_params.items():
@@ -474,50 +460,52 @@ def interpolate_zone_to_geometry(
     """Interpolates Tecplot binary data onto various geometries.
 
     Args:
-        dataset:
-            The loaded Tecplot dataset.
-        source_zone:
-            The Tecplot zone to interpolate onto the geometry.
-        geometry (str):
-            Type of geometry for interpolation. Supported geometries
-            are 'shell', 'line', 'rectprism', or 'trajectory'. See below for the
-            required keyword arguments for each geometry.
-        variables (list):
-            (Optional) Subset of variables to interpolate. Default
-            behavior is to interpolate all variables.
-        verbose:
-            (Optional) Print diagnostic information. Defaults to False.
+        dataset: The loaded Tecplot dataset.
+        source_zone: The Tecplot zone to interpolate onto the geometry.
+        geometry (str): Type of geometry for interpolation. Supported geometries
+                        are `shell`, `line`, `rectprism`, or `trajectory`. See
+                        below for the required keyword arguments for each
+                        geometry.
+        variables (list): (Optional) Subset of variables to interpolate. Default
+                                     behavior is to interpolate all variables.
+        verbose: (Optional) Print diagnostic information. Defaults to False.
 
     **kwargs:
-        center (array-like): Argument for the 'shell' geometry. Contains the X,
-            Y, and Z positions of the shell. Defaults to (0,0,0).
-        radius (float): Argument for the 'shell' geometry. Required.
-        npoints (array-like): Argument for the 'shell' geometry. Contains the
-            number of points in the azimuthal and polar directions to
-            interpolate onto, excluding the north and south polar points.
-            Defaults to (360,179).
-        r1 (array-like): Argument for the 'line' geometry. Contains the X, Y,
-            and Z positions of the point where the line starts. Required.
-        r2 (array-like): Argument for the 'line' geometry. Contains the X, Y,
-            and Z positions of the point where the line ends. Required.
-        npoints (int): Argument for the 'line' geometry. The number of points
-            along the line to interpolate onto. Required.
-        center (array-like): Argument for the 'rectprism' geometry. Contains the
-            X, Y, and Z positions of the center of the rectangular prism.
-            Defaults to (0,0,0).
-        halfwidths (array-like): Argument for the 'rectprism' geometry. Contains
-            the half widths of the rectangular prism in the X, Y, and Z
-            directions. Required.
-        npoints (array-like): Argument for the 'rectprism' geometry. Contains
-            the number of points in the X, Y, and Z directions to interpolate
-            onto. Required.
-        trajectory_data (str): Argument for the 'trajectory' geometry. The path
-            to the ASCII trajectory data file. Required.
-        trajectory_format (str): Argument for the 'trajectory' geometry. The
-            format of the trajectory data file. Supported formats are 'tecplot'
-            (data is a tecplot zone with 3D positional variables and 'time') and
-            'batsrus' (data is formatted as described for the #SATELLITE
-            command, see SWMF documentation). Required.
+        center (array-like): Argument for the `shell` geometry. Contains the X,
+                             Y, and Z positions of the shell. Defaults to
+                             (0,0,0).
+        radius (float): Argument for the `shell` geometry. Required.
+        npoints (array-like): Argument for the `shell` geometry. Contains the
+                              number of points in the azimuthal and polar
+                              directions to interpolate onto, excluding the
+                              north and south polar points. Defaults to
+                              (360,179).
+        r1 (array-like): Argument for the `line` geometry. Contains the X, Y,
+                         and Z positions of the point where the line starts.
+                         Required.
+        r2 (array-like): Argument for the `line` geometry. Contains the X, Y,
+                         and Z positions of the point where the line ends.
+                         Required.
+        npoints (int): Argument for the `line` geometry. The number of points
+                       along the line to interpolate onto. Required.
+        center (array-like): Argument for the `rectprism` geometry. Contains the
+                             X, Y, and Z positions of the center of the
+                             rectangular prism. Defaults to (0,0,0).
+        halfwidths (array-like): Argument for the `rectprism` geometry. Contains
+                                 the half widths of the rectangular prism in the
+                                 X, Y, and Z directions. Required.
+        npoints (array-like): Argument for the `rectprism` geometry. Contains
+                              the number of points in the X, Y, and Z directions
+                              to interpolate onto. Required.
+        trajectory_data (str): Argument for the `trajectory` geometry. The path
+                               to the ASCII trajectory data file. Required.
+        trajectory_format (str): Argument for the `trajectory` geometry. The
+                                 format of the trajectory data file. Supported
+                                 formats are `tecplot` (data is a tecplot zone
+                                 with 3D positional variables) and `batsrus`
+                                 (data is formatted as described for the
+                                 `#SATELLITE` command, see SWMF documentation).
+                                 Required.
 
     Examples:
         ```python
