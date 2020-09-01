@@ -22,9 +22,10 @@ setuptools.setup(
     long_description_content_type='text/markdown',
     url='https://gitlab.umich.edu/swmf_software/swmfpy',
     packages=setuptools.find_packages(),
+    license='LGPLv3',
     classifiers=[
         'Programming Language :: Python :: 3',
-        'License :: OSI Approved :: MIT License',
+        'License :: OSI Approved :: GNU Lesser General Public License 3',
         'Operating System :: OS Independent',
         ],
     install_requires=REQUIREMENTS,
