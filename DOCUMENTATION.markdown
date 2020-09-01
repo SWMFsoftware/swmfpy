@@ -669,9 +669,8 @@ Writes a tecplot zone to various formats.
   `csv`, `tecplot_ascii`, and `tecplot_plt`.
 - `filename` _str_ - Name of the file to write to.
   variables : (Optional) Specify a subset of the dataset variables to
-  save. This option may decrease the size of the
-  output. Default behavior is to save all
-  variables.
+  save. This option may decrease the size of the output. Default
+  behavior is to save all variables.
 - `verbose` - (Optional) Print diagnostic information. Defaults to False.
   
 
@@ -724,49 +723,41 @@ Interpolates Tecplot binary data onto various geometries.
 - `dataset` - The loaded Tecplot dataset.
 - `source_zone` - The Tecplot zone to interpolate onto the geometry.
 - `geometry` _str_ - Type of geometry for interpolation. Supported geometries
-  are `shell`, `line`, `rectprism`, or `trajectory`. See
-  below for the required keyword arguments for each
-  geometry.
+  are `shell`, `line`, `rectprism`, or `trajectory`. See below for the
+  required keyword arguments for each geometry.
 - `variables` _list_ - (Optional) Subset of variables to interpolate. Default
   behavior is to interpolate all variables.
-- `verbose` - (Optional) Print diagnostic information. Defaults to False.
+- `verbose` _bool_ - (Optional) Print diagnostic information. Defaults to
+  False.
 - `**center` _array-like_ - Argument for the `shell` geometry. Contains the
-  X, Y, and Z positions of the shell. Defaults to
-  (0,0,0).
-  
-  **kwargs:
-- `radius` _float_ - Argument for the `shell` geometry. Required.
-- `npoints` _array-like_ - Argument for the `shell` geometry. Contains the
-  number of points in the azimuthal and polar
-  directions to interpolate onto, excluding the
-  north and south polar points. Defaults to
-  (360,179).
-- `r1` _array-like_ - Argument for the `line` geometry. Contains the X, Y,
-  and Z positions of the point where the line starts.
-  Required.
-- `r2` _array-like_ - Argument for the `line` geometry. Contains the X, Y,
-  and Z positions of the point where the line ends.
-  Required.
-- `npoints` _int_ - Argument for the `line` geometry. The number of points
+  X, Y, and Z positions of the shell. Defaults to (0,0,0).
+- `**radius` _float_ - Argument for the `shell` geometry. Required.
+- `**npoints` _array-like_ - Argument for the `shell` geometry. Contains the
+  number of points in the azimuthal and polar directions to interpolate
+  onto, excluding the north and south polar points. Defaults to
+  (360, 179).
+- `**r1` _array-like_ - Argument for the `line` geometry. Contains the X, Y,
+  and Z positions of the point where the line starts. Required.
+- `**r2` _array-like_ - Argument for the `line` geometry. Contains the X, Y,
+  and Z positions of the point where the line ends. Required.
+- `**npoints` _int_ - Argument for the `line` geometry. The number of points
   along the line to interpolate onto. Required.
-- `center` _array-like_ - Argument for the `rectprism` geometry. Contains the
-  X, Y, and Z positions of the center of the
-  rectangular prism. Defaults to (0,0,0).
-- `halfwidths` _array-like_ - Argument for the `rectprism` geometry. Contains
-  the half widths of the rectangular prism in the
-  X, Y, and Z directions. Required.
-- `npoints` _array-like_ - Argument for the `rectprism` geometry. Contains
-  the number of points in the X, Y, and Z directions
-  to interpolate onto. Required.
-- `trajectory_data` _str_ - Argument for the `trajectory` geometry. The path
-  to the ASCII trajectory data file. Required.
-- `trajectory_format` _str_ - Argument for the `trajectory` geometry. The
-  format of the trajectory data file. Supported
-  formats are `tecplot` (data is a tecplot zone
-  with 3D positional variables) and `batsrus`
-  (data is formatted as described for the
-  ``SATELLITE`` command, see SWMF documentation).
-  Required.
+- `**center` _array-like_ - Argument for the `rectprism` geometry. Contains
+  the X, Y, and Z positions of the center of the rectangular prism.
+  Defaults to (0,0,0).
+- `**halfwidths` _array-like_ - Argument for the `rectprism` geometry.
+  Contains the half widths of the rectangular prism in the X, Y, and Z
+  directions. Required.
+- `**npoints` _array-like_ - Argument for the `rectprism` geometry. Contains
+  the number of points in the X, Y, and Z directions to interpolate
+  onto. Required.
+- `**trajectory_data` _str_ - Argument for the `trajectory` geometry. The
+  path to the ASCII trajectory data file. Required.
+- `**trajectory_format` _str_ - Argument for the `trajectory` geometry. The
+  format of the trajectory data file. Supported formats are `tecplot`
+  (data is a tecplot zone with 3D positional variables) and `batsrus`
+  (data is formatted as described for the ``SATELLITE`` command, see SWMF
+  documentation). Required.
   
 
 **Examples**:
