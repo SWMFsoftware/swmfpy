@@ -663,13 +663,13 @@ Writes a tecplot zone to various formats.
 
 **Arguments**:
 
-- `tecplot_dataset` _tecplot.data.dataset.Dataset_ - The dataset to save.
-- `tecplot_zone` _tecplot.data.dataset.Zone_ - The zone to save.
+- `tecplot_dataset` _tecplot.data.Dataset_ - The dataset to save.
+- `tecplot_zone` _tecplot.data.zone_ - The zone to save.
 - `write_as` _str_ - Type of file to write to. Supported options are `hdf5`,
   `csv`, `tecplot_ascii`, and `tecplot_plt`.
 - `filename` _str_ - Name of the file to write to.
-  variables : (Optional) Specify a subset of the dataset variables to
-  save. This option may decrease the size of the output. Default
+- `variables` _list_ - (Optional) Specify a subset of the dataset variables
+  to save. This option may decrease the size of the output. Default
   behavior is to save all variables.
 - `verbose` - (Optional) Print diagnostic information. Defaults to False.
   
@@ -718,10 +718,13 @@ interpolate_zone_to_geometry(dataset, source_zone, geometry: str, variables: lis
 
 Interpolates Tecplot binary data onto various geometries.
 
+Returns a tecplot zone object.
+
 **Arguments**:
 
-- `dataset` - The loaded Tecplot dataset.
-- `source_zone` - The Tecplot zone to interpolate onto the geometry.
+- `dataset` _tecplot.data.Dataset_ - The loaded Tecplot dataset.
+- `source_zone` _tecplot.data.zone_ - The Tecplot zone to interpolate onto
+  the geometry.
 - `geometry` _str_ - Type of geometry for interpolation. Supported geometries
   are `shell`, `line`, `rectprism`, or `trajectory`. See below for the
   required keyword arguments for each geometry.

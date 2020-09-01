@@ -153,7 +153,12 @@ def _trajectory_geometry(geometry_params: dict) -> dict:
     return geometry_points
 
 
-def _save_hdf5(filename, geometry_params, new_zone, variables) -> None:
+def _save_hdf5(
+        filename: str,
+        geometry_params: dict,
+        new_zone,
+        variables
+) -> None:
     """Save the aux data and a subset of the variables in hdf5 format."""
     column_names = _get_variable_names(variables)
     tp_data = []
@@ -166,7 +171,12 @@ def _save_hdf5(filename, geometry_params, new_zone, variables) -> None:
         h5_file['data'].attrs['names'] = column_names
 
 
-def _save_csv(filename, geometry_params, new_zone, variables) -> None:
+def _save_csv(
+        filename: str,
+        geometry_params: dict,
+        new_zone,
+        variables
+) -> None:
     """Save the aux data and a subset of the variables in plain-text format."""
     aux_data = geometry_params.__repr__() + '\n'
     column_names = variables[0].name.__repr__()
@@ -185,7 +195,7 @@ def _save_csv(filename, geometry_params, new_zone, variables) -> None:
     )
 
 
-def _add_variable_value(dataset, variable_name: str, zone, values):
+def _add_variable_value(dataset, variable_name: str, zone, values) -> None:
     """Adds and populates a new variable to a zone in a dataset."""
     dataset.add_variable(variable_name)
     zone.values(bracketify(variable_name))[:] = values
@@ -301,13 +311,13 @@ def write_zone(
     """Writes a tecplot zone to various formats.
 
     Args:
-        tecplot_dataset (tecplot.data.dataset.Dataset): The dataset to save.
-        tecplot_zone (tecplot.data.dataset.Zone): The zone to save.
+        tecplot_dataset (tecplot.data.Dataset): The dataset to save.
+        tecplot_zone (tecplot.data.zone): The zone to save.
         write_as (str): Type of file to write to. Supported options are `hdf5`,
           `csv`, `tecplot_ascii`, and `tecplot_plt`.
         filename (str): Name of the file to write to.
-        variables : (Optional) Specify a subset of the dataset variables to
-          save. This option may decrease the size of the output. Default
+        variables (list): (Optional) Specify a subset of the dataset variables
+          to save. This option may decrease the size of the output. Default
           behavior is to save all variables.
         verbose: (Optional) Print diagnostic information. Defaults to False.
 
@@ -394,7 +404,7 @@ def _assign_geometry_defaults(
         geometry: str,
         default_params: dict,
         geometry_params: dict
-):
+) -> dict:
     """Checks parameters with defaults and assigns them.
 
     If the parameters are already set nothing will change.
@@ -417,7 +427,7 @@ def _assign_geometry_defaults(
 def _check_geometry_requirements(
         geometry_requirements: dict,
         geometry_params: dict
-):
+) -> None:
     """Checks that the required kwargs for the given geometry have been set.
     """
     if geometry_params['geometry'] not in geometry_requirements:
@@ -432,7 +442,7 @@ def _check_geometry_requirements(
 
 def _get_geometry_points(
         geometry_params: dict
-):
+) -> dict:
     """Select the right function to calculate the geometry points."""
     if 'shell' in geometry_params['geometry']:
         geometry_points = _shell_geometry(geometry_params)
@@ -458,9 +468,12 @@ def interpolate_zone_to_geometry(
 ):
     """Interpolates Tecplot binary data onto various geometries.
 
+    Returns a tecplot zone object.
+
     Args:
-        dataset: The loaded Tecplot dataset.
-        source_zone: The Tecplot zone to interpolate onto the geometry.
+        dataset (tecplot.data.Dataset): The loaded Tecplot dataset.
+        source_zone (tecplot.data.zone): The Tecplot zone to interpolate onto
+          the geometry.
         geometry (str): Type of geometry for interpolation. Supported geometries
           are `shell`, `line`, `rectprism`, or `trajectory`. See below for the
           required keyword arguments for each geometry.
