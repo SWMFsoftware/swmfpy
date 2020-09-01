@@ -110,7 +110,7 @@ def _rectprism_geometry(geometry_params: dict) -> dict:
 def _trajectory_geometry(geometry_params: dict) -> dict:
     """Returns a dict containing points for the described trajectory geometry.
 
-    Assumes format of trajectory file after SWMF SATELLITE command.
+    Assumes format of trajectory file after SWMF `SATELLITE` command.
     """
     do_read = False
     trajectory_data = []
@@ -483,33 +483,33 @@ def interpolate_zone_to_geometry(
           False.
         **center (array-like): Argument for the `shell` geometry. Contains the
           X, Y, and Z positions of the shell. Defaults to (0,0,0).
-        **radius (float): Argument for the `shell` geometry. Required.
+        **radius (float): Required argument for the `shell` geometry.
         **npoints (array-like): Argument for the `shell` geometry. Contains the
           number of points in the azimuthal and polar directions to interpolate
           onto, excluding the north and south polar points. Defaults to
           (360, 179).
-        **r1 (array-like): Argument for the `line` geometry. Contains the X, Y,
-          and Z positions of the point where the line starts. Required.
-        **r2 (array-like): Argument for the `line` geometry. Contains the X, Y,
-          and Z positions of the point where the line ends. Required.
-        **npoints (int): Argument for the `line` geometry. The number of points
-          along the line to interpolate onto. Required.
+        **r1 (array-like): Required argument for the `line` geometry. Contains
+          the X, Y, and Z positions of the point where the line starts.
+        **r2 (array-like): Required argument for the `line` geometry. Contains
+          the X, Y, and Z positions of the point where the line ends.
+        **npoints (int): Required argument for the `line` geometry. The number
+          of points along the line to interpolate onto.
         **center (array-like): Argument for the `rectprism` geometry. Contains
           the X, Y, and Z positions of the center of the rectangular prism.
           Defaults to (0,0,0).
-        **halfwidths (array-like): Argument for the `rectprism` geometry.
-          Contains the half widths of the rectangular prism in the X, Y, and Z
-          directions. Required.
-        **npoints (array-like): Argument for the `rectprism` geometry. Contains
-          the number of points in the X, Y, and Z directions to interpolate
-          onto. Required.
-        **trajectory_data (str): Argument for the `trajectory` geometry. The
-          path to the ASCII trajectory data file. Required.
-        **trajectory_format (str): Argument for the `trajectory` geometry. The
-          format of the trajectory data file. Supported formats are `tecplot`
-          (data is a tecplot zone with 3D positional variables) and `batsrus`
-          (data is formatted as described for the `#SATELLITE` command, see SWMF
-          documentation). Required.
+        **halfwidths (array-like): Required argument for the `rectprism`
+          geometry. Contains the half widths of the rectangular prism in the X,
+          Y, and Z directions.
+        **npoints (array-like): Required argument for the `rectprism` geometry.
+          Contains the number of points in the X, Y, and Z directions to
+          interpolate onto.
+        **trajectory_data (str): Required argument for the `trajectory`
+          geometry. The path to the ASCII trajectory data file.
+        **trajectory_format (str): Required argument for the `trajectory`
+          geometry. The format of the trajectory data file. Supported formats
+          are `tecplot` (data is a tecplot zone with 3D positional variables)
+          and `batsrus` (data is formatted as described for the `SATELLITE`
+          command, see SWMF documentation).
 
     Examples:
         ```python
@@ -554,7 +554,7 @@ def interpolate_zone_to_geometry(
         )
 
         ## geometry: spacecraft trajectory as specified for the
-        ## BATSRUS #SATELLITE command
+        ## BATSRUS SATELLITE command
         tpt.interpolate_zone_to_geometry(
             dataset=dataset,
             source_zone=dataset.zone(0),
