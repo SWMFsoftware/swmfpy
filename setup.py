@@ -31,7 +31,7 @@ setuptools.setup(
     install_requires=REQUIREMENTS,
     python_requires='>=3.6',
     extras_require={
-        "tecplottools": "tecplot",
+        "tecplot": "tecplot",
         "tecplottools": "h5py",
         "hmi": "drms",
         },
