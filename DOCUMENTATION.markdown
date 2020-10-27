@@ -151,6 +151,13 @@ and mutate the other one.
   time_to=storm_end,
   resolution='low')
   ```
+  
+
+**Notes**:
+
+  This function creates a filecache of omni data to speed up multiple
+  uses of it. The cache is in the directory you run the python
+  interpreter in.
 
 <a name="swmfpy.web.download_magnetogram_hmi"></a>
 #### download\_magnetogram\_hmi
