@@ -5,29 +5,93 @@ Changelog:
 Contributors:
 -------------
 
-   137	Qusai Al Shidi
-     2	Camilla D. K. Harris
+   160	Qusai Al Shidi
+    41	Camilla D. K. Harris
      2	Gabor Toth
      1	Camilla Dodge Koslowsky Harris
      1	TKeebler
+     1	Zhenguang Huang
 
 Changes:
 --------
 
-- 23c6e26 **(2020-08-05, Gabor Toth)**: _C:HEAD -> carrington_rotation:_ Carrington Rotation function added and sunpy dependency removed
-- 8e18ac8 **(2020-08-04, Qusai Al Shidi)**: _C:origin/master, origin/HEAD, master:_ Fixed LaTeX citation string
+- 5263b93 **(2020-10-27, Qusai Al Shidi)**: _C:HEAD -> master, origin/master, origin/HEAD:_ DOC: Contributing updates on commit styling.
+- 086366d **(2020-10-27, Qusai Al Shidi)**: _C::_ MAINT: Update documentation.
+- 441660d **(2020-10-27, Qusai Al Shidi)**: _C::_ FEAT: Add filecache to `web.get_omni_data()`
+- f8776a0 **(2020-10-27, Qusai Al Shidi)**: _C::_ FEAT: Add .exrc for vim users.
+- d41da91 **(2020-09-01, Qusai Al Shidi)**: _C::_ license changes in setup.py
+- cf571a1 **(2020-09-01, Qusai Al Shidi)**: _C::_ Merge branch 'cdha/swmfpy-more-tecplot-doc-fixes' into HEAD
+- 5b86445 **(2020-09-01, Qusai Al Shidi)**: _C::_ No need for seperate mac script, using mac script since it is interoperable
+- d59184c **(2020-09-01, Camilla D. K. Harris)**: _C::_ cleaning up an example
+- 4e43f9d **(2020-09-01, Camilla D. K. Harris)**: _C::_ Attempting to make it clearer which kwargs are required for which geometries
+- 97a791e **(2020-09-01, Camilla D. K. Harris)**: _C::_ Made the typing formatting a little more uniform
+- 3937b3b **(2020-09-01, Camilla D. K. Harris)**: _C::_ Figured out how I think keyword ards are supposed to be represented
+- 8e5b81b **(2020-09-01, Camilla D. K. Harris)**: _C::_ Testing how to doc keyword args
+- e579336 **(2020-09-01, Camilla D. K. Harris)**: _C::_ Formatting docstrings so they work with pydocs
+- e90d39d **(2020-08-31, Qusai Al Shidi)**: _C::_ tecplot documentation fixes
+- 610f52c **(2020-08-31, Qusai Al Shidi)**: _C::_ tecplot documentation fixes
+- 6de2102 **(2020-08-31, Qusai Al Shidi)**: _C::_ Documentation update
+- 666cb82 **(2020-08-28, Qusai Al Shidi)**: _C:tag: v2020.7:_ Merge @cdha new commits and change the version number, new release
+- df88157 **(2020-08-28, Qusai Al Shidi)**: _C:origin/cdha/swmfpy-tecplot-interpolate:_ Documentation fixes
+- 412add3 **(2020-08-28, Camilla D. K. Harris)**: _C::_ Fixed a typo
+- dce7adc **(2020-08-28, Camilla D. K. Harris)**: _C::_ Finished refactoring as much as i can
+- fbc579f **(2020-08-28, Camilla D. K. Harris)**: _C::_ Did some refactoring and consolidating to try and satisfy the linter
+- 7df2a07 **(2020-08-27, Camilla D. K. Harris)**: _C::_ Merge branch 'master' into tecplot-interpolate
+- b1dd76f **(2020-08-27, Camilla D. K. Harris)**: _C::_ Removed author info from Tecplot doc, that's redundant with the repo
+- 97b5883 **(2020-08-27, Camilla D. K. Harris)**: _C::_ Added a comprehensive example to the Tecplot documentation
+- 5cf1739 **(2020-08-27, Qusai Al Shidi)**: _C::_ swmfpy uses LGPLv3 license now for copyleft if versioned but permissive if interfaced
+- fcc3865 **(2020-08-27, Camilla D. K. Harris)**: _C::_ Made some small fixes (removed prints, changed geometry zone name) and added stand-alone examples
+- 21522fc **(2020-08-27, Camilla D. K. Harris)**: _C::_ Made bracketify function more complete
+- b25ebfe **(2020-08-24, Qusai Al Shidi)**: _C::_ Better warning handling
+- 18d181b **(2020-08-11, Qusai Al Shidi)**: _C::_ Added test for `interp_nans`
+- d0fc1fb **(2020-08-10, Qusai Al Shidi)**: _C::_ Added interp_nans to tools.py
+- 90501ff **(2020-08-06, Qusai Al Shidi)**: _C::_ Merge branch 'zhenguang-web-patch' into 'master'
+- ffe4952 **(2020-08-06, Qusai Al Shidi)**: _C:origin/zhenguang-web-patch:_ Changed to more pythonic RuntimeWarning
+- 3b8c6b8 **(2020-08-06, Qusai Al Shidi)**: _C::_ Merge branch 'ci' into 'master'
+- 37d2dcb **(2020-08-06, Qusai Al Shidi)**: _C::_ CI
+- 034e4e1 **(2020-08-05, Qusai Al Shidi)**: _C::_ Removed forced drms dependency
+- abe0923 **(2020-08-05, Qusai Al Shidi)**: _C::_ Merge branch 'carrington_rotation' into 'master'
+- 6110364 **(2020-08-05, Qusai Al Shidi)**: _C:tag: v2020.6:_ Added documentation, changelog and a few more things, tagging this as well
+- 23c6e26 **(2020-08-05, Gabor Toth)**: _C::_ Carrington Rotation function added and sunpy dependency removed
+- 8e18ac8 **(2020-08-04, Qusai Al Shidi)**: _C::_ Fixed LaTeX citation string
 - 8211554 **(2020-08-04, Qusai Al Shidi)**: _C::_ Fixed install swmfpy line
 - f1724e7 **(2020-08-04, Qusai Al Shidi)**: _C::_ Added instructions for python venv and also snippets to contributing page.
-- d0a8308 **(2020-07-06, Qusai Al Shidi)**: _C:pybatstools:_ Fixed up `CONTRIBUTING.markdown` to be better and added issues guidelines
+- 0a875c5 **(2020-08-04, Camilla D. K. Harris)**: _C::_ made CSV format actually comma seperated, not spaces.
+- 64582d4 **(2020-08-03, Camilla D. K. Harris)**: _C::_ fixed a bug with default behavior for variables
+- 2799588 **(2020-08-03, Zhenguang Huang)**: _C::_ @qalshidi commiting for @zghuang
+- 65c6402 **(2020-07-28, Camilla D. K. Harris)**: _C::_ added bracketify to the manifest thing of functions
+- 5566126 **(2020-07-28, Camilla D. K. Harris)**: _C::_ Finished separating the old function into two, one to interpolate data onto new geometries and one to write zone as arbitrary file types.
+- 360d291 **(2020-07-28, Camilla D. K. Harris)**: _C::_ Separated out the writing functionality
+- 468bf7a **(2020-07-28, Camilla D. K. Harris)**: _C::_ very simple h5 save format implemented
+- 3174601 **(2020-07-28, Camilla D. K. Harris)**: _C::_ unnecessary arg in save_csv
+- e2d0f91 **(2020-07-28, Camilla D. K. Harris)**: _C::_ CSV save format works now
+- 6c40c2c **(2020-07-28, Camilla D. K. Harris)**: _C::_ save as tecplot plt is working
+- e7a1d79 **(2020-07-28, Camilla D. K. Harris)**: _C::_ trajectory geometry works with both formats
+- aa90589 **(2020-07-22, Camilla D. K. Harris)**: _C::_ fixed some errors in shell points. also fixed it so the shell and trajectory geometries get their extra variables.
+- d8c6245 **(2020-07-22, Camilla D. K. Harris)**: _C::_ added code for shell geometry points
+- bf61059 **(2020-07-15, Camilla D. K. Harris)**: _C::_ Added rectprism points and some improvements to the file name generation
+- 4df4dbc **(2020-07-14, Camilla D. K. Harris)**: _C::_ Formatting. added a check to make sure we actually read any points out of a trajectory file.
+- 1bf99c1 **(2020-07-14, Camilla D. K. Harris)**: _C::_ line geometry and tecplot ascii save are functional
+- 53ca535 **(2020-07-14, Camilla D. K. Harris)**: _C::_ Completed type annotations
+- b69bc50 **(2020-07-08, Camilla D. K. Harris)**: _C::_ Merge branch 'master' into tecplot-interpolate
+- d0a8308 **(2020-07-06, Qusai Al Shidi)**: _C::_ Fixed up `CONTRIBUTING.markdown` to be better and added issues guidelines
 - 9549026 **(2020-07-06, Qusai Al Shidi)**: _C::_ Should be `shell` and not `bash` for markdown language alias
+- c26a178 **(2020-07-01, Camilla D. K. Harris)**: _C::_ added parsing for the trajectory positions and datetimes
+- 5cf703b **(2020-07-01, Camilla D. K. Harris)**: _C::_ more formatting to appease the linter and adding code for parsing trajectory data
+- 0084ec3 **(2020-07-01, Camilla D. K. Harris)**: _C::_ Formatting and dummy code for geometry functions. For trajectory/tecplot format we should do things a little different.
+- 397fd23 **(2020-07-01, Camilla D. K. Harris)**: _C::_ various tweaks to satisfy the linter and starting to remove pandas things
+- 5644e87 **(2020-07-01, Camilla D. K. Harris)**: _C::_ inital commit of the prototype- need to remove pandas things
+- 028d8ce **(2020-06-30, Camilla D. K. Harris)**: _C::_ Added empty functions and documentation for interpolate tool.
+- 9389ad9 **(2020-06-22, Camilla D. K. Harris)**: _C::_ Merge branch 'master' into improve-apply-equations
 - 178dd8e **(2020-06-22, Qusai Al Shidi)**: _C::_ Merge branch 'tecplot-doc-update' into 'master'
 - facad25 **(2020-06-22, Camilla Dodge Koslowsky Harris)**: _C::_ Tecplot documentation update
+- f54cd9c **(2020-06-22, Camilla D. K. Harris)**: _C::_ Made tecplottools.apply_equations more robust, anticipated some different formats in equations files
 - 05ac345 **(2020-06-19, Qusai Al Shidi)**: _C::_ merged amendment :s
 - 8d04c39 **(2020-06-19, Qusai Al Shidi)**: _C::_ optional requires `tecplot`
 - 3e676fa **(2020-06-19, Qusai Al Shidi)**: _C::_ optional requires `tecplot`
 - 991a3a2 **(2020-06-19, Qusai Al Shidi)**: _C:tag: v2020.5:_ v2020.5 commit
 - 08e8962 **(2020-06-19, Qusai Al Shidi)**: _C::_ Merge branch 'cdha/swmfpy-tecplottools'
-- 63a40aa **(2020-06-19, Qusai Al Shidi)**: _C:origin/cdha/swmfpy-tecplottools, cdha/swmfpy-tecplottools:_ @cdha this is great and I made a few changes to keep in mind.
+- 63a40aa **(2020-06-19, Qusai Al Shidi)**: _C::_ @cdha this is great and I made a few changes to keep in mind.
 - 8981fcd **(2020-06-19, Qusai Al Shidi)**: _C::_ Change the -U
 - d319627 **(2020-06-18, Camilla D. K. Harris)**: _C::_ Added TECPLOT.markdown to include some explanations of using Tecplot with SWMF output.
 - f420b06 **(2020-06-18, Camilla D. K. Harris)**: _C::_ Initial commit of tecplottools module for working with Tecplot and pytecplot.
@@ -54,7 +118,7 @@ Changes:
 - c10ece8 **(2020-05-20, Qusai Al Shidi)**: _C::_ v2020.2 commit
 - 9cb028f **(2020-05-20, Qusai Al Shidi)**: _C::_ Fixed installation directions
 - 48200d7 **(2020-05-20, Qusai Al Shidi)**: _C::_ Merge branch 'imf-f107' into 'master'
-- 3c75787 **(2020-05-19, Qusai Al Shidi)**: _C:origin/imf-f107, imf-f107:_ Working and tested. Made documentation. Added new feature swmfpy.write_imf_from_omni
+- 3c75787 **(2020-05-19, Qusai Al Shidi)**: _C::_ Working and tested. Made documentation. Added new feature swmfpy.write_imf_from_omni
 - e4f879c **(2020-05-13, Qusai Al Shidi)**: _C::_ Transformation function made. Write IMF untested. Almost done.
 - 0d243de **(2020-05-08, Qusai Al Shidi)**: _C::_ Not a working commit. Just pushing this to work on another computer
 - 6784109 **(2020-05-04, Qusai Al Shidi)**: _C::_ Nicer omni key names. original_colnames kwarg added if you have code that depended on the old names
@@ -77,7 +141,7 @@ Changes:
 - dffef34 **(2020-04-08, Qusai Al Shidi)**: _C::_ Removed deprecated functions and added to documentation
 - 8011884 **(2020-04-08, Qusai Al Shidi)**: _C::_ Removed deprecated functions. Will write new ones.
 - 5e00d81 **(2020-04-08, Qusai Al Shidi)**: _C::_ Merge branch 'download_magnetogram_hmi' into 'master'
-- 7518f1e **(2020-04-08, Qusai Al Shidi)**: _C:origin/download_magnetogram_hmi, download_magnetogram_hmi:_ Fixed download_magnetogram_adapt in filename return. Now download_magnetogram_hmi downloads only the nearest time. hmi_ is preppended to filename.
+- 7518f1e **(2020-04-08, Qusai Al Shidi)**: _C::_ Fixed download_magnetogram_adapt in filename return. Now download_magnetogram_hmi downloads only the nearest time. hmi_ is preppended to filename.
 - 523f958 **(2020-04-03, Qusai Al Shidi)**: _C::_ Fixed download_magnetogram_adapt. Also raise new error if hmi mag not found
 - 36ba08e **(2020-04-03, Qusai Al Shidi)**: _C::_ Added section to CONTRIBUTING
 - 39ba725 **(2020-04-03, Qusai Al Shidi)**: _C::_ Fixed docstring
