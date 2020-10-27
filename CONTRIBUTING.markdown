@@ -36,6 +36,19 @@ and start commiting there to test and work on. We will follow a [trunk-based dev
 
 [![Trunk-based Development](http://img.youtube.com/vi/ykZbBD-CmP8/0.jpg)](https://www.youtube.com/watch?v=ykZbBD-CmP8 "Trunk-based Development")
 
+### Commit message styling
+
+Commit messages must be in present tense, under 50 characters for the header and
+start with one of the following:
+
+- `FIX:` For a bug fix.
+- `FEAT:` For a new feature.
+- `MAINT:` For maintenance.
+- `TEST:` Adding or updating tests.
+- `STY:` Style fixes.
+- `MERGE:` For merges.
+- `DOC:` For documentation fixes or additions.
+
 Coding Style: PEP 8
 -------------------
 
