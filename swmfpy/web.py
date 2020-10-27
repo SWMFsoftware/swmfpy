@@ -19,6 +19,7 @@ import urllib
 import urllib.request
 import warnings
 from dateutil import rrule
+from filecache import filecache
 import numpy as np
 from .tools import _nearest, carrington_rotation_number
 
@@ -170,6 +171,11 @@ def get_omni_data(time_from, time_to, **kwargs):
                                         time_to=storm_end,
                                         resolution='low')
         ```
+
+    Note:
+        This function creates a filecache of omni data to speed up multiple
+        uses of it. The cache is in the directory you run the python
+        interpreter in.
     """
     # Author: Qusai Al Shidi
     # Email: qusai@umich.edu
@@ -208,7 +214,7 @@ def get_omni_data(time_from, time_to, **kwargs):
     for url in omni['urls'](time_from, time_to):
 
         # Parse omni data
-        for line in list(urllib.request.urlopen(url)):
+        for line in _download_omni_data(url):
             cols = line.decode('ascii').split()
 
             time = omni['parsetime'](cols)
@@ -226,6 +232,13 @@ def get_omni_data(time_from, time_to, **kwargs):
         return_data[col_name] = np.array(return_data[col_name],
                                          dtype=float)
     return return_data
+
+
+@filecache
+def _download_omni_data(url):
+    """Downloads omni data and returns as list
+    """
+    return list(urllib.request.urlopen(url))
 
 
 def _urls_omni_hires(time_from, time_to):
@@ -484,7 +497,7 @@ def download_magnetogram_adapt(time, map_type='fixed', **kwargs):
 
     for filename in filenames:
         # Only try to download if the file does not exist
-        if os.path.isfile(directory+filename) == True:
+        if os.path.isfile(directory+filename):
             warnings.warn(f'{filename} exists, not downloading',
                           RuntimeWarning)
         else:

@@ -105,3 +105,11 @@ venv.bak/
 
 # misc
 tags
+
+# cache from filecache
+*.cache
+
+# pytest created files
+*.fts
+*.fts.gz
+IMF.dat
