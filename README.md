@@ -3,27 +3,24 @@
 swmfpy
 ======
 
-A collection of tools to make it easier to work with Python and Space Weather Modeling Framework (SWMF) together.
-
-This is a work in progress.
+A library of tools to make it easier to work with Python and Space Weather Modeling Framework (SWMF) together.
 
 Installation
 ------------
 
-*Note*: swmfpy also is part of the SWMF and gets cloned into `SWMF/share/Python`. However, if you would like to [develop](CONTRIBUTING.markdown) for swmfpy make a clone and work that way and make a merge request.
+*Note*: swmfpy also is part of the SWMF and gets cloned into `SWMF/share/Python` for bundling purposes only. However, if you would like to [develop](CONTRIBUTING.markdown) for swmfpy make a clone and work that way and make a merge request.
 
-There are two methods of installing swmfpy with with a virtual environment and without a virtual environment. Only use the virtual environment if your current environment is giving you trouble.
+There are two *supported* methods of installing swmfpy with with a virtual environment and without a virtual environment. Only use the virtual environment if your current environment is giving you trouble.
 
 ### Without Python venv
 
 Install with [pip](https://pip.pypa.io/en/stable/):
 
-```shell
-$ python3 -m pip install --user wheel  # Might be necessary
-$ python3 -m pip install --user git+https://gitlab.umich.edu/swmf_software/swmfpy.git@master
+```bash
+$ pip install swmfpy || python3 -m pip install swmfpy || python3 -m pip install --user swmfpy
 ```
 
-*Note*: Depending on your system [pip](https://pip.pypa.io/en/stable/) may be ran in other ways: `python3 -m pip` or `python -m pip`
+*Note*: Depending on your system [pip](https://pip.pypa.io/en/stable/) may be ran in other ways: `python3 -m pip` or `python -m pip` or `pip`
 
 Then import it into your python project. 
 
@@ -55,7 +52,7 @@ Next install the software. This will take a long time as you will be compiling `
 $ source ~/.venv/bin/activate
 $ python3 -m pip install --user wheel -vvv
 $ python3 -m pip install --user cython -vvv
-$ python3 -m pip install --user git+https://gitlab.umich.edu/swmf_software/swmfpy.git@master
+$ python3 -m pip install --user swmfpy -vvv
 ```
 
 If you are using `tmux` or `GNU Screen` on a supercomputer you can safely detach your session and power off your computer and come back another time.
@@ -68,14 +65,16 @@ import swmfpy
 
 ### Troubleshooting
 
-If you have followed these carefully and still not been able to install please submit an Issue.
+If you have followed these carefully and still not been able to install
+please submit an Issue.
 
 Documentation
 -------------
 
 An auto-documented version can be found [here](DOCUMENTATION.markdown).
 
-However, documentation is included as docstrings. Use python's *dir()* and *help()* inbuilt functions to see documentation.
+However, documentation is included as docstrings.
+Use python's *dir()* and *help()* inbuilt functions to see documentation.
 
 ```python
 import swmfpy
@@ -86,7 +85,9 @@ help(swmfpy.io.read_gm_log)  # To see the function documentation
 Issues
 ------
 
-If you are experiencing any issues or bugs please go to the [Issues](https://gitlab.umich.edu/swmf_software/swmfpy/issues) page and create an issue. Make sure you include steps to recreate the problem in your post.
+If you are experiencing any issues or bugs please go to the Issues page on
+[gitlab](https://gitlab.umich.edu/swmf_software/swmfpy/issues) or [github](https://github.com/MSTEM-QUDA/swmfpy/issues)
+page and create an issue. Make sure you follow the templates.
 
 How to cite
 -----------

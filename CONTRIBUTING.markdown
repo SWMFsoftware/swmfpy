@@ -21,7 +21,7 @@ If you fill out those you are ready to [submit an issue](https://gitlab.umich.ed
 Contributing Code
 =================
 
-Before submitting pull requests please make sure your code complies with the following.
+Before submitting pull/merge requests please make sure your code complies with the following.
 
 Git etiquette
 -------------
