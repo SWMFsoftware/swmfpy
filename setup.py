@@ -39,4 +39,8 @@ setuptools.setup(
         "tecplottools": "h5py",
         "hmi": "drms",
         },
+    package_data={
+        'Documentation': ['DOCUMENTATION.markdown'],
+        'TecplotDocumentation': ['TECPLOT.markdown'],
+    },
     )

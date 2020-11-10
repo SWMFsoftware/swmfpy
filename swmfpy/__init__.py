@@ -23,6 +23,7 @@ __license__ = 'LGPLv3'
 __version__ = '2020.10'
 __maintainer__ = 'Qusai Al Shidi'
 __email__ = 'qusai@umich.edu'
+__credits__ = 'University of Michigan, Climate and Space Sciences & Engineering'
 
 
 import sys
