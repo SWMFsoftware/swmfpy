@@ -25,8 +25,12 @@ setuptools.setup(
     license='LGPLv3',
     classifiers=[
         'Programming Language :: Python :: 3',
-        'License :: OSI Approved :: GNU Lesser General Public License 3',
+        'License :: OSI Approved :: GNU General Public License (GPL)',
         'Operating System :: OS Independent',
+        'Intended Audience :: Science/Research',
+        'Topic :: Scientific/Engineering :: Astronomy',
+        'Topic :: Scientific/Engineering :: Physics',
+        'Topic :: Scientific/Engineering :: Visualization',
         ],
     install_requires=REQUIREMENTS,
     python_requires='>=3.6',
