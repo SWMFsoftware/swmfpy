@@ -5,7 +5,7 @@ swmfpy.
 import setuptools
 
 
-with open('README.markdown') as fh_readme:
+with open('README.md') as fh_readme:
     LONG_DESCRIPTION = fh_readme.read()
 
 with open('requirements.txt') as fh_requirements:
@@ -13,7 +13,7 @@ with open('requirements.txt') as fh_requirements:
 
 setuptools.setup(
     name='swmfpy',
-    version='2020.9',
+    version='2020.10',
     author='Qusai Al Shidi',
     author_email='qusai@umich.edu',
     description='''A collection of tools for the Space Weather Modelling
