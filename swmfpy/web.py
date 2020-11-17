@@ -214,7 +214,7 @@ def get_omni_data(time_from, time_to, **kwargs):
     for url in omni['urls'](time_from, time_to):
 
         # Parse omni data
-        for line in _download_omni_data(url):
+        for line in _download_static_page(url):
             cols = line.decode('ascii').split()
 
             time = omni['parsetime'](cols)
@@ -235,8 +235,16 @@ def get_omni_data(time_from, time_to, **kwargs):
 
 
 @filecache
-def _download_omni_data(url):
-    """Downloads omni data and returns as list
+def _download_static_page(url):
+    """Downloads a cached webpage as a list of lines
+
+    Args:
+        url (str):
+            Webapage URL.
+
+    Returns:
+        list: A list of lines from the webpage. *Note*: Linebreaks are still
+              present.
     """
     return list(urllib.request.urlopen(url))
 
