@@ -496,8 +496,13 @@ def download_magnetogram_adapt(time, map_type='fixed', **kwargs):
     filenames = ftp.nlst(file_pattern)
 
     if len(filenames) < 1:
-        raise FileNotFoundError('Could not find a file that matches'
-                                + 'the pattern.')
+        daily_filenames = ftp.nlst(file_pattern[:-3] + '*')
+        raise FileNotFoundError('FILE NOT FOUND',
+                                'Could not find a file that matches the hour',
+                                'Time entered: ' + str(time)
+                                + '. Files found from same day:',
+                                *[fname[18:30] for fname in daily_filenames],
+                                )
 
     directory = kwargs.get('download_dir', './')
     if directory[-1] != '/':
