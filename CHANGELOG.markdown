@@ -5,7 +5,7 @@ Changelog:
 Contributors:
 -------------
 
-   160	Qusai Al Shidi
+   172	Qusai Al Shidi
     41	Camilla D. K. Harris
      2	Gabor Toth
      1	Camilla Dodge Koslowsky Harris
@@ -15,7 +15,19 @@ Contributors:
 Changes:
 --------
 
-- 5263b93 **(2020-10-27, Qusai Al Shidi)**: _C:HEAD -> master, origin/master, origin/HEAD:_ DOC: Contributing updates on commit styling.
+- 6c1b90d **(2020-11-30, Qusai Al Shidi)**: _C:HEAD -> master:_ FEAT: Add helpful `download_adapt_magnetogram()` error.
+- fbd6352 **(2020-11-17, Qusai Al Shidi)**: _C:origin/master, origin/HEAD:_ MAINT: Rename download webpage function for reusability.
+- f2c47ae **(2020-11-10, Qusai Al Shidi)**: _C::_ MAINT: Doc update
+- d877061 **(2020-11-10, Qusai Al Shidi)**: _C:tag: v2020.11:_ FIX: Filename for github pull request template.
+- 8e1f5d8 **(2020-11-10, Qusai Al Shidi)**: _C::_ FEAT: Issue templates
+- 6783e77 **(2020-11-10, Qusai Al Shidi)**: _C::_ MAINT: Add documentation to package data
+- d9e605c **(2020-11-10, Qusai Al Shidi)**: _C::_ FIX: LGPLv3 not GPLv3
+- 322b686 **(2020-11-10, Qusai Al Shidi)**: _C::_ MAINT: Add UoM credit
+- f4b455b **(2020-11-10, Qusai Al Shidi)**: _C::_ FIX: PyPI Requires this to add README.markdown
+- 617457f **(2020-11-10, Qusai Al Shidi)**: _C::_ FIX: Correct version num
+- 2c659d5 **(2020-11-10, Qusai Al Shidi)**: _C:tag: v2020.9:_ FIX: Classifiers are correct and new additions.
+- 7ae4ff6 **(2020-10-27, Qusai Al Shidi)**: _C:tag: v2020.8:_ MAINT: Update changelog.
+- 5263b93 **(2020-10-27, Qusai Al Shidi)**: _C::_ DOC: Contributing updates on commit styling.
 - 086366d **(2020-10-27, Qusai Al Shidi)**: _C::_ MAINT: Update documentation.
 - 441660d **(2020-10-27, Qusai Al Shidi)**: _C::_ FEAT: Add filecache to `web.get_omni_data()`
 - f8776a0 **(2020-10-27, Qusai Al Shidi)**: _C::_ FEAT: Add .exrc for vim users.
