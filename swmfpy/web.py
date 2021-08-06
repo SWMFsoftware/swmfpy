@@ -12,14 +12,15 @@ import datetime as dt
 import ftplib
 from functools import lru_cache
 import gzip
+import importlib
 from operator import itemgetter
 import os.path
 import shutil
+import sys
 import urllib
 import urllib.request
 import warnings
 from dateutil import rrule
-from filecache import filecache
 import numpy as np
 from .tools import _nearest, carrington_rotation_number
 
@@ -234,8 +235,7 @@ def get_omni_data(time_from, time_to, **kwargs):
     return return_data
 
 
-@lru_cache(maxsize=10)
-@filecache
+@lru_cache
 def _download_static_page(url):
     """Downloads a cached webpage as a list of lines
 
@@ -247,7 +247,12 @@ def _download_static_page(url):
         list: A list of lines from the webpage. *Note*: Linebreaks are still
               present.
     """
-    return list(urllib.request.urlopen(url))
+    # lazy load filecache to prevent parallel issues
+    from filecache import filecache
+    @filecache
+    def _download_static_page_lazy(arg):
+        return list(urllib.request.urlopen(arg))
+    return _download_static_page_lazy(url)
 
 
 def _urls_omni_hires(time_from, time_to):
