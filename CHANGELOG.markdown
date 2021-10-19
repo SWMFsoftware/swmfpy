@@ -5,7 +5,7 @@ Changelog:
 Contributors:
 -------------
 
-   172	Qusai Al Shidi
+   176	Qusai Al Shidi
     41	Camilla D. K. Harris
      2	Gabor Toth
      1	Camilla Dodge Koslowsky Harris
@@ -15,8 +15,12 @@ Contributors:
 Changes:
 --------
 
-- 6c1b90d **(2020-11-30, Qusai Al Shidi)**: _C:HEAD -> master:_ FEAT: Add helpful `download_adapt_magnetogram()` error.
-- fbd6352 **(2020-11-17, Qusai Al Shidi)**: _C:origin/master, origin/HEAD:_ MAINT: Rename download webpage function for reusability.
+- 969128c **(2021-10-19, Qusai Al Shidi)**: _C:HEAD -> master, origin/master, origin/HEAD:_ FIX: Fixed filecache error with try block.
+- e8262a6 **(2021-08-06, Qusai Al Shidi)**: _C::_ FIX: Lazy load filecache to allow parallel processes.
+- 859e808 **(2021-05-24, Qusai Al Shidi)**: _C::_ FEAT: Add a LRU to `_downloads_omni_data()`
+- a1da53b **(2020-11-30, Qusai Al Shidi)**: _C:tag: v2020.12:_ MAINT: Update changelog before new version.
+- 6c1b90d **(2020-11-30, Qusai Al Shidi)**: _C::_ FEAT: Add helpful `download_adapt_magnetogram()` error.
+- fbd6352 **(2020-11-17, Qusai Al Shidi)**: _C::_ MAINT: Rename download webpage function for reusability.
 - f2c47ae **(2020-11-10, Qusai Al Shidi)**: _C::_ MAINT: Doc update
 - d877061 **(2020-11-10, Qusai Al Shidi)**: _C:tag: v2020.11:_ FIX: Filename for github pull request template.
 - 8e1f5d8 **(2020-11-10, Qusai Al Shidi)**: _C::_ FEAT: Issue templates
