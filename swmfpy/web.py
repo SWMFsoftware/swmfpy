@@ -8,19 +8,19 @@ use these to preprocess before submitting jobs.
 __author__ = 'Qusai Al Shidi'
 __email__ = 'qusai@umich.edu'
 
+# standard lib
 import datetime as dt
 import ftplib
 from functools import lru_cache
 import gzip
-import importlib
 from operator import itemgetter
 import os.path
 import shutil
-import sys
 import urllib
 import urllib.request
 import warnings
 from dateutil import rrule
+# dependencies and internal
 import numpy as np
 from .tools import _nearest, carrington_rotation_number
 
@@ -247,12 +247,14 @@ def _download_static_page(url):
         list: A list of lines from the webpage. *Note*: Linebreaks are still
               present.
     """
-    # lazy load filecache to prevent parallel issues
-    from filecache import filecache
-    @filecache
-    def _download_static_page_lazy(arg):
-        return list(urllib.request.urlopen(arg))
-    return _download_static_page_lazy(url)
+    try:
+        from filecache import filecache
+        @filecache
+        def _download_static_page_lazy(arg):
+            return list(urllib.request.urlopen(arg))
+        return _download_static_page_lazy(url)
+    except Exception:
+        return list(urllib.request.urlopen(url))
 
 
 def _urls_omni_hires(time_from, time_to):
