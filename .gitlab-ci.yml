@@ -17,7 +17,10 @@ run-test:
 publish:
     only:
         - tags
+    variables:
+        TWINE_USERNAME: $TWINE_USERNAME
+        TWINE_PASSWORD: $TWINE_PASSWORD
     script:
         - python3 -m pip install twine wheel setuptools
         - python3 setup.py sdist bdist_wheel
-        - env twine upload dist/*
+        - twine upload dist/*
