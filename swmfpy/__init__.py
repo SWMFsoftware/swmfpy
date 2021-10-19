@@ -20,7 +20,7 @@ These must be imported manually.
 """
 __author__ = 'Qusai Al Shidi'
 __license__ = 'LGPLv3'
-__version__ = '2020.11'
+__version__ = '2020.13'
 __maintainer__ = 'Qusai Al Shidi'
 __email__ = 'qusai@umich.edu'
 __credits__ = 'University of Michigan, Climate and Space Sciences & Engineering'
