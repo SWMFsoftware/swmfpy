@@ -1,0 +1,25 @@
+{
+    "keywords": [
+        "spacepy", 
+        "Space Weather Modeling Framework",
+        "SWMF",
+        "space-physics",
+        "space-weather", 
+    ],
+
+    "creators": [
+        {
+            "affiliation": "University of Michigan", 
+            "name": "Qusai Al Shidi",
+            "orcid": "0000-0003-0426-038X"
+        },
+        {
+            "affiliation": "University of Michigan", 
+            "name": "Camilla D K Harris",
+            "orcid": "0000-0001-5045-8827"
+        }
+    ],
+
+    "license": "GNU Lesser General Public License v3",
+    "title": "swmfpy"
+}
