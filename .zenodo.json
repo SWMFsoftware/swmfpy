@@ -20,6 +20,6 @@
         }
     ],
 
-    "license": "GNU Lesser General Public License v3",
+    "license": "GNU Lesser General Public License v3.0 or later",
     "title": "swmfpy"
 }
