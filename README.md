@@ -1,6 +1,7 @@
 ![swmfpy logo](share/logo/swmfpy.png "swmfpy")
 
 [![pipeline status](https://gitlab.umich.edu/swmf_software/swmfpy/badges/master/pipeline.svg)](https://gitlab.umich.edu/swmf_software/swmfpy/-/commits/master) 
+[![DOI](https://zenodo.org/badge/285393338.svg)](https://zenodo.org/badge/latestdoi/285393338)
 
 swmfpy
 ======
