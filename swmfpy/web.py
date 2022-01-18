@@ -235,7 +235,7 @@ def get_omni_data(time_from, time_to, **kwargs):
     return return_data
 
 
-@lru_cache
+@lru_cache(maxsize=12)
 def _download_static_page(url):
     """Downloads a cached webpage as a list of lines
 
