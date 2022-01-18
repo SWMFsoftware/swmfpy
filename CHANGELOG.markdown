@@ -5,7 +5,7 @@ Changelog:
 Contributors:
 -------------
 
-   176	Qusai Al Shidi
+   191	Qusai Al Shidi
     41	Camilla D. K. Harris
      2	Gabor Toth
      1	Camilla Dodge Koslowsky Harris
@@ -15,7 +15,22 @@ Contributors:
 Changes:
 --------
 
-- 969128c **(2021-10-19, Qusai Al Shidi)**: _C:HEAD -> master, origin/master, origin/HEAD:_ FIX: Fixed filecache error with try block.
+- e705f86 **(2022-01-18, Qusai Al Shidi)**: _C:HEAD -> master, origin/master, origin/HEAD:_ FIX: lru_cache explicit maxsize for 12 months
+- 55c9c60 **(2021-11-09, Qusai Al Shidi)**: _C::_ FIX: Hopefully last zenodo edit
+- 52659f0 **(2021-11-09, Qusai Al Shidi)**: _C::_ FIX: Bad zenodo json
+- 8aab06b **(2021-11-09, Qusai Al Shidi)**: _C::_ FIX: Bad zenodo json
+- 230ba30 **(2021-11-09, Qusai Al Shidi)**: _C::_ DOC: Add DOI
+- e3b9a31 **(2021-11-09, Qusai Al Shidi)**: _C::_ FEAT: Add zenodo file
+- 5636644 **(2021-10-19, Qusai Al Shidi)**: _C::_ MAINT: Fix formatting isues of button.
+- 5ba46aa **(2021-10-19, Qusai Al Shidi)**: _C::_ FEAT: This is possible fix for gitlab ci issues.
+- c40f804 **(2021-10-19, Qusai Al Shidi)**: _C::_ MAINT: Another try at CI yet again
+- f72ed67 **(2021-10-19, Qusai Al Shidi)**: _C::_ MAINT: Another try at CI again
+- 9206889 **(2021-10-19, Qusai Al Shidi)**: _C::_ MAINT: Another try at CI
+- 88e7c0c **(2021-10-19, Qusai Al Shidi)**: _C::_ .gitlab-ci.yml
+- 249e97a **(2021-10-19, Qusai Al Shidi)**: _C::_ MAINT: Update version.
+- 20d0c50 **(2021-10-19, Qusai Al Shidi)**: _C::_ MAINT: Update changelog
+- f69c316 **(2021-10-19, Qusai Al Shidi)**: _C::_ FEAT: Add auto publishing stage for tags
+- 969128c **(2021-10-19, Qusai Al Shidi)**: _C::_ FIX: Fixed filecache error with try block.
 - e8262a6 **(2021-08-06, Qusai Al Shidi)**: _C::_ FIX: Lazy load filecache to allow parallel processes.
 - 859e808 **(2021-05-24, Qusai Al Shidi)**: _C::_ FEAT: Add a LRU to `_downloads_omni_data()`
 - a1da53b **(2020-11-30, Qusai Al Shidi)**: _C:tag: v2020.12:_ MAINT: Update changelog before new version.
