@@ -16,7 +16,9 @@ import gzip
 from operator import itemgetter
 import os.path
 import shutil
+import ssl
 import urllib
+from urllib.error import URLError
 import urllib.request
 import warnings
 from dateutil import rrule
@@ -253,6 +255,12 @@ def _download_static_page(url):
         def _download_static_page_lazy(arg):
             return list(urllib.request.urlopen(arg))
         return _download_static_page_lazy(url)
+    except URLError:
+        warnings.warn('Could not verify with SSL, creating unverified context'
+                      + ' your python system may need certificate '
+                      + 'installation')
+        context = ssl._create_unverified_context()  # Not secure
+        return list(urllib.request.urlopen(url, context=context))
     except Exception:
         return list(urllib.request.urlopen(url))
 
