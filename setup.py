@@ -13,7 +13,7 @@ with open('requirements.txt') as fh_requirements:
 
 setuptools.setup(
     name='swmfpy',
-    version='2022.1',
+    version='2022.2',
     author='Qusai Al Shidi',
     author_email='qusai@umich.edu',
     description='''A collection of tools for the Space Weather Modelling
