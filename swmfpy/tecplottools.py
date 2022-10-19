@@ -197,7 +197,11 @@ def _save_csv(
 
 def _add_variable_value(dataset, variable_name: str, zone, values) -> None:
     """Adds and populates a new variable to a zone in a dataset."""
-    dataset.add_variable(variable_name)
+    if variable_name == 'time':
+        dtype = tecplot.constant.FieldDataType.Double
+    else:
+        dtype = None
+    dataset.add_variable(variable_name, dtypes=dtype)
     zone.values(bracketify(variable_name))[:] = values
 
 
