@@ -251,7 +251,7 @@ def _download_static_page(url):
     """
     try:
         from filecache import filecache
-        @filecache
+        @filecache(30 * 24 * 60 * 60)  # Cache for a month
         def _download_static_page_lazy(arg):
             return list(urllib.request.urlopen(arg))
         return _download_static_page_lazy(url)
