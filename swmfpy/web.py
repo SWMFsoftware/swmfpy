@@ -14,6 +14,7 @@ import ftplib
 from functools import lru_cache
 import gzip
 from operator import itemgetter
+import os
 import os.path
 import shutil
 import ssl
@@ -395,8 +396,6 @@ def _get_urls_hmi_b_synoptic_small(client, mag_time):
         generator that yields (datetime.datetime, str): Time of magnetogram,
             suffix url of magnetogram
     """
-    import drms
-
     cr_number = carrington_rotation_number(mag_time)
     query_string = f'hmi.b_synoptic_small[{cr_number}]'
     components = ['Bp', 'Bt', 'Br']
@@ -457,8 +456,8 @@ def download_magnetogram_adapt(time, map_type='fixed', **kwargs):
     Raises:
         NotADirectoryError: If the adapt maps directory
                             is not found on the server.
-        ValueError: If map_type is not recognized.
-                    (i.e. not 'fixed' or 'central')
+        KeyError: If map_type is not recognized.
+                  (i.e. not 'fixed' or 'central')
         FileNotFoundError: If maps were not found.
 
     Examples:
@@ -475,83 +474,74 @@ def download_magnetogram_adapt(time, map_type='fixed', **kwargs):
     # Author: Zhenguang Huang
     # Email: zghuang@umich.edu
 
-    if map_type == 'fixed':
-        map_id = '0'
-    elif map_type == 'central':
-        map_id = '1'
-    else:
-        raise ValueError('Not recognized type of ADAPT map')
+    map_id = {
+        'fixed': '0',
+        'central': '1',
+    }
 
-    # Go to the the ADAPT ftp server
+    # Establish ftp connection
     ftp = ftplib.FTP('gong2.nso.edu')
     ftp.login()
-
-    # Only ADAPT GONG is considered
     ftp.cwd('adapt/maps/gong')
-
-    # Go to the specific year
     try:
         ftp.cwd(str(time.year))
-    except ftplib.all_errors:
+    except ftplib.all_errors as err:
         ftp.quit()
-        raise NotADirectoryError('Cannot go to the specific year directory')
+        raise NotADirectoryError('Cannot go to the specific year directory') from err
 
     # ADAPT maps only contains the hours for even numbers
     if time.hour % 2 != 0:
-        print('Warning: Hour must be an even number.',
-              'The entered hour value is changed to',
-              time.hour//2*2)
+        warnings.warn('Warning: Hour must be an even number. '
+                      + 'The entered hour value is changed to '
+                      + f'{time.hour//2*2}',
+                      RuntimeWarning)
     # Only consider the public (4) Carrington Fixed (0) GONG (3) ADAPT maps
-    file_pattern = 'adapt4' + map_id + '3*' \
+    file_pattern = 'adapt4' + map_id[map_type] + '3*' \
         + str(time.year).zfill(4) \
         + str(time.month).zfill(2) \
         + str(time.day).zfill(2) \
         + str(time.hour//2*2).zfill(2) + '*'
     # adapt4[0,1]3*yyyymmddhh
-
     filenames = ftp.nlst(file_pattern)
 
     if len(filenames) < 1:
         daily_filenames = ftp.nlst(file_pattern[:-3] + '*')
-        raise FileNotFoundError('FILE NOT FOUND',
-                                'Could not find a file that matches the hour',
-                                'Time entered: ' + str(time)
-                                + '. Files found from same day:',
+        raise FileNotFoundError('Could not find a file that matches the hour',
+                                'Time entered: ' + str(time),
+                                'Files found from same day:',
                                 *[fname[18:30] for fname in daily_filenames],
                                 )
 
     directory = kwargs.get('download_dir', './')
-    if directory[-1] != '/':
+    if not directory.endswith('/'):
         directory += '/'
 
+    # Download files
     for filename in filenames:
+
         # Only try to download if the file does not exist
-        if os.path.isfile(directory+filename):
-            warnings.warn(f'{filename} exists, not downloading',
-                          RuntimeWarning)
-        else:
-            # open the file locally
+        if not os.path.isfile(directory+filename.replace('.gz', '')):
             with open(directory + filename, 'wb') as fhandle:
-                # try to download the magnetogram
+                # download magnetogram
                 try:
                     ftp.retrbinary('RETR ' + filename, fhandle.write)
-                except ftplib.all_errors:
+                except ftplib.all_errors as err:
                     ftp.quit()
-                    raise FileNotFoundError('Cannot download ', filename)
+                    raise FileNotFoundError(f'Cannot download {filename}') from err
+            if '.gz' in filename:
+                _ungzip(directory + filename)
+        else:
+            warnings.warn(f'{filename} exists, not downloading.',
+                          RuntimeWarning)
 
-        # unzip the file
-        if '.gz' in filename:
-            filename_unzip = filename.replace('.gz', '')
-            with gzip.open(directory + filename, 'rb') as s_file:
-                with open(directory + filename_unzip, 'wb') as d_file:
-                    shutil.copyfileobj(s_file, d_file, 65536)
-
-    # close the connection
     ftp.quit()
 
-    # return first file name if all goes well
-    return_names = filenames
-    for index, filename in enumerate(return_names):
-        if '.gz' in filename:
-            return_names[index] = filename.replace('.gz', '')
-    return return_names
+    return [filename.replace('.gz', '') for filename in filenames]
+
+def _ungzip(filename):
+    """Decompress a gzipped file and delete the compressed file."""
+    filename_unzip = filename.replace('.gz', '')
+    with gzip.open(filename, 'rb') as s_file:
+        with open(filename_unzip, 'wb') as d_file:
+            shutil.copyfileobj(s_file, d_file, 65536)
+    os.remove(filename)
