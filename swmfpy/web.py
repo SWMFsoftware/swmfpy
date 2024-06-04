@@ -272,10 +272,12 @@ def _urls_omni_hires(time_from, time_to):
     prefix = 'https://spdf.gsfc.nasa.gov/pub/data/omni/'
     prefix += 'high_res_omni/monthly_1min/'
     for date in rrule.rrule(rrule.MONTHLY,
-                            dtstart=time_from,
+                            dtstart=dt.datetime(time_from.year,
+                                                time_from.month,
+                                                1),
                             until=dt.datetime(time_to.year,
                                               time_to.month,
-                                              1)+dt.timedelta(32)):
+                                              1)):
         suffix = 'omni_min'
         suffix += str(date.year) + str(date.month).zfill(2)
         suffix += '.asc'
