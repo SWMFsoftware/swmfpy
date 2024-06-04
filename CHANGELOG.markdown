@@ -5,8 +5,8 @@ Changelog:
 Contributors:
 -------------
 
-   191	Qusai Al Shidi
-    41	Camilla D. K. Harris
+   204	Qusai Al Shidi
+    42	Camilla D. K. Harris
      2	Gabor Toth
      1	Camilla Dodge Koslowsky Harris
      1	TKeebler
@@ -15,17 +15,31 @@ Contributors:
 Changes:
 --------
 
-- e705f86 **(2022-01-18, Qusai Al Shidi)**: _C:HEAD -> master, origin/master, origin/HEAD:_ FIX: lru_cache explicit maxsize for 12 months
+- 58ab396 **(2024-06-04, Qusai Al Shidi)**: _C:HEAD:_ FIX: Monthly behavior in `get_omni_data`
+- 6b66881 **(2024-04-23, Qusai Al Shidi)**: _C::_ MAINT: Clean up magnetogram function.
+- cd6e66c **(2020-12-01, Qusai Al Shidi)**: _C::_ FIX: tecplot module changed to real name 'pytecplot'
+- b5988f9 **(2022-11-11, Qusai Al Shidi)**: _C:origin/master, origin/HEAD:_ MAINT: Use python docker image.
+- 79779a8 **(2022-11-11, Qusai Al Shidi)**: _C::_ MAINT: Update CI.
+- fe59754 **(2022-11-11, Qusai Al Shidi)**: _C::_ MAINT: Update CI.
+- e4f5964 **(2022-11-11, Qusai Al Shidi)**: _C::_ MAINT: Update CI.
+- edc85a4 **(2022-11-09, Qusai Al Shidi)**: _C::_ FEAT: Reset filecache in case of update
+- c9f26f0 **(2022-10-19, Qusai Al Shidi)**: _C::_ Merge branch 'tecplottools-precision-bug' into 'master'
+- 95d4bbc **(2022-10-18, Camilla D. K. Harris)**: _C::_ Fixes a bug where Tecplot loses precision for large numbers, such as Unix epoch time stamps.
+- 00f3d9f **(2022-07-27, Qusai Al Shidi)**: _C::_ FIX: gitlab-ci needs shell. explicitly calling `bash`
+- 78f0efe **(2022-07-27, Qusai Al Shidi)**: _C::_ MAINT: Increase version number in preparation for next version.
+- bd7d3f4 **(2022-07-27, Qusai Al Shidi)**: _C::_ FIX: Still download OMNI data without SSL.
+- f329c02 **(2022-01-18, Qusai Al Shidi)**: _C:tag: v2022.1.pypi:_ MAINT: v2022.1 changes.
+- e705f86 **(2022-01-18, Qusai Al Shidi)**: _C:tag: v2022.1:_ FIX: lru_cache explicit maxsize for 12 months
 - 55c9c60 **(2021-11-09, Qusai Al Shidi)**: _C::_ FIX: Hopefully last zenodo edit
 - 52659f0 **(2021-11-09, Qusai Al Shidi)**: _C::_ FIX: Bad zenodo json
 - 8aab06b **(2021-11-09, Qusai Al Shidi)**: _C::_ FIX: Bad zenodo json
 - 230ba30 **(2021-11-09, Qusai Al Shidi)**: _C::_ DOC: Add DOI
 - e3b9a31 **(2021-11-09, Qusai Al Shidi)**: _C::_ FEAT: Add zenodo file
-- 5636644 **(2021-10-19, Qusai Al Shidi)**: _C::_ MAINT: Fix formatting isues of button.
+- 5636644 **(2021-10-19, Qusai Al Shidi)**: _C:tag: v2020.13.pypi:_ MAINT: Fix formatting isues of button.
 - 5ba46aa **(2021-10-19, Qusai Al Shidi)**: _C::_ FEAT: This is possible fix for gitlab ci issues.
 - c40f804 **(2021-10-19, Qusai Al Shidi)**: _C::_ MAINT: Another try at CI yet again
 - f72ed67 **(2021-10-19, Qusai Al Shidi)**: _C::_ MAINT: Another try at CI again
-- 9206889 **(2021-10-19, Qusai Al Shidi)**: _C::_ MAINT: Another try at CI
+- 9206889 **(2021-10-19, Qusai Al Shidi)**: _C:tag: v2020.13:_ MAINT: Another try at CI
 - 88e7c0c **(2021-10-19, Qusai Al Shidi)**: _C::_ .gitlab-ci.yml
 - 249e97a **(2021-10-19, Qusai Al Shidi)**: _C::_ MAINT: Update version.
 - 20d0c50 **(2021-10-19, Qusai Al Shidi)**: _C::_ MAINT: Update changelog
